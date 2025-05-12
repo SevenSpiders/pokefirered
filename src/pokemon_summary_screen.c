@@ -2923,7 +2923,7 @@ static void PokeSum_DrawMoveTypeIcons(void)
             continue;
 
         BlitMenuInfoIcon(sMonSummaryScreen->windowIds[5], sMonSummaryScreen->moveTypes[i] + 1, 3, GetMoveNamePrinterYpos(i));
-        BlitMenuInfoIcon(sMonSummaryScreen->windowIds[5], sMonSummaryScreen->moveCategories[i] + 24, 3, GetMoveCategoryPrinterYpos(i));
+        BlitMenuInfoIcon(sMonSummaryScreen->windowIds[5], sMonSummaryScreen->moveCategories[i] + MENU_INFO_ICON_CATEGORY_PHYSICAL, 3, GetMoveCategoryPrinterYpos(i));
     }
 
     if (sMonSummaryScreen->mode == PSS_MODE_SELECT_MOVE)
