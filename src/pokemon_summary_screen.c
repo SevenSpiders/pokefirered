@@ -2899,7 +2899,7 @@ static void PokeSum_PrintAbilityNameAndDesc(void)
 static void PokeSum_DrawMoveTypeIcons(void)
 {
     u8 i;
-    u8 posXCategory = 4;
+    u8 posXCategory = 4; // 4 
 
     FillWindowPixelBuffer(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_TYPE], 0);
 

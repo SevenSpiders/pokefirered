@@ -2525,7 +2525,7 @@ static const struct BattleWindowText sTextOnWindowsInfo_Normal[] = {
         .bgColor = 14,
         .shadowColor = 11,
     },
-    [B_WIN_DUMMY] = {
+    [B_WIN_MOVE_CATEGORY] = {
         .fillValue = PIXEL_FILL(0xe),
         .fontId = FONT_NORMAL_COPY_1,
         .x = 0,
@@ -2727,9 +2727,9 @@ void BattlePutTextOnWindow(const u8 *text, u8 windowId) {
 
     u8 textFlags = windowId & 0xC0;
     windowId &= 0x3F;
-    if (!(textFlags & 0x80))
+    if (!(textFlags & 0x80)) // Clear window
         FillWindowPixelBuffer(windowId, sTextOnWindowsInfo_Normal[windowId].fillValue);
-    if (textFlags & 0x40) {
+    if (textFlags & 0x40) { // Use NPC context-defined font
         color = ContextNpcGetTextColor();
         printerTemplate.fontId = sNpcTextColorToFont[color];
     }
