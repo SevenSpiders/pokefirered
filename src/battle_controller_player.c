@@ -1415,18 +1415,32 @@ static void MoveSelectionDisplayPpNumber(void)
 // }
 
 // move_category_icons
-static const u16 sSplitIcons_Pal[] = INCBIN_U16("graphics/battle_interface/menu_info.gbapal");
-static const u8 sSplitIcons_Gfx[] = INCBIN_U8("graphics/battle_interface/menu_info.4bpp");
+// static const u16 sSplitIcons_Pal[] = INCBIN_U16("graphics/battle_interface/menu_info.gbapal");
+// static const u8 sSplitIcons_Gfx[] = INCBIN_U8("graphics/battle_interface/menu_info.4bpp");
+static const u16 sSplitIcons_Pal[] = INCBIN_U16("graphics/battle_interface/split_icons_battle.gbapal");
+static const u8 sSplitIcons_Gfx[] = INCBIN_U8("graphics/battle_interface/split_icons_battle.4bpp");
 
 static void MoveSelectionDisplayMoveType(void)
 {
     struct ChooseMoveStruct *moveInfo;
 	u32 moveCategory;
+    // u8 iconWidth = 16;
+    // u8 iconHeight = 16;
+    // u8 iconsPerRow = 8;
+    // u8 offset = 0;
+
+    // BlitBitmapToWindow(
+    //     B_WIN_MOVE_CATEGORY, 
+    //     sSplitIcons_Gfx + ((moveCategory % 8) * iconWidth + 
+    //                     (moveCategory / 8) * iconsPerRow * iconWidth * iconHeight) / 2,
+    //     0, 0, iconWidth, iconHeight
+    // );
 
 	moveInfo = (struct ChooseMoveStruct*)(&gBattleBufferA[gActiveBattler][MAX_BATTLERS_COUNT]);
     moveCategory = gBattleMoves[moveInfo->moves[gMoveSelectionCursor[gActiveBattler]]].category;
+    // offset = ((moveCategory % iconsPerRow) * iconWidth + (moveCategory / 8) * iconsPerRow * iconWidth * iconHeight) / 2;
 	LoadPalette(sSplitIcons_Pal, 10 * 0x10, 0x20);
-	BlitBitmapToWindow(B_WIN_MOVE_CATEGORY, sSplitIcons_Gfx + 8, 0, 0, 128, 128); //0x0A + 0x80 * moveCategory
+	BlitBitmapToWindow(B_WIN_MOVE_CATEGORY, sSplitIcons_Gfx + 0x80 * moveCategory, 0, 0, 16, 16); //
 	PutWindowTilemap(B_WIN_MOVE_CATEGORY);
 	CopyWindowToVram(B_WIN_MOVE_CATEGORY, COPYWIN_FULL);
 }
