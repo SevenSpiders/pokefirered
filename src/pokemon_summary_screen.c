@@ -872,7 +872,7 @@ static const struct WindowTemplate sWindowTemplates_Moves[] =
         .bg = 0,
         .tilemapLeft = 0,
         .tilemapTop = 3, // 7
-        .width = 15, // 15   // 15*14 = 210 too much, 16 * 13 = 208 too much
+        .width = 15, // 15
         .height = 16, // 13
         .paletteNum = 6,
         .baseBlock = 0x00b5 // 0x00b5
@@ -884,7 +884,7 @@ static const struct WindowTemplate sWindowTemplates_Moves[] =
         .width = 5,
         .height = 18, //18
         .paletteNum = 6,
-        .baseBlock = 0x01a5 // = 0x00b5 + 224 // 0x0178
+        .baseBlock = 0x01a5 // previous baseBlock + previous tiles (width x height) = 0x00b5 + 15*16 (in hex)
     },
 };
 
@@ -912,7 +912,7 @@ static const u8 sLevelNickTextColors[][3] =
     {0, 2, 3},          // 4 orange unused?
     {0, 11, 10},        // 5 beige unused?
     {0, 14, 10},          // 6 Power
-    {0, 7, 0},          // 7 Accuracy
+    {0, 7, 10},          // 7 Accuracy
 };
 // 0 transparent, 1 red, 3 orange, 4 yellow, 5 red, 6 yellow, 7 black, 8 light grey 
 static const u8 sPrintMoveTextColors[][3] = {
@@ -2522,7 +2522,7 @@ static void PrintSkillsPage(void)
 }
 
 #define GetMoveNamePrinterYpos(x) ((x) * 28 + 5)
-#define GetMoveCategoryPrinterYpos(x) ((x) * 28 + 16) // icon is 12px high
+#define GetMoveCategoryPrinterYpos(x) ((x) * 28 + 17) // icon is 12px high
 #define GetMovePpPrinterYpos(x) ((x) * 28 + 16)
 
 static void PrintMovesPage(void)
@@ -2557,11 +2557,11 @@ static void PokeSum_PrintMoveName(u8 i)
         sMonSummaryScreen->summary.moveNameStrBufs[i]);
     // Power
     AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_TITLE], FONT_SMALL, 
-        22, GetMovePpPrinterYpos(i)-1, sPrintMoveTextColors[4], TEXT_SKIP_DRAW, 
+        21, GetMovePpPrinterYpos(i)-1, sPrintMoveTextColors[4], TEXT_SKIP_DRAW, 
         gText_PokeSum_Power);
     // Power Value
     AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_TITLE], FONT_NORMAL, 
-        46, GetMovePpPrinterYpos(i), sPrintMoveTextColors[0], TEXT_SKIP_DRAW, 
+        45, GetMovePpPrinterYpos(i), sPrintMoveTextColors[0], TEXT_SKIP_DRAW, 
         sMonSummaryScreen->summary.movePowerStrBufs[i]);
 }
 
@@ -2899,6 +2899,7 @@ static void PokeSum_PrintAbilityNameAndDesc(void)
 static void PokeSum_DrawMoveTypeIcons(void)
 {
     u8 i;
+    u8 posXCategory = 4;
 
     FillWindowPixelBuffer(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_TYPE], 0);
 
@@ -2908,13 +2909,13 @@ static void PokeSum_DrawMoveTypeIcons(void)
             continue;
 
         BlitMenuInfoIcon(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_TYPE], sMonSummaryScreen->moveTypes[i] + 1, 3, GetMoveNamePrinterYpos(i)-1);
-        BlitMenuInfoIcon(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_TYPE], sMonSummaryScreen->moveCategories[i] + MENU_INFO_ICON_CATEGORY_PHYSICAL, 13, GetMoveCategoryPrinterYpos(i));
+        BlitMenuInfoIcon(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_TYPE], sMonSummaryScreen->moveCategories[i] + MENU_INFO_ICON_CATEGORY_PHYSICAL, posXCategory, GetMoveCategoryPrinterYpos(i));
     }
 
     if (sMonSummaryScreen->mode == PSS_MODE_SELECT_MOVE)
     {
         BlitMenuInfoIcon(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_TYPE], sMonSummaryScreen->moveTypes[4] + 1, 3, GetMoveNamePrinterYpos(4)-1);
-        BlitMenuInfoIcon(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_TYPE], sMonSummaryScreen->moveCategories[4] + MENU_INFO_ICON_CATEGORY_PHYSICAL, 10, GetMoveCategoryPrinterYpos(4));
+        BlitMenuInfoIcon(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_TYPE], sMonSummaryScreen->moveCategories[4] + MENU_INFO_ICON_CATEGORY_PHYSICAL, posXCategory, GetMoveCategoryPrinterYpos(4));
     }
 }
 
