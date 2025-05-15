@@ -457,6 +457,9 @@ void TryStartQuestLogPlayback(u8 taskId)
             sNumScenes++;
     }
 
+    // if (FlagGet(OW_FLAG_DISABLE_QUEST_LOG))
+        sNumScenes = 0;
+
     if (sNumScenes != 0)
     {
         gHelpSystemEnabled = FALSE;

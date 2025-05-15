@@ -1508,6 +1508,7 @@ extern const u8 gText_PokeSum_Item_None[];
 extern const u8 gText_PokeSum_OneHyphen[];
 extern const u8 gText_PokeSum_TwoHyphens[];
 extern const u8 gText_PokeSum_PP[];
+extern const u8 gText_PokeSum_Power[];
 extern const u8 gText_Somewhere[];
 extern const u8 gText_PokeSum_ATrade[];
 extern const u8 gText_PokeSum_FatefulEncounterHatched_BoldGentleGrammar[];

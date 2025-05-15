@@ -1401,6 +1401,7 @@ static void MoveSelectionDisplayPpNumber(void)
 
 static void MoveSelectionDisplayMoveType(void)
 {
+    BlitMenuInfoIcon(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_TYPE], sMonSummaryScreen->moveTypes[i] + 1, 3, GetMoveNamePrinterYpos(i)-1);
     u8 *txtPtr;
     struct ChooseMoveStruct *moveInfo = (struct ChooseMoveStruct *)(&gBattleBufferA[gActiveBattler][4]);
 

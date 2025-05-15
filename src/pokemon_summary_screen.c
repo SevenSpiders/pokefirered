@@ -643,13 +643,6 @@ static const u8 *const sEggOriginTexts[] = {
     gText_PokeSum_EggOrigin_Trade
 };
 
-static const u8 sPrintMoveTextColors[][3] = {
-    {0, 7, 8},
-    {0, 1, 2},
-    {0, 3, 4},
-    {0, 5, 6}
-};
-
 // WINDOW TEMPLATES
 
 static const struct BgTemplate sBgTempaltes[] = 
@@ -711,7 +704,7 @@ static const struct BgTemplate sBgTempaltes[] =
 #define POKESUM_WIN_MOVES_TITLE      3
 #define POKESUM_WIN_MOVES_DESCRIPTION 4
 #define POKESUM_WIN_MOVES_TYPE       5
-#define POKESUM_WIN_MOVES_MINITYPE   6
+#define POKESUM_WIN_MOVES_MINI   6
 
 static const struct WindowTemplate sWindowTemplates_Permanent_Bg1[] =
 {
@@ -854,7 +847,7 @@ static const struct WindowTemplate sWindowTemplates_Skills[] =
         .baseBlock = 0x0000
     },
 };
-
+// TEMPLATES
 static const struct WindowTemplate sWindowTemplates_Moves[] = 
 {
     [POKESUM_WIN_MOVES_TITLE - 3] = { // Move subcontainer -> title + PP
@@ -866,32 +859,32 @@ static const struct WindowTemplate sWindowTemplates_Moves[] =
         .paletteNum = 8,
         .baseBlock = 0x0001
     },
+    [POKESUM_WIN_MOVES_MINI - 3] = { // Top left container for pokemon type
+        .bg = 0,
+        .tilemapLeft = 0,
+        .tilemapTop = 3,
+        .width = 0,
+        .height = 0,
+        .paletteNum = 6,
+        .baseBlock = 0x00b5 // 0x00b5
+    },
     [POKESUM_WIN_MOVES_DESCRIPTION - 3] = { // Move description box
         .bg = 0,
         .tilemapLeft = 0,
-        .tilemapTop = 7, // 7
-        .width = 15, // 15
-        .height = 13, // 13
+        .tilemapTop = 3, // 7
+        .width = 15, // 15   // 15*14 = 210 too much, 16 * 13 = 208 too much
+        .height = 16, // 13
         .paletteNum = 6,
-        .baseBlock = 0x00b5
+        .baseBlock = 0x00b5 // 0x00b5
     },
     [POKESUM_WIN_MOVES_TYPE - 3] = { // Move subcontainer -> pokemon type
         .bg = 0,
         .tilemapLeft = 15,
         .tilemapTop = 2,
         .width = 5,
-        .height = 18,
+        .height = 18, //18
         .paletteNum = 6,
-        .baseBlock = 0x0178
-    },
-    [POKESUM_WIN_MOVES_MINITYPE - 3] = { // Top left container for pokemon type
-        .bg = 0,
-        .tilemapLeft = 6,
-        .tilemapTop = 4,
-        .width = 9,
-        .height = 2,
-        .paletteNum = 6,
-        .baseBlock = 0x01d2
+        .baseBlock = 0x01a5 // = 0x00b5 + 224 // 0x0178
     },
 };
 
@@ -908,15 +901,26 @@ static const struct WindowTemplate sWindowTemplates_Dummy[] =
     },
 };
 
-
+// 0 transparent, 1 white, 2 red, 3 yellow, 4 light green, 5 green, 6 light blue, 7 blue,
+// 8 pink, 9 light pink, 10 light beige, 11 beige, 12 pink, 13 dark grey, 14 black
 static const u8 sLevelNickTextColors[][3] =
 {
-    {0, 14, 10},
-    {0, 1, 2},
-    {0, 9, 8},
-    {0, 5, 4},
-    {0, 2, 3},
-    {0, 11, 10},
+    {0, 14, 10},        // 0
+    {0, 1, 2},          // 1 page header (white)
+    {0, 9, 8},          // 2 male symbol color
+    {0, 5, 4},          // 3 female symbol color
+    {0, 2, 3},          // 4 orange unused?
+    {0, 11, 10},        // 5 beige unused?
+    {0, 14, 10},          // 6 Power
+    {0, 7, 0},          // 7 Accuracy
+};
+// 0 transparent, 1 red, 3 orange, 4 yellow, 5 red, 6 yellow, 7 black, 8 light grey 
+static const u8 sPrintMoveTextColors[][3] = {
+    {0, 7, 8}, // 0 default
+    {0, 1, 2}, // 1 red
+    {0, 3, 4}, // 2 yellow
+    {0, 5, 6}, // 3 green
+    {0, 8, 0}, // 4 power 
 };
 
 static const u8 ALIGNED(4) sMultiBattlePartyOrder[] =
@@ -2303,7 +2307,12 @@ static void BufferMonMoveI(u8 i)
     if (gBattleMoves[sMonSummaryScreen->moveIds[i]].accuracy == 0)
         StringCopy(sMonSummaryScreen->summary.moveAccuracyStrBufs[i], gText_ThreeHyphens);
     else
-        ConvertIntToDecimalStringN(sMonSummaryScreen->summary.moveAccuracyStrBufs[i], gBattleMoves[sMonSummaryScreen->moveIds[i]].accuracy, STR_CONV_MODE_RIGHT_ALIGN, 3);
+    {
+        u8 *end;
+        end = ConvertIntToDecimalStringN(sMonSummaryScreen->summary.moveAccuracyStrBufs[i], gBattleMoves[sMonSummaryScreen->moveIds[i]].accuracy, STR_CONV_MODE_RIGHT_ALIGN, 3);
+        *end = CHAR_PERCENT;
+        *(end + 1) = EOS;
+    }
 }
 
 static u8 PokeSum_HandleCreateSprites(void)
@@ -2335,7 +2344,7 @@ static u8 PokeSum_HandleCreateSprites(void)
         CreateBallIconObj();
         break;
     case 8:
-        PokeSum_CreateMonIconSprite();
+        // PokeSum_CreateMonIconSprite();
         break;
     default:
         PokeSum_CreateMonPicSprite();
@@ -2513,7 +2522,7 @@ static void PrintSkillsPage(void)
 }
 
 #define GetMoveNamePrinterYpos(x) ((x) * 28 + 5)
-#define GetMoveCategoryPrinterYpos(x) ((x) * 28 + 18) // icon is 12px high
+#define GetMoveCategoryPrinterYpos(x) ((x) * 28 + 16) // icon is 12px high
 #define GetMovePpPrinterYpos(x) ((x) * 28 + 16)
 
 static void PrintMovesPage(void)
@@ -2536,50 +2545,24 @@ static void PrintMovesPage(void)
 
 static void PokeSum_PrintMoveName(u8 i)
 {
-    u8 colorIdx = 0;
-    u8 curPP = GetMonPpByMoveSlot(&sMonSummaryScreen->currentMon, i);
+    // u8 colorIdx = 0;
+    // u8 curPP = GetMonPpByMoveSlot(&sMonSummaryScreen->currentMon, i);
     u16 move = sMonSummaryScreen->moveIds[i];
-    u8 ppBonuses = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_PP_BONUSES);
-    u8 maxPP = CalculatePPWithBonus(move, ppBonuses, i);
+    // u8 ppBonuses = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_PP_BONUSES);
+    // u8 maxPP = CalculatePPWithBonus(move, ppBonuses, i);
 
-    if (i == 4)
-        curPP = maxPP;
-
-    AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_RIGHT_PANE], FONT_NORMAL, 3, GetMoveNamePrinterYpos(i), sPrintMoveTextColors[0], TEXT_SKIP_DRAW, sMonSummaryScreen->summary.moveNameStrBufs[i]);
-
-    if (sMonSummaryScreen->moveIds[i] == 0 || (curPP == maxPP))
-      colorIdx = 0;
-    else if (curPP == 0)
-      colorIdx = 3;
-    else if (maxPP == 3)
-    {
-        if (curPP == 2)
-          colorIdx = 2;
-        else if (curPP == 1)
-          colorIdx = 1;
-    }
-    else if (maxPP == 2)
-    {
-        if (curPP == 1)
-          colorIdx = 1;
-    }
-    else
-    {
-        if (curPP <= (maxPP / 4))
-          colorIdx = 2;
-        else if (curPP <= (maxPP / 2))
-          colorIdx = 1;
-    }
-
-    AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_RIGHT_PANE], FONT_NORMAL, 36, GetMovePpPrinterYpos(i), sPrintMoveTextColors[colorIdx], TEXT_SKIP_DRAW,
-        gText_PokeSum_PP);
-    AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_RIGHT_PANE], FONT_NORMAL, 46 + sMonSkillsPrinterXpos->curPp[i], GetMovePpPrinterYpos(i), sPrintMoveTextColors[colorIdx], TEXT_SKIP_DRAW, sMonSummaryScreen->summary.moveCurPpStrBufs[i]);
-
-    if (sMonSummaryScreen->moveIds[i] != MOVE_NONE)
-    {
-        AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_RIGHT_PANE], FONT_NORMAL, 58, GetMovePpPrinterYpos(i), sPrintMoveTextColors[colorIdx], TEXT_SKIP_DRAW, gText_Slash);
-        AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_RIGHT_PANE], FONT_NORMAL, 64 + sMonSkillsPrinterXpos->maxPp[i], GetMovePpPrinterYpos(i), sPrintMoveTextColors[colorIdx], TEXT_SKIP_DRAW, sMonSummaryScreen->summary.moveMaxPpStrBufs[i]);
-    }
+    // Title
+    AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_RIGHT_PANE], FONT_NORMAL, 
+        3, GetMoveNamePrinterYpos(i), sPrintMoveTextColors[0], TEXT_SKIP_DRAW, 
+        sMonSummaryScreen->summary.moveNameStrBufs[i]);
+    // Power
+    AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_TITLE], FONT_SMALL, 
+        22, GetMovePpPrinterYpos(i)-1, sPrintMoveTextColors[4], TEXT_SKIP_DRAW, 
+        gText_PokeSum_Power);
+    // Power Value
+    AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_TITLE], FONT_NORMAL, 
+        46, GetMovePpPrinterYpos(i), sPrintMoveTextColors[0], TEXT_SKIP_DRAW, 
+        sMonSummaryScreen->summary.movePowerStrBufs[i]);
 }
 
 static void PokeSum_PrintBottomPaneText(void)
@@ -2863,19 +2846,19 @@ static void PokeSum_PrintSelectedMoveStats(void)
     {
         if (sMonSummaryScreen->mode != PSS_MODE_SELECT_MOVE && sMoveSelectionCursorPos == 4)
             return;
-
-        AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_TRAINER_MEMO], FONT_NORMAL,
-                                     57, 1,
-                                     sLevelNickTextColors[0], TEXT_SKIP_DRAW,
+        // Power
+        AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_DESCRIPTION], FONT_NORMAL,
+                                     55, 1, // 57, 1
+                                     sLevelNickTextColors[6], TEXT_SKIP_DRAW,
                                      sMonSummaryScreen->summary.movePowerStrBufs[sMoveSelectionCursorPos]);
-
-        AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_TRAINER_MEMO], FONT_NORMAL,
-                                     57, 15,
-                                     sLevelNickTextColors[0], TEXT_SKIP_DRAW,
+        // Accuracy
+        AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_DESCRIPTION], FONT_NORMAL,
+                                     80, 1, // 57, 15
+                                     sLevelNickTextColors[7], TEXT_SKIP_DRAW,
                                      sMonSummaryScreen->summary.moveAccuracyStrBufs[sMoveSelectionCursorPos]);
-
-        AddTextPrinterParameterized4(sMonSummaryScreen->windowIds[POKESUM_WIN_TRAINER_MEMO], FONT_NORMAL,
-                                     7, 42,
+        // Description
+        AddTextPrinterParameterized4(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_DESCRIPTION], FONT_SMALL,
+                                     7, 17, // 7, 42
                                      0, 0,
                                      sLevelNickTextColors[0], TEXT_SKIP_DRAW,
                                      gMoveDescriptionPointers[sMonSummaryScreen->moveIds[sMoveSelectionCursorPos] - 1]);
@@ -2924,14 +2907,14 @@ static void PokeSum_DrawMoveTypeIcons(void)
         if (sMonSummaryScreen->moveIds[i] == MOVE_NONE)
             continue;
 
-        BlitMenuInfoIcon(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_TYPE], sMonSummaryScreen->moveTypes[i] + 1, 3, GetMoveNamePrinterYpos(i));
-        BlitMenuInfoIcon(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_TYPE], sMonSummaryScreen->moveCategories[i] + MENU_INFO_ICON_CATEGORY_PHYSICAL, 3, GetMoveCategoryPrinterYpos(i));
+        BlitMenuInfoIcon(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_TYPE], sMonSummaryScreen->moveTypes[i] + 1, 3, GetMoveNamePrinterYpos(i)-1);
+        BlitMenuInfoIcon(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_TYPE], sMonSummaryScreen->moveCategories[i] + MENU_INFO_ICON_CATEGORY_PHYSICAL, 13, GetMoveCategoryPrinterYpos(i));
     }
 
     if (sMonSummaryScreen->mode == PSS_MODE_SELECT_MOVE)
     {
-        BlitMenuInfoIcon(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_TYPE], sMonSummaryScreen->moveTypes[4] + 1, 3, GetMoveNamePrinterYpos(4));
-        BlitMenuInfoIcon(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_TYPE], sMonSummaryScreen->moveCategories[4] + MENU_INFO_ICON_CATEGORY_PHYSICAL, 3, GetMoveCategoryPrinterYpos(4));
+        BlitMenuInfoIcon(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_TYPE], sMonSummaryScreen->moveTypes[4] + 1, 3, GetMoveNamePrinterYpos(4)-1);
+        BlitMenuInfoIcon(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_TYPE], sMonSummaryScreen->moveCategories[4] + MENU_INFO_ICON_CATEGORY_PHYSICAL, 10, GetMoveCategoryPrinterYpos(4));
     }
 }
 
@@ -3228,7 +3211,7 @@ static void PokeSum_AddWindows(u8 curPageIndex)
             // 3: POKESUM_WIN_MOVES_TITLE
             // 4: POKESUM_WIN_MOVES_DESCRIPTION
             // 5: POKESUM_WIN_MOVES_TYPE
-            // 6: POKESUM_WIN_MOVES_MINITYPE
+            // 6: POKESUM_WIN_MOVES_MINI
             break;
         }
 }
@@ -3392,13 +3375,14 @@ static void PokeSum_PrintMonTypeIcons(void)
     case PSS_PAGE_MOVES:
         break;
     case PSS_PAGE_MOVES_INFO:
-        FillWindowPixelBuffer(sMonSummaryScreen->windowIds[6], 0);
-        BlitMenuInfoIcon(sMonSummaryScreen->windowIds[6], sMonSummaryScreen->monTypes[0] + 1, 0, 3);
+        // u8 windowId = sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_MINI];
+        // FillWindowPixelBuffer(windowId, 0);
+        // BlitMenuInfoIcon(windowId, sMonSummaryScreen->monTypes[0] + 1, 0, 3);
 
-        if (sMonSummaryScreen->monTypes[0] != sMonSummaryScreen->monTypes[1])
-            BlitMenuInfoIcon(sMonSummaryScreen->windowIds[6], sMonSummaryScreen->monTypes[1] + 1, 36, 3);
+        // if (sMonSummaryScreen->monTypes[0] != sMonSummaryScreen->monTypes[1])
+        //     BlitMenuInfoIcon(windowId, sMonSummaryScreen->monTypes[1] + 1, 36, 3);
 
-        PutWindowTilemap(sMonSummaryScreen->windowIds[6]);
+        // PutWindowTilemap(windowId);
         break;
     }
 }
@@ -3686,7 +3670,7 @@ static void Task_HandleInput_SelectMove(u8 taskId)
         CopyWindowToVram(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_TITLE], 2);
         CopyWindowToVram(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_DESCRIPTION], 2);
         CopyWindowToVram(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_TYPE], 2);
-        CopyWindowToVram(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_MINITYPE], 2);
+        CopyWindowToVram(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_MINI], 2);
         CopyBgTilemapBufferToVram(0);
         CopyBgTilemapBufferToVram(3);
         sMonSummaryScreen->selectMoveInputHandlerState = 0;
@@ -3904,7 +3888,7 @@ static void Task_InputHandler_SelectOrForgetMove(u8 taskId)
         CopyWindowToVram(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_TITLE], 2);
         CopyWindowToVram(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_DESCRIPTION], 2);
         CopyWindowToVram(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_TYPE], 2);
-        CopyWindowToVram(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_MINITYPE], 2);
+        CopyWindowToVram(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_MINI], 2);
         CopyBgTilemapBufferToVram(0);
         CopyBgTilemapBufferToVram(3);
         sMonSummaryScreen->selectMoveInputHandlerState = 2;
@@ -4883,7 +4867,7 @@ static void PokeSum_CreateSprites(void)
 {
     CreateBallIconObj();
     ShowOrHideBallIconObj(FALSE);
-    PokeSum_CreateMonIconSprite();
+    // PokeSum_CreateMonIconSprite();
     PokeSum_CreateMonPicSprite();
     PokeSum_ShowOrHideMonPicSprite(FALSE);
     UpdateHpBarObjs();

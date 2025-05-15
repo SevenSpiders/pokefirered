@@ -75,9 +75,12 @@ static const struct MoveMenuInfoIcon sMenuInfoIcons[] =
     [MENU_INFO_ICON_ACCURACY]  = { 40, 12, 0xC8 },
     [MENU_INFO_ICON_PP]        = { 40, 12, 0xE0 },
     [MENU_INFO_ICON_EFFECT]    = { 40, 12, 0xE8 },
-    [MENU_INFO_ICON_CATEGORY_PHYSICAL] = {32, 12, 0x120},
-    [MENU_INFO_ICON_CATEGORY_SPECIAL] = {32, 12, 0x124},
-    [MENU_INFO_ICON_CATEGORY_STATUS] = {32, 12, 0x128},
+    // [MENU_INFO_ICON_CATEGORY_PHYSICAL] = {32, 12, 0x120}, // type like icons
+    // [MENU_INFO_ICON_CATEGORY_SPECIAL] = {32, 12, 0x124},
+    // [MENU_INFO_ICON_CATEGORY_STATUS] = {32, 12, 0x128},
+    [MENU_INFO_ICON_CATEGORY_PHYSICAL] = {14, 12, 0x04}, // coin like icons
+    [MENU_INFO_ICON_CATEGORY_SPECIAL] = {14, 12, 0x06},
+    [MENU_INFO_ICON_CATEGORY_STATUS] = {14, 12, 0x08},
 
 };
 
