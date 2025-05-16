@@ -203,11 +203,11 @@ static const struct WindowTemplate sStandardBattleWindowTemplates[] = {
         .paletteNum = 5,
         .baseBlock = 0x330
     },
-    [B_WIN_PP] = {
+    [B_WIN_MOVE_TOP] = {
         .bg = 0,
         .tilemapLeft = 21,
         .tilemapTop = 55,
-        .width = 3,
+        .width = 8,
         .height = 2,
         .paletteNum = 5,
         .baseBlock = 0x290
@@ -216,8 +216,8 @@ static const struct WindowTemplate sStandardBattleWindowTemplates[] = {
         .bg = 0,
         .tilemapLeft = 21,
         .tilemapTop = 57,
-        .width = 8,
-        .height = 2,
+        .width = 0, // 8
+        .height = 0, // 2
         .paletteNum = 5,
         .baseBlock = 0x296
     },

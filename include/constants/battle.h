@@ -332,7 +332,7 @@
 #define B_WIN_MOVE_NAME_2         4 // Top right
 #define B_WIN_MOVE_NAME_3         5 // Bottom left
 #define B_WIN_MOVE_NAME_4         6 // Bottom right
-#define B_WIN_PP                  7
+#define B_WIN_MOVE_TOP                  7
 #define B_WIN_MOVE_TYPE           8
 #define B_WIN_PP_REMAINING        9
 #define B_WIN_MOVE_CATEGORY      10

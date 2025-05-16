@@ -1380,8 +1380,8 @@ static void MoveSelectionDisplayMoveNames(void)
 
 static void MoveSelectionDisplayPpString(void)
 {
-    // StringCopy(gDisplayedStringBattle, gText_MoveInterfacePP);
-    // BattlePutTextOnWindow(gDisplayedStringBattle, B_WIN_PP);
+    StringCopy(gDisplayedStringBattle, gText_PokeSum_Power); //gText_MoveInterfacePP
+    BattlePutTextOnWindow(gDisplayedStringBattle, B_WIN_MOVE_TOP);
 }
 
 static void MoveSelectionDisplayPpNumber(void)
@@ -1401,17 +1401,16 @@ static void MoveSelectionDisplayPpNumber(void)
 
 // static void MoveSelectionDisplayMoveType(void)
 // {
-//     // BlitMenuInfoIcon(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_TYPE], sMonSummaryScreen->moveTypes[i] + 1, 3, GetMoveNamePrinterYpos(i)-1);
-//     // u8 *txtPtr;
-//     // struct ChooseMoveStruct *moveInfo = (struct ChooseMoveStruct *)(&gBattleBufferA[gActiveBattler][4]);
+//     u8 *txtPtr;
+//     struct ChooseMoveStruct *moveInfo = (struct ChooseMoveStruct *)(&gBattleBufferA[gActiveBattler][4]);
 
-//     // txtPtr = StringCopy(gDisplayedStringBattle, gText_MoveInterfaceType);
-//     // *txtPtr++ = EXT_CTRL_CODE_BEGIN;
-//     // *txtPtr++ = 6;
-//     // *txtPtr++ = 1;
-//     // txtPtr = StringCopy(txtPtr, gText_MoveInterfaceDynamicColors);
-//     // StringCopy(txtPtr, gTypeNames[gBattleMoves[moveInfo->moves[gMoveSelectionCursor[gActiveBattler]]].type]);
-//     // BattlePutTextOnWindow(gDisplayedStringBattle, B_WIN_MOVE_TYPE);
+//     txtPtr = StringCopy(gDisplayedStringBattle, gText_MoveInterfaceType);
+//     *txtPtr++ = EXT_CTRL_CODE_BEGIN;
+//     *txtPtr++ = 6;
+//     *txtPtr++ = 1;
+//     txtPtr = StringCopy(txtPtr, gText_MoveInterfaceDynamicColors);
+//     StringCopy(txtPtr, gTypeNames[gBattleMoves[moveInfo->moves[gMoveSelectionCursor[gActiveBattler]]].type]);
+//     BattlePutTextOnWindow(gDisplayedStringBattle, B_WIN_MOVE_TYPE);
 // }
 
 // move_category_icons
@@ -1435,22 +1434,23 @@ static void BlitMenuInfoIcon(u8 windowId,const u8 *gfx, struct MoveMenuInfoIcon 
 static void MoveSelectionDisplayMoveType(void)
 {
     struct ChooseMoveStruct *moveInfo;
-	u32 moveCategory;
-    u32 iconIndex;
-    u32 moveType;
+	u32 moveCategory, iconIndex, moveType;
+    u8 fillValue;
+    u8 posX = 7;
+
     static const struct MoveMenuInfoIcon category_icons[] = {
         [TYPE_NORMAL]   = { 32, 12, 0x20 },
         [TYPE_FLYING]   = { 32, 12, 0x60 },
+        [TYPE_GROUND]   = { 32, 12, 0x48 },
+        [TYPE_ROCK]     = { 32, 12, 0x44 },
+        [TYPE_BUG]      = { 32, 12, 0x6C },
         [TYPE_FIRE]     = { 32, 12, 0x24 },
         [TYPE_WATER]    = { 32, 12, 0x28 },
         [TYPE_GRASS]    = { 32, 12, 0x2C },
         [TYPE_ELECTRIC] = { 32, 12, 0x40 },
-        [TYPE_ROCK]     = { 32, 12, 0x44 },
-        [TYPE_GROUND]   = { 32, 12, 0x48 },
         [TYPE_ICE]      = { 32, 12, 0x4C },
         [TYPE_FIGHTING] = { 32, 12, 0x64 },
         [TYPE_GHOST]    = { 32, 12, 0x68 },
-        [TYPE_BUG]      = { 32, 12, 0x6C },
         [TYPE_POISON]   = { 32, 12, 0x80 },
         [TYPE_PSYCHIC]  = { 32, 12, 0x84 },
         [TYPE_STEEL]    = { 32, 12, 0x88 },
@@ -1461,17 +1461,22 @@ static void MoveSelectionDisplayMoveType(void)
         [MOVE_CATEGORY_SPECIAL + NUMBER_OF_MON_TYPES] = {14, 12, 0x0C},
         [MOVE_CATEGORY_STATUS + NUMBER_OF_MON_TYPES] = {14, 12, 0x0E},
     };
+
+    // StringCopy(gDisplayedStringBattle, gText_PokeSum_Power);
+    // BattlePutTextOnWindow(gDisplayedStringBattle, B_WIN_MOVE_TOP);
     
 
 	moveInfo = (struct ChooseMoveStruct*)(&gBattleBufferA[gActiveBattler][MAX_BATTLERS_COUNT]);
     moveCategory = gBattleMoves[moveInfo->moves[gMoveSelectionCursor[gActiveBattler]]].category;
     moveType =  gBattleMoves[moveInfo->moves[gMoveSelectionCursor[gActiveBattler]]].type;
-    // offset = ((moveCategory % iconsPerRow) * iconWidth + (moveCategory / 8) * iconsPerRow * iconWidth * iconHeight) / 2;
-	LoadPalette(sSplitIcons_Pal, 10 * 0x10, 0x20);
-	// BlitBitmapToWindow(B_WIN_MOVE_CATEGORY, sSplitIcons_Gfx + 0x80 * moveCategory, 0, 0, 16, 16); //
     iconIndex = moveCategory + NUMBER_OF_MON_TYPES;
-    BlitMenuInfoIcon(B_WIN_MOVE_CATEGORY, sSplitIcons_Gfx, category_icons[iconIndex], 0, 0);
-    BlitMenuInfoIcon(B_WIN_MOVE_CATEGORY, sSplitIcons_Gfx, category_icons[moveType], 16, 0);
+    fillValue = 15; // 0 black, 1 red,2 orange, 3 yellow, 4 light green, 5 green, 6 light blue
+    // 7 blue, 8 violet, 9 beige, 10 light beige, 11 brown, 12 pink, 13 dark, 14 blackish, 15 white
+
+	LoadPalette(sSplitIcons_Pal, 10 * 0x10, 0x20);
+    FillWindowPixelRect(B_WIN_MOVE_CATEGORY, fillValue, 0, 0, 64, 16);
+    BlitMenuInfoIcon(B_WIN_MOVE_CATEGORY, sSplitIcons_Gfx, category_icons[iconIndex], posX, 0);
+    BlitMenuInfoIcon(B_WIN_MOVE_CATEGORY, sSplitIcons_Gfx, category_icons[moveType], posX +16, 0);
 	PutWindowTilemap(B_WIN_MOVE_CATEGORY);
 	CopyWindowToVram(B_WIN_MOVE_CATEGORY, COPYWIN_FULL);
 }
