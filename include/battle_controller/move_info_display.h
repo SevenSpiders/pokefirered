@@ -1,7 +1,7 @@
 #ifndef BATTLE_CONTROLLER_MOVE_INFO_DISPLAY_H
 #define BATTLE_CONTROLLER_MOVE_INFO_DISPLAY_H
 
-void MoveSelectionDisplayMoveType(void);
+void MoveSelectionDisplayMoveInfo(void);
 
 
 #endif // BATTLE_CONTROLLER_MOVE_INFO_DISPLAY_H
