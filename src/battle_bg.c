@@ -367,9 +367,9 @@ static const struct WindowTemplate sStandardBattleWindowTemplates[] = {
     },
     [B_WIN_MOVE_CATEGORY] = {
         .bg = 0,
-        .tilemapLeft = 22,
+        .tilemapLeft = 21,
         .tilemapTop = 57,
-        .width = 2,
+        .width = 8,
         .height = 2,
         .paletteNum = 10,
         .baseBlock = 0x0b0 // 090 + 108 ( ) 
