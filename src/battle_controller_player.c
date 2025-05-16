@@ -23,6 +23,7 @@
 #include "constants/moves.h"
 #include "constants/songs.h"
 #include "constants/sound.h"
+#include "battle_controller/move_info_display.h"
 
 static void PlayerHandleGetMonData(void);
 static void PlayerHandleSetMonData(void);
@@ -85,7 +86,7 @@ static void PlayerBufferRunCommand(void);
 static void HandleInputChooseTarget(void);
 static void MoveSelectionDisplayPowerNumber(void);
 static void MoveSelectionDisplayPwrString(void);
-static void MoveSelectionDisplayMoveType(void);
+// static void MoveSelectionDisplayMoveType(void); // already defined in move_info_display.c
 static void MoveSelectionDisplayMoveNames(void);
 static void HandleMoveSwitching(void);
 static void WaitForMonSelection(void);
@@ -471,7 +472,7 @@ void HandleInputChooseMove(void)
         {
             if (!(moveTarget & (MOVE_TARGET_RANDOM | MOVE_TARGET_BOTH | MOVE_TARGET_DEPENDS | MOVE_TARGET_FOES_AND_ALLY | MOVE_TARGET_OPPONENTS_FIELD | MOVE_TARGET_USER)))
                 ++canSelectTarget; // either selected or user
-            if (moveInfo->currentPp[gMoveSelectionCursor[gActiveBattler]] == 0)
+            if (moveInfo->currentPower[gMoveSelectionCursor[gActiveBattler]] == 0)
             {
                 canSelectTarget = FALSE;
             }
@@ -647,9 +648,9 @@ static void HandleMoveSwitching(void)
             i = moveInfo->moves[gMoveSelectionCursor[gActiveBattler]];
             moveInfo->moves[gMoveSelectionCursor[gActiveBattler]] = moveInfo->moves[gMultiUsePlayerCursor];
             moveInfo->moves[gMultiUsePlayerCursor] = i;
-            i = moveInfo->currentPp[gMoveSelectionCursor[gActiveBattler]];
-            moveInfo->currentPp[gMoveSelectionCursor[gActiveBattler]] = moveInfo->currentPp[gMultiUsePlayerCursor];
-            moveInfo->currentPp[gMultiUsePlayerCursor] = i;
+            i = moveInfo->currentPower[gMoveSelectionCursor[gActiveBattler]];
+            moveInfo->currentPower[gMoveSelectionCursor[gActiveBattler]] = moveInfo->currentPower[gMultiUsePlayerCursor];
+            moveInfo->currentPower[gMultiUsePlayerCursor] = i;
             i = moveInfo->maxPp[gMoveSelectionCursor[gActiveBattler]];
             moveInfo->maxPp[gMoveSelectionCursor[gActiveBattler]] = moveInfo->maxPp[gMultiUsePlayerCursor];
             moveInfo->maxPp[gMultiUsePlayerCursor] = i;
@@ -672,14 +673,14 @@ static void HandleMoveSwitching(void)
             for (i = 0; i < MAX_MON_MOVES; ++i)
             {
                 gBattleMons[gActiveBattler].moves[i] = moveInfo->moves[i];
-                gBattleMons[gActiveBattler].pp[i] = moveInfo->currentPp[i];
+                gBattleMons[gActiveBattler].pp[i] = moveInfo->currentPower[i];
             }
             if (!(gBattleMons[gActiveBattler].status2 & STATUS2_TRANSFORMED))
             {
                 for (i = 0; i < MAX_MON_MOVES; ++i)
                 {
                     moveStruct.moves[i] = GetMonData(&gPlayerParty[gBattlerPartyIndexes[gActiveBattler]], MON_DATA_MOVE1 + i);
-                    moveStruct.currentPp[i] = GetMonData(&gPlayerParty[gBattlerPartyIndexes[gActiveBattler]], MON_DATA_PP1 + i);
+                    moveStruct.currentPower[i] = GetMonData(&gPlayerParty[gBattlerPartyIndexes[gActiveBattler]], MON_DATA_PP1 + i);
                 }
 
                 totalPPBonuses = GetMonData(&gPlayerParty[gBattlerPartyIndexes[gActiveBattler]], MON_DATA_PP_BONUSES);
@@ -688,9 +689,9 @@ static void HandleMoveSwitching(void)
                 i = moveStruct.moves[gMoveSelectionCursor[gActiveBattler]];
                 moveStruct.moves[gMoveSelectionCursor[gActiveBattler]] = moveStruct.moves[gMultiUsePlayerCursor];
                 moveStruct.moves[gMultiUsePlayerCursor] = i;
-                i = moveStruct.currentPp[gMoveSelectionCursor[gActiveBattler]];
-                moveStruct.currentPp[gMoveSelectionCursor[gActiveBattler]] = moveStruct.currentPp[gMultiUsePlayerCursor];
-                moveStruct.currentPp[gMultiUsePlayerCursor] = i;
+                i = moveStruct.currentPower[gMoveSelectionCursor[gActiveBattler]];
+                moveStruct.currentPower[gMoveSelectionCursor[gActiveBattler]] = moveStruct.currentPower[gMultiUsePlayerCursor];
+                moveStruct.currentPower[gMultiUsePlayerCursor] = i;
                 totalPPBonuses = perMovePPBonuses[gMoveSelectionCursor[gActiveBattler]];
                 perMovePPBonuses[gMoveSelectionCursor[gActiveBattler]] = perMovePPBonuses[gMultiUsePlayerCursor];
                 perMovePPBonuses[gMultiUsePlayerCursor] = totalPPBonuses;
@@ -700,7 +701,7 @@ static void HandleMoveSwitching(void)
                 for (i = 0; i < MAX_MON_MOVES; ++i)
                 {
                     SetMonData(&gPlayerParty[gBattlerPartyIndexes[gActiveBattler]], MON_DATA_MOVE1 + i, &moveStruct.moves[i]);
-                    SetMonData(&gPlayerParty[gBattlerPartyIndexes[gActiveBattler]], MON_DATA_PP1 + i, &moveStruct.currentPp[i]);
+                    SetMonData(&gPlayerParty[gBattlerPartyIndexes[gActiveBattler]], MON_DATA_PP1 + i, &moveStruct.currentPower[i]);
                 }
                 SetMonData(&gPlayerParty[gBattlerPartyIndexes[gActiveBattler]], MON_DATA_PP_BONUSES, &totalPPBonuses);
             }
@@ -1388,35 +1389,24 @@ static void MoveSelectionDisplayPwrString(void)
 
 static void MoveSelectionDisplayPowerNumber(void)
 {
-    u8 *txtPtr;
+    // u8 *txtPtr;
     struct ChooseMoveStruct *moveInfo;
     
-    // u8 power;
-    // power = gBattleMoves[moveInfo->moves[gMoveSelectionCursor[gActiveBattler]]].power;
-
+    u8 power;
+    
     if (gBattleBufferA[gActiveBattler][2] == TRUE) // check if we didn't want to display pp number
-        return;
+    return;
     SetPpNumbersPaletteInMoveSelection();
     moveInfo = (struct ChooseMoveStruct *)(&gBattleBufferA[gActiveBattler][4]);
-    txtPtr = ConvertIntToDecimalStringN(gDisplayedStringBattle, moveInfo->currentPp[gMoveSelectionCursor[gActiveBattler]], STR_CONV_MODE_RIGHT_ALIGN, 2);
-    // *txtPtr = CHAR_SLASH;
-    // ConvertIntToDecimalStringN(++txtPtr, moveInfo->maxPp[gMoveSelectionCursor[gActiveBattler]], STR_CONV_MODE_RIGHT_ALIGN, 2);
+    power = moveInfo->currentPower[gMoveSelectionCursor[gActiveBattler]];
+    if (power == 0)
+        StringCopy(gDisplayedStringBattle, gText_TwoHyphens);
+    else
+        ConvertIntToDecimalStringN(gDisplayedStringBattle, power, STR_CONV_MODE_RIGHT_ALIGN, 3);
     BattlePutTextOnWindow(gDisplayedStringBattle, B_WIN_MOVE_POWER);
 }
 
-// static void MoveSelectionDisplayMoveType(void)
-// {
-//     u8 *txtPtr;
-//     struct ChooseMoveStruct *moveInfo = (struct ChooseMoveStruct *)(&gBattleBufferA[gActiveBattler][4]);
-
-//     txtPtr = StringCopy(gDisplayedStringBattle, gText_MoveInterfaceType);
-//     *txtPtr++ = EXT_CTRL_CODE_BEGIN;
-//     *txtPtr++ = 6;
-//     *txtPtr++ = 1;
-//     txtPtr = StringCopy(txtPtr, gText_MoveInterfaceDynamicColors);
-//     StringCopy(txtPtr, gTypeNames[gBattleMoves[moveInfo->moves[gMoveSelectionCursor[gActiveBattler]]].type]);
-//     BattlePutTextOnWindow(gDisplayedStringBattle, B_WIN_MOVE_POWER);
-// }
+/*
 
 // move_category_icons
 static const u16 sSplitIcons_Pal[] = INCBIN_U16("graphics/battle_interface/menu_info.gbapal");
@@ -1442,7 +1432,7 @@ static void MoveSelectionDisplayMoveType(void)
 	u32 moveCategory, iconIndex, moveType;
     u8 fillValue;
     u8 posX = 7;
-    u8 posY = 2;
+    u8 posY = 3;
 
     static const struct MoveMenuInfoIcon category_icons[] = {
         [TYPE_NORMAL]   = { 32, 12, 0x20 },
@@ -1486,6 +1476,8 @@ static void MoveSelectionDisplayMoveType(void)
 	PutWindowTilemap(B_WIN_MOVE_CATEGORY);
 	CopyWindowToVram(B_WIN_MOVE_CATEGORY, COPYWIN_FULL);
 }
+
+*/
 
 void MoveSelectionCreateCursorAt(u8 cursorPosition, u8 arg1)
 {

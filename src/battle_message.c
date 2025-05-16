@@ -2817,7 +2817,7 @@ void SetPpNumbersPaletteInMoveSelection(void)
 {
     struct ChooseMoveStruct *chooseMoveStruct = (struct ChooseMoveStruct *)(&gBattleBufferA[gActiveBattler][4]);
     const u16 *palPtr = gPPTextPalette;
-    u8 var = GetCurrentPpToMaxPpState(chooseMoveStruct->currentPp[gMoveSelectionCursor[gActiveBattler]],
+    u8 var = GetCurrentPpToMaxPpState(chooseMoveStruct->currentPower[gMoveSelectionCursor[gActiveBattler]],
                                       chooseMoveStruct->maxPp[gMoveSelectionCursor[gActiveBattler]]);
 
     gPlttBufferUnfaded[BG_PLTT_ID(5) + 12] = palPtr[(var * 2) + 0];
@@ -2827,33 +2827,33 @@ void SetPpNumbersPaletteInMoveSelection(void)
     CpuCopy16(&gPlttBufferUnfaded[BG_PLTT_ID(5) + 11], &gPlttBufferFaded[BG_PLTT_ID(5) + 11], PLTT_SIZEOF(1));
 }
 
-u8 GetCurrentPpToMaxPpState(u8 currentPp, u8 maxPp)
+u8 GetCurrentPpToMaxPpState(u8 currentPower, u8 maxPp)
 {
-    if (maxPp == currentPp)
+    if (maxPp == currentPower)
     {
         return 3;
     }
     else if (maxPp <= 2)
     {
-        if (currentPp > 1)
+        if (currentPower > 1)
             return 3;
         else
-            return 2 - currentPp;
+            return 2 - currentPower;
     }
     else if (maxPp <= 7)
     {
-        if (currentPp > 2)
+        if (currentPower > 2)
             return 3;
         else
-            return 2 - currentPp;
+            return 2 - currentPower;
     }
     else
     {
-        if (currentPp == 0)
+        if (currentPower == 0)
             return 2;
-        if (currentPp <= maxPp / 4)
+        if (currentPower <= maxPp / 4)
             return 1;
-        if (currentPp > maxPp / 2)
+        if (currentPower > maxPp / 2)
             return 3;
     }
 

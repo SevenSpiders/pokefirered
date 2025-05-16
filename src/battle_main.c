@@ -3158,14 +3158,16 @@ static void HandleTurnActionSelectionState(void)
                     else
                     {
                         struct ChooseMoveStruct moveInfo;
+                        u32 moveId;
 
                         moveInfo.species = gBattleMons[gActiveBattler].species;
                         moveInfo.monType1 = gBattleMons[gActiveBattler].type1;
                         moveInfo.monType2 = gBattleMons[gActiveBattler].type2;
                         for (i = 0; i < MAX_MON_MOVES; i++)
                         {
-                            moveInfo.moves[i] = gBattleMons[gActiveBattler].moves[i];
-                            moveInfo.currentPp[i] = gBattleMons[gActiveBattler].pp[i];
+                            moveId = gBattleMons[gActiveBattler].moves[i];
+                            moveInfo.moves[i] = moveId;
+                            moveInfo.currentPower[i] = gBattleMoves[moveId].power; // gBattleMons[gActiveBattler].pp[i];
                             moveInfo.maxPp[i] = CalculatePPWithBonus(gBattleMons[gActiveBattler].moves[i],
                                                                      gBattleMons[gActiveBattler].ppBonuses,
                                                                      i);

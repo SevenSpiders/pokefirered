@@ -142,6 +142,7 @@ const u8 gText_FiveMarks[] = _("?????");
 const u8 gText_Slash[] = _("/");
 const u8 gText_PokeSum_OneHyphen[] = _("-");
 const u8 gText_PokeSum_TwoHyphens[] = _("--");
+const u8 gText_TwoHyphens[] = _(" --"); // with space
 const u8 gText_ThreeHyphens[] = _("---");
 const u8 gText_SevenHyphens[] = _("-------");
 const u8 gText_MaleSymbol[] = _("♂");
