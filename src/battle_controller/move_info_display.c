@@ -7,6 +7,7 @@
 #include "battle_main.h" // gDisplayedStringBattle // maybe include "battle.h" instead
 #include "battle_message.h" // BattlePutTextOnWindow
 
+
 static const u16 sSplitIcons_Pal[] = INCBIN_U16("graphics/battle_interface/menu_info.gbapal");
 static const u8 sSplitIcons_Gfx[] = INCBIN_U8("graphics/battle_interface/menu_info.4bpp");
 
@@ -91,5 +92,6 @@ void MoveSelectionDisplayMoveInfo(void)
 	CopyWindowToVram(B_WIN_MOVE_CATEGORY, COPYWIN_FULL);
     DisplayPowerNumber();
 }
+
 
 

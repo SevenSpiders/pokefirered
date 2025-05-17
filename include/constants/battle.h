@@ -334,7 +334,7 @@
 #define B_WIN_MOVE_NAME_4         6 // Bottom right
 #define B_WIN_MOVE_PWR                  7
 #define B_WIN_MOVE_POWER           8
-#define B_WIN_PP_REMAINING        9
+#define B_WIN_HB_STATUS_0        9
 #define B_WIN_MOVE_CATEGORY      10
 #define B_WIN_SWITCH_PROMPT      11 // "Switch which?"
 #define B_WIN_LEVEL_UP_BOX       12

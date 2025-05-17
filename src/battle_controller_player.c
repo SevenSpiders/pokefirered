@@ -24,6 +24,7 @@
 #include "constants/songs.h"
 #include "constants/sound.h"
 #include "battle_controller/move_info_display.h"
+#include "battle_controller/healthbar_icons_display.h"
 
 static void PlayerHandleGetMonData(void);
 static void PlayerHandleSetMonData(void);
@@ -222,6 +223,7 @@ static void HandleInputChooseAction(void)
 
     DoBounceEffect(gActiveBattler, BOUNCE_HEALTHBOX, 7, 1);
     DoBounceEffect(gActiveBattler, BOUNCE_MON, 7, 1);
+    HealthbarUpdateStatus(0);
     if (JOY_NEW(A_BUTTON))
     {
         PlaySE(SE_SELECT);
@@ -2405,7 +2407,6 @@ void InitMoveSelectionsVarsAndStrings(void)
     MoveSelectionDisplayMoveNames();
     gMultiUsePlayerCursor = 0xFF;
     MoveSelectionCreateCursorAt(gMoveSelectionCursor[gActiveBattler], 0);
-    // MoveSelectionDisplayPowerNumber();
     MoveSelectionDisplayMoveInfo();
 }
 

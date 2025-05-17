@@ -10,6 +10,7 @@
 #include "pokemon_summary_screen.h"
 #include "safari_zone.h"
 #include "constants/songs.h"
+#include "battle_controller/healthbar_icons_display.h"
 
 #undef abs
 #define abs(a) ((a) < 0 ? -(a) : (a))
@@ -87,6 +88,7 @@ static void SafariTextIntoHealthboxObject(void *dest, u8 *windowTileData, u32 wi
 static u8 *AddTextPrinterAndCreateWindowOnHealthbox(const u8 *str, u32 x, u32 y, u32 *windowId);
 static void RemoveWindowOnHealthbox(u32 windowId);
 static void TextIntoHealthboxObject(void *dest, u8 *windowTileData, s32 windowWidth);
+static void UpdateXPBar(u8 battlerId, struct Pokemon *mon, u8 healthboxSpriteId, s32 isDoubles);
 
 static const struct OamData sOamData_Healthbox = {
     .shape = SPRITE_SHAPE(64x32),
@@ -641,6 +643,7 @@ static void SpriteCB_HealthBar(struct Sprite *sprite)
     case HEALTHBAR_TYPE_PLAYER_SINGLE:
         sprite->x = gSprites[healthboxSpriteId].x + 16;
         sprite->y = gSprites[healthboxSpriteId].y;
+        // HealthbarUpdateStatus(gSprites[healthboxSpriteId].y%2);
         break;
     case HEALTHBAR_TYPE_PLAYER_DOUBLE:
         sprite->x = gSprites[healthboxSpriteId].x + 16;
@@ -1801,22 +1804,7 @@ void UpdateHealthboxAttribute(u8 healthboxSpriteId, struct Pokemon *mon, u8 elem
         }
         isDoubles = IsDoubleBattle();
         if (!isDoubles && (elementId == HEALTHBOX_EXP_BAR || elementId == HEALTHBOX_ALL))
-        {
-            u16 species;
-            u32 exp, currLevelExp;
-            s32 currExpBarValue, maxExpBarValue;
-            u8 level;
-
-            LoadBattleBarGfx(3);
-            species = GetMonData(mon, MON_DATA_SPECIES);
-            level = GetMonData(mon, MON_DATA_LEVEL);
-            exp = GetMonData(mon, MON_DATA_EXP);
-            currLevelExp = gExperienceTables[gSpeciesInfo[species].growthRate][level];
-            currExpBarValue = exp - currLevelExp;
-            maxExpBarValue = gExperienceTables[gSpeciesInfo[species].growthRate][level + 1] - currLevelExp;
-            SetBattleBarStruct(battlerId, healthboxSpriteId, maxExpBarValue, currExpBarValue, isDoubles);
-            MoveBattleBar(battlerId, healthboxSpriteId, EXP_BAR, 0);
-        }
+            UpdateXPBar(battlerId, mon, healthboxSpriteId, isDoubles);
         if (elementId == HEALTHBOX_NICK || elementId == HEALTHBOX_ALL)
             UpdateNickInHealthbox(healthboxSpriteId, mon);
         if (elementId == HEALTHBOX_STATUS_ICON || elementId == HEALTHBOX_ALL)
@@ -1956,6 +1944,24 @@ static void MoveBattleBarGraphically(u8 battlerId, u8 whichBar)
     }
 }
 
+static void UpdateXPBar(u8 battlerId, struct Pokemon *mon, u8 healthboxSpriteId, s32 isDoubles) {
+    // HealthbarUpdateStatus(0);
+    // u16 species;
+    // u32 exp, currLevelExp;
+    // s32 currExpBarValue, maxExpBarValue;
+    // u8 level;
+
+    // LoadBattleBarGfx(3);
+    // species = GetMonData(mon, MON_DATA_SPECIES);
+    // level = GetMonData(mon, MON_DATA_LEVEL);
+    // exp = GetMonData(mon, MON_DATA_EXP);
+    // currLevelExp = gExperienceTables[gSpeciesInfo[species].growthRate][level];
+    // currExpBarValue = exp - currLevelExp;
+    // maxExpBarValue = gExperienceTables[gSpeciesInfo[species].growthRate][level + 1] - currLevelExp;
+    // SetBattleBarStruct(battlerId, healthboxSpriteId, maxExpBarValue, currExpBarValue, isDoubles);
+    // MoveBattleBar(battlerId, healthboxSpriteId, EXP_BAR, 0);
+}
+
 static s32 CalcNewBarValue(s32 maxValue, s32 oldValue, s32 receivedValue, s32 *currValue, u8 totalPixels, u16 increment)
 {
     s32 ret, newValue;
@@ -2081,7 +2087,7 @@ static u8 CalcBarFilledPixels(s32 maxValue, s32 oldValue, s32 receivedValue, s32
     return totalFilledPixels;
 }
 
-// Unused
+/* // Unused
 // These functions seem as if they were made for testing the health bar.
 static s16 UpdateAndDrawHealthbarOntoScreen(struct TestingBar *barInfo, s32 *currValue, u8 bg, u8 x, u8 y)
 {
@@ -2134,7 +2140,7 @@ static void DrawHealthbarOntoScreen(struct TestingBar *barInfo, s32 *currValue, 
         tiles[i] = (barInfo->pal << 12) | (barInfo->tileOffset + filledPixels[i]);
 
     CopyToBgTilemapBufferRect_ChangePalette(bg, tiles, x, y, 6, 1, 17);
-}
+} */
 
 static u8 GetReceivedValueInPixels(s32 oldValue, s32 receivedValue, s32 maxValue, u8 totalPixels)
 {

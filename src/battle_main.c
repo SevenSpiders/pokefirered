@@ -42,6 +42,7 @@
 #include "constants/pokemon.h"
 #include "constants/songs.h"
 #include "constants/trainers.h"
+#include "battle_controller/healthbar_icons_display.h" // updateStatus
 
 static void SpriteCB_UnusedDebugSprite(struct Sprite *sprite);
 static void HandleAction_UseMove(void);
@@ -2123,6 +2124,7 @@ void DoBounceEffect(u8 battler, u8 which, s8 delta, s8 amplitude)
     gSprites[invisibleSpriteId].sWhich = which;
     gSprites[bouncerSpriteId].x2 = 0;
     gSprites[bouncerSpriteId].y2 = 0;
+    // HealthbarUpdateStatus(0);
 }
 
 void EndBounceEffect(u8 battler, u8 which)
@@ -2156,13 +2158,16 @@ static void SpriteCB_BounceEffect(struct Sprite *sprite)
 {
     u8 bouncerSpriteId = sprite->sBouncerSpriteId;
     s32 index;
+    s16 yPos;
 
     if (sprite->sWhich == BOUNCE_HEALTHBOX)
         index = sprite->sSinIndex;
     else
         index = sprite->sSinIndex;
-    gSprites[bouncerSpriteId].y2 = Sin(index, sprite->sAmplitude) + sprite->sAmplitude;
+    yPos = Sin(index, sprite->sAmplitude) + sprite->sAmplitude;
+    gSprites[bouncerSpriteId].y2 = yPos;
     sprite->sSinIndex = (sprite->sSinIndex + sprite->sDelta) & 0xFF;
+    // HealthbarUpdateStatus(0);
 }
 
 void SpriteCB_PlayerThrowInit(struct Sprite *sprite)
