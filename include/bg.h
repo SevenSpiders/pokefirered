@@ -39,6 +39,17 @@ enum
     BG_ATTR_BASETILE = 10
 };
 
+// 256 x 256 px
+#define BG_SIZE_SMALL 0
+// 512 x 256 px
+#define BG_SIZE_TALL  1
+// 256 x 512 px
+#define BG_SIZE_WIDE  2
+// 512 x 512 px
+#define BG_SIZE_BIG   3
+// Calculate new base block based on previous window (base block, width, height)
+#define CALC_BASE_BLOCK(baseBlock, width, height) ((baseBlock) + (width) * (height))
+
 // Modes for ChangeBgX / ChangeBgY
 enum {
     BG_COORD_SET,
