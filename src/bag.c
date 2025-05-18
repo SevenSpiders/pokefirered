@@ -25,7 +25,7 @@ static const struct WindowTemplate sDefaultBagWindowsStd[] = {
         .width = 18,
         .height = 12,
         .paletteNum = 15,
-        .baseBlock = 0x008a
+        .baseBlock = 138
     }, {
         .bg = 0,
         .tilemapLeft = 5,
@@ -33,7 +33,7 @@ static const struct WindowTemplate sDefaultBagWindowsStd[] = {
         .width = 25,
         .height = 6,
         .paletteNum = 15,
-        .baseBlock = 0x0162
+        .baseBlock = 354
     }, {
         .bg = 0,
         .tilemapLeft = 1,
@@ -41,7 +41,7 @@ static const struct WindowTemplate sDefaultBagWindowsStd[] = {
         .width = 9,
         .height = 2,
         .paletteNum = 15,
-        .baseBlock = 0x01f8
+        .baseBlock = 504
     }, DUMMY_WIN_TEMPLATE
 };
 
@@ -53,7 +53,7 @@ static const struct WindowTemplate sDefaultBagWindowsDeposit[] = {
         .width = 18,
         .height = 12,
         .paletteNum = 15,
-        .baseBlock = 0x008a
+        .baseBlock = 138
     }, {
         .bg = 0,
         .tilemapLeft = 5,
@@ -61,7 +61,7 @@ static const struct WindowTemplate sDefaultBagWindowsDeposit[] = {
         .width = 25,
         .height = 6,
         .paletteNum = 15,
-        .baseBlock = 0x0162
+        .baseBlock = 354
     }, {
         .bg = 0,
         .tilemapLeft = 1,
@@ -69,7 +69,7 @@ static const struct WindowTemplate sDefaultBagWindowsDeposit[] = {
         .width = 8,
         .height = 2,
         .paletteNum = 12,
-        .baseBlock = 0x01f8
+        .baseBlock = 504
     }, DUMMY_WIN_TEMPLATE
 };
 
@@ -81,7 +81,7 @@ static const struct WindowTemplate sWindowTemplates[] = {
         .width = 5,
         .height = 4,
         .paletteNum = 15,
-        .baseBlock = 0x242
+        .baseBlock = 578
     }, {
         .bg = 0,
         .tilemapLeft = 17,
@@ -89,7 +89,7 @@ static const struct WindowTemplate sWindowTemplates[] = {
         .width = 12,
         .height = 4,
         .paletteNum = 15,
-        .baseBlock = 0x242
+        .baseBlock = 578
     }, {
         .bg = 0,
         .tilemapLeft = 1,
@@ -97,7 +97,7 @@ static const struct WindowTemplate sWindowTemplates[] = {
         .width = 8,
         .height = 3,
         .paletteNum = 12,
-        .baseBlock = 0x272
+        .baseBlock = 626
     }, {
         .bg = 0,
         .tilemapLeft = 23,
@@ -105,7 +105,7 @@ static const struct WindowTemplate sWindowTemplates[] = {
         .width = 6,
         .height = 4,
         .paletteNum = 15,
-        .baseBlock = 0x28a
+        .baseBlock = 650
     }, {
         .bg = 0,
         .tilemapLeft = 21,
@@ -113,7 +113,7 @@ static const struct WindowTemplate sWindowTemplates[] = {
         .width = 6,
         .height = 4,
         .paletteNum = 15,
-        .baseBlock = 0x28a
+        .baseBlock = 650
     }, {
         .bg = 0,
         .tilemapLeft = 2,
@@ -121,7 +121,7 @@ static const struct WindowTemplate sWindowTemplates[] = {
         .width = 26,
         .height = 4,
         .paletteNum = 15,
-        .baseBlock = 0x2a2
+        .baseBlock = 674
     }, {
         .bg = 0,
         .tilemapLeft = 6,
@@ -129,7 +129,7 @@ static const struct WindowTemplate sWindowTemplates[] = {
         .width = 14,
         .height = 4,
         .paletteNum = 12,
-        .baseBlock = 0x2a2
+        .baseBlock = 674
     }, {
         .bg = 0,
         .tilemapLeft = 6,
@@ -137,7 +137,7 @@ static const struct WindowTemplate sWindowTemplates[] = {
         .width = 15,
         .height = 4,
         .paletteNum = 12,
-        .baseBlock = 0x2da
+        .baseBlock = 730
     }, {
         .bg = 0,
         .tilemapLeft = 6,
@@ -145,7 +145,7 @@ static const struct WindowTemplate sWindowTemplates[] = {
         .width = 16,
         .height = 4,
         .paletteNum = 12,
-        .baseBlock = 0x316
+        .baseBlock = 790
     }, {
         .bg = 0,
         .tilemapLeft = 6,
@@ -153,7 +153,7 @@ static const struct WindowTemplate sWindowTemplates[] = {
         .width = 23,
         .height = 4,
         .paletteNum = 12,
-        .baseBlock = 0x356
+        .baseBlock = 854
     }, {
         .bg = 0,
         .tilemapLeft = 22,
@@ -161,7 +161,7 @@ static const struct WindowTemplate sWindowTemplates[] = {
         .width = 7,
         .height = 2,
         .paletteNum = 15,
-        .baseBlock = 0x20a
+        .baseBlock = 522
     }, {
         .bg = 0,
         .tilemapLeft = 22,
@@ -169,7 +169,7 @@ static const struct WindowTemplate sWindowTemplates[] = {
         .width = 7,
         .height = 4,
         .paletteNum = 15,
-        .baseBlock = 0x20a
+        .baseBlock = 522
     }, {
         .bg = 0,
         .tilemapLeft = 22,
@@ -177,7 +177,7 @@ static const struct WindowTemplate sWindowTemplates[] = {
         .width = 7,
         .height = 6,
         .paletteNum = 15,
-        .baseBlock = 0x20a
+        .baseBlock = 522
     }, {
         .bg = 0,
         .tilemapLeft = 22,
@@ -185,7 +185,7 @@ static const struct WindowTemplate sWindowTemplates[] = {
         .width = 7,
         .height = 8,
         .paletteNum = 15,
-        .baseBlock = 0x20a
+        .baseBlock = 522
     }
 };
 
@@ -244,11 +244,11 @@ u8 ShowBagWindow(u8 whichWindow, u8 nItems)
         sOpenWindows[whichWindow] = AddWindow(&sWindowTemplates[whichWindow + nItems]);
         if (whichWindow != 6)
         {
-            DrawStdFrameWithCustomTileAndPalette(sOpenWindows[whichWindow], FALSE, 0x064, 14);
+            DrawStdFrameWithCustomTileAndPalette(sOpenWindows[whichWindow], FALSE, 100, 14);
         }
         else
         {
-            DrawStdFrameWithCustomTileAndPalette(sOpenWindows[whichWindow], FALSE, 0x081, 12);
+            DrawStdFrameWithCustomTileAndPalette(sOpenWindows[whichWindow], FALSE, 129, 12);
         }
         ScheduleBgCopyTilemapToVram(0);
     }

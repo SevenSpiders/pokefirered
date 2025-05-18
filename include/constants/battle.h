@@ -334,7 +334,7 @@
 #define B_WIN_MOVE_NAME_4         6 // Bottom right
 #define B_WIN_MOVE_PWR                  7
 #define B_WIN_MOVE_POWER           8
-#define B_WIN_HB_STATUS_0        9
+#define B_WIN_HB_STATUS_0        17 // 9
 #define B_WIN_MOVE_CATEGORY      10
 #define B_WIN_SWITCH_PROMPT      11 // "Switch which?"
 #define B_WIN_LEVEL_UP_BOX       12
@@ -342,7 +342,7 @@
 #define B_WIN_YESNO              14
 #define B_WIN_VS_PLAYER          15
 #define B_WIN_VS_OPPONENT        16
-#define B_WIN_VS_MULTI_PLAYER_1  17
+#define B_WIN_VS_MULTI_PLAYER_1  9 // 17
 #define B_WIN_VS_MULTI_PLAYER_2  18
 #define B_WIN_VS_MULTI_PLAYER_3  19
 #define B_WIN_VS_MULTI_PLAYER_4  20

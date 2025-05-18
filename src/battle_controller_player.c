@@ -223,7 +223,7 @@ static void HandleInputChooseAction(void)
 
     DoBounceEffect(gActiveBattler, BOUNCE_HEALTHBOX, 7, 1);
     DoBounceEffect(gActiveBattler, BOUNCE_MON, 7, 1);
-    // HealthbarUpdateStatus(0);
+    HealthbarUpdateStatus(0);
     if (JOY_NEW(A_BUTTON))
     {
         PlaySE(SE_SELECT);

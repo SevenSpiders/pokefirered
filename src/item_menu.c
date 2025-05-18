@@ -168,7 +168,7 @@ static const struct BgTemplate sBgTemplates[2] = {
         .screenSize = 0,
         .paletteMode = 0,
         .priority = 0,
-        .baseTile = 0x000
+        .baseTile = 0
     }, {
         .bg = 1,
         .charBaseIndex = 3,
@@ -176,7 +176,7 @@ static const struct BgTemplate sBgTemplates[2] = {
         .screenSize = 0,
         .paletteMode = 0,
         .priority = 1,
-        .baseTile = 0x000
+        .baseTile = 0
     }
 };
 
