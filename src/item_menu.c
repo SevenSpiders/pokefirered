@@ -1312,7 +1312,7 @@ static void InitQuantityToTossOrDeposit(u16 cursorPos, const u8 *str)
     CopyItemName(BagGetItemIdByPocketPosition(gBagMenuState.pocket + 1, cursorPos), gStringVar1);
     StringExpandPlaceholders(gStringVar4, str);
     BagPrintTextOnWindow(r5, FONT_NORMAL, gStringVar4, 0, 2, 1, 0, 0, 1);
-    r4 = ShowBagWindow(BAG_WIN_ITEMS, 0);
+    r4 = ShowBagWindow(BAG_WINID_ITEMS, 0);
     ConvertIntToDecimalStringN(gStringVar1, 1, STR_CONV_MODE_LEADING_ZEROS, 3);
     StringExpandPlaceholders(gStringVar4, gText_TimesStrVar1);
     BagPrintTextOnWindow(r4, FONT_SMALL, gStringVar4, 4, 10, 1, 0, 0, 1);
