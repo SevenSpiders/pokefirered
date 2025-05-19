@@ -1,6 +1,10 @@
 #include "global.h"
 #include "strings.h"
 
+// custom
+const u8 gText_Moves_Menu[] = _("Change Moves");
+
+
 const u8 gExpandedPlaceholder_Empty[] = _("");
 const u8 gExpandedPlaceholder_Kun[] = _("");
 const u8 gExpandedPlaceholder_Chan[] = _("");

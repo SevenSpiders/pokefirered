@@ -83,4 +83,7 @@ void ShowPartyMenuToShowcaseMultiBattleParty(void);
 void ChooseMonForDaycare(void);
 void ChoosePartyMonByMenuType(u8 menuType);
 
+// Custom
+void CB2_ReturnToPartyMenuFromSummaryScreen(void);
+
 #endif // GUARD_PARTY_MENU_H
