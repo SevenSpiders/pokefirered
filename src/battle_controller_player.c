@@ -512,6 +512,8 @@ void HandleInputChooseMove(void)
     }
     else if (JOY_NEW(DPAD_LEFT))
     {
+        // DebugPrintf("pressed left");
+        MgbaPrintf((1), "pressed left");
         if (gMoveSelectionCursor[gActiveBattler] & 1)
         {
             MoveSelectionDestroyCursorAt(gMoveSelectionCursor[gActiveBattler]);
