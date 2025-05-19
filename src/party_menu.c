@@ -85,6 +85,7 @@
 
 #define SLOT_CONFIRM (PARTY_SIZE)
 #define SLOT_CANCEL  (PARTY_SIZE + 1)
+#define SKIP_BADGE_REQUIREMENTS
 
 enum
 {
@@ -2973,11 +2974,17 @@ static void SetPartyMonFieldSelectionActions(struct Pokemon *mons, u8 slotId)
         {
             if (GetMonData(&mons[slotId], i + MON_DATA_MOVE1) == sFieldMoves[j])
             {
-                AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, j + CURSOR_OPTION_FIELD_MOVES);
+                // AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, j + CURSOR_OPTION_FIELD_MOVES);
                 break;
             }
         }
     }
+    if (sPartyMenuInternal->numActions < 5 && CanMonLearnTMHM(&mons[slotId], ITEM_HM02_FLY - ITEM_TM01))
+        AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, 2+CURSOR_OPTION_FIELD_MOVES); // FLY
+    if (sPartyMenuInternal->numActions < 5 && CanMonLearnTMHM(&mons[slotId], ITEM_HM01_CUT - ITEM_TM01))
+        AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, 1+CURSOR_OPTION_FIELD_MOVES); // Cut
+    if (sPartyMenuInternal->numActions < 5 && CanMonLearnTMHM(&mons[slotId], ITEM_HM03_SURF - ITEM_TM01)) 
+        AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, 4+CURSOR_OPTION_FIELD_MOVES); // surf
     if (GetMonData(&mons[1], MON_DATA_SPECIES) != SPECIES_NONE)
         AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, CURSOR_OPTION_SWITCH);
     if (ItemIsMail(GetMonData(&mons[slotId], MON_DATA_HELD_ITEM)))
@@ -3923,7 +3930,11 @@ static void CursorCB_FieldMove(u8 taskId)
     else
     {
         // All field moves before WATERFALL are HMs.
+        #ifndef SKIP_BADGE_REQUIREMENTS
         if (fieldMove <= FIELD_MOVE_WATERFALL && FlagGet(FLAG_BADGE01_GET + fieldMove) != TRUE)
+        #else
+        if (FALSE)
+        #endif
         {
             DisplayPartyMenuMessage(gText_CantUseUntilNewBadge, TRUE);
             gTasks[taskId].func = Task_ReturnToChooseMonAfterText;
