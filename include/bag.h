@@ -3,17 +3,17 @@
 
 #include "menu_helpers.h"
 
-#define BAG_WINID_ITEMS         0
-#define BAG_WINID_MSG           1
-#define BAG_WINID_TITLE         2
+#define BAG_WIN_ID_ITEMS         0
+#define BAG_WIN_ID_MSG           1
+#define BAG_WIN_ID_TITLE         2
 
 // window indexes used in ShowBagWindow(index, nitems)
-#define BAG_WIN_ITEM_QUANTITY   0
+#define BAG_WIN_CHOOSE_QUANTITY   0
 #define BAG_WIN_BUY_QUANTITY    1
 #define BAG_WIN_MONEY           2
-#define BAG_WIN_QUANTITY        3 // little box bottom right
+#define BAG_WIN_CHOOSE_QUANTITY2        3 // little box bottom right
 #define BAG_WIN_4               4
-#define BAG_WIN_MSG             5 // fill MSG box
+#define BAG_WIN_MSG_W26         5 // fill MSG box
 #define BAG_WIN_MSG_W14         6 // spare icon left
 #define BAG_WIN_MSG_W15         7 // BAG_WIN_MSG_W14 + 1 width
 #define BAG_WIN_MSG_W16         8 // BAG_WIN_MSG_W14 + 2 width

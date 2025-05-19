@@ -19,7 +19,7 @@ static const u8 sTextColors[][3] = {
 };
 
 static const struct WindowTemplate sDefaultBagWindowsStd[] = {
-    [BAG_WINID_ITEMS] = {
+    [BAG_WIN_ID_ITEMS] = {
         .bg = 0,
         .tilemapLeft = 11,
         .tilemapTop = 1,
@@ -28,7 +28,7 @@ static const struct WindowTemplate sDefaultBagWindowsStd[] = {
         .paletteNum = 15,
         .baseBlock = 138
     }, 
-    [BAG_WINID_MSG] = {
+    [BAG_WIN_ID_MSG] = {
         .bg = 0,
         .tilemapLeft = 5,
         .tilemapTop = 14,
@@ -37,7 +37,7 @@ static const struct WindowTemplate sDefaultBagWindowsStd[] = {
         .paletteNum = 15,
         .baseBlock = 354
     }, 
-    [BAG_WINID_TITLE] = {
+    [BAG_WIN_ID_TITLE] = {
         .bg = 0,
         .tilemapLeft = 1,
         .tilemapTop = 1,
@@ -49,7 +49,7 @@ static const struct WindowTemplate sDefaultBagWindowsStd[] = {
 };
 
 static const struct WindowTemplate sDefaultBagWindowsDeposit[] = {
-    [BAG_WINID_ITEMS] = {
+    [BAG_WIN_ID_ITEMS] = {
         .bg = 0,
         .tilemapLeft = 11,
         .tilemapTop = 1,
@@ -58,7 +58,7 @@ static const struct WindowTemplate sDefaultBagWindowsDeposit[] = {
         .paletteNum = 15,
         .baseBlock = 138
     }, 
-    [BAG_WINID_MSG] = {
+    [BAG_WIN_ID_MSG] = {
         .bg = 0,
         .tilemapLeft = 5,
         .tilemapTop = 14,
@@ -67,7 +67,7 @@ static const struct WindowTemplate sDefaultBagWindowsDeposit[] = {
         .paletteNum = 15,
         .baseBlock = 354
     }, 
-    [BAG_WINID_TITLE] = {
+    [BAG_WIN_ID_TITLE] = {
         .bg = 0,
         .tilemapLeft = 1,
         .tilemapTop = 1,
@@ -79,7 +79,7 @@ static const struct WindowTemplate sDefaultBagWindowsDeposit[] = {
 };
 
 static const struct WindowTemplate sWindowTemplates[] = {
-    [BAG_WIN_ITEM_QUANTITY] = { // bottom right 
+    [BAG_WIN_CHOOSE_QUANTITY] = { // bottom right 
         .bg = 0,
         .tilemapLeft = 24,
         .tilemapTop = 15,
@@ -97,7 +97,7 @@ static const struct WindowTemplate sWindowTemplates[] = {
         .paletteNum = 15,
         .baseBlock = 578
     }, 
-    [BAG_WIN_MONEY] = { // Top left -> money?
+    [BAG_WIN_MONEY] = { // Top left
         .bg = 0,
         .tilemapLeft = 1,
         .tilemapTop = 1,
@@ -106,7 +106,7 @@ static const struct WindowTemplate sWindowTemplates[] = {
         .paletteNum = 12,
         .baseBlock = 626
     }, 
-    [BAG_WIN_QUANTITY] = { // bottom right, often opened?
+    [BAG_WIN_CHOOSE_QUANTITY2] = { // unused
         .bg = 0,
         .tilemapLeft = 23,
         .tilemapTop = 15,
@@ -124,7 +124,7 @@ static const struct WindowTemplate sWindowTemplates[] = {
         .paletteNum = 15,
         .baseBlock = 650
     }, 
-    [BAG_WIN_MSG] = {
+    [BAG_WIN_MSG_W26] = {
         .bg = 0,
         .tilemapLeft = 2,
         .tilemapTop = 15,
