@@ -752,8 +752,8 @@ static void PrintItemDescriptionOnMessageWindow(s32 itemIndex)
         description = ItemId_GetDescription(BagGetItemIdByPocketPosition(gBagMenuState.pocket + 1, itemIndex));
     else
         description = gText_CloseBag;
-    FillWindowPixelBuffer(BAG_WIN_ID_MSG, PIXEL_FILL(0));
-    BagPrintTextOnWindow(BAG_WIN_ID_MSG, FONT_NORMAL, description, 0, 3, 2, 0, 0, 0);
+    FillWindowPixelBuffer(BAG_WIN_MAIN_MSG_ID, PIXEL_FILL(0));
+    BagPrintTextOnWindow(BAG_WIN_MAIN_MSG_ID, FONT_NORMAL, description, 0, 3, 2, 0, 0, 0);
 }
 
 static void CreatePocketScrollArrowPair(void)
@@ -1225,8 +1225,8 @@ static void BeginMovingItemInPocket(u8 taskId, s16 itemIndex)
     sBagMenuDisplay->itemOriginalLocation = itemIndex;
     StringCopy(gStringVar1, ItemId_GetName(BagGetItemIdByPocketPosition(gBagMenuState.pocket + 1, data[1])));
     StringExpandPlaceholders(gStringVar4, gOtherText_WhereShouldTheStrVar1BePlaced);
-    FillWindowPixelBuffer(BAG_WIN_ID_MSG, PIXEL_FILL(0));
-    BagPrintTextOnWindow(BAG_WIN_ID_MSG, FONT_NORMAL, gStringVar4, 0, 3, 2, 0, 0, 0);
+    FillWindowPixelBuffer(BAG_WIN_MAIN_MSG_ID, PIXEL_FILL(0));
+    BagPrintTextOnWindow(BAG_WIN_MAIN_MSG_ID, FONT_NORMAL, gStringVar4, 0, 3, 2, 0, 0, 0);
     UpdateSwapLinePos(0, ListMenuGetYCoordForPrintingArrowCursor(data[0]));
     SetSwapLineInvisibility(FALSE);
     BagDestroyPocketSwitchArrowPair();
@@ -1308,7 +1308,7 @@ static void AbortMovingItemInPocket(u8 taskId, u32 itemIndex)
 static void InitQuantityToTossOrDeposit(u16 cursorPos, const u8 *str)
 {
     u8 r4;
-    u8 r5 = ShowBagWindow(BAG_WIN_MSG_W14, 2);
+    u8 r5 = ShowBagWindow(BAG_WIN_MSG, 2);
     CopyItemName(BagGetItemIdByPocketPosition(gBagMenuState.pocket + 1, cursorPos), gStringVar1);
     StringExpandPlaceholders(gStringVar4, str);
     BagPrintTextOnWindow(r5, FONT_NORMAL, gStringVar4, 0, 2, 1, 0, 0, 1);
@@ -1429,7 +1429,7 @@ static void OpenContextMenu(u8 taskId)
         sContextMenuItemsPtr
     );
     Menu_InitCursor(bagContextWindowId, FONT_NORMAL, 0, 2, GetFontAttribute(FONT_NORMAL, FONTATTR_MAX_LETTER_HEIGHT) + 2, sContextMenuNumItems, 0);
-    bagMSGWindowId = ShowBagWindow(BAG_WIN_MSG_W14, 0);
+    bagMSGWindowId = ShowBagWindow(BAG_WIN_MSG, 0);
     CopyItemName(gSpecialVar_ItemId, gStringVar1);
     StringExpandPlaceholders(gStringVar4, gText_Var1IsSelected);
     BagPrintTextOnWindow(bagMSGWindowId, FONT_NORMAL, gStringVar4, 0, 2, 1, 0, 0, 1);
@@ -1504,7 +1504,7 @@ static void Task_ConfirmTossItems(u8 taskId)
     s16 *data = gTasks[taskId].data;
     ConvertIntToDecimalStringN(gStringVar2, data[8], STR_CONV_MODE_LEFT_ALIGN, 3);
     StringExpandPlaceholders(gStringVar4, gText_ThrowAwayStrVar2OfThisItemQM); // "Throw away {STR_VAR_2} of\nthis item?"
-    BagPrintTextOnWindow(ShowBagWindow(BAG_WIN_MSG_W14, 1), FONT_NORMAL, gStringVar4, 0, 2, 1, 0, 0, 1);
+    BagPrintTextOnWindow(ShowBagWindow(BAG_WIN_MSG, 1), FONT_NORMAL, gStringVar4, 0, 2, 1, 0, 0, 1);
     BagCreateYesNoMenuBottomRight(taskId, &sYesNoMenu_Toss);
 }
 
@@ -1556,7 +1556,7 @@ static void Task_TossItem_Yes(u8 taskId)
     CopyItemName(BagGetItemIdByPocketPosition(gBagMenuState.pocket + 1, data[1]), gStringVar1);
     ConvertIntToDecimalStringN(gStringVar2, data[8], STR_CONV_MODE_LEFT_ALIGN, 3);
     StringExpandPlaceholders(gStringVar4, gText_ThrewAwayStrVar2StrVar1s);
-    BagPrintTextOnWindow(ShowBagWindow(BAG_WIN_MSG_W14, 3), FONT_NORMAL, gStringVar4, 0, 2, 1, 0, 0, 1);
+    BagPrintTextOnWindow(ShowBagWindow(BAG_WIN_MSG, 3), FONT_NORMAL, gStringVar4, 0, 2, 1, 0, 0, 1);
     gTasks[taskId].func = Task_WaitAB_RedrawAndReturnToBag;
 }
 
@@ -2010,7 +2010,7 @@ static void Task_TryDoItemDeposit(u8 taskId)
         CopyItemName(gSpecialVar_ItemId, gStringVar1);
         ConvertIntToDecimalStringN(gStringVar2, data[8], STR_CONV_MODE_LEFT_ALIGN, 3);
         StringExpandPlaceholders(gStringVar4, gText_DepositedStrVar2StrVar1s);
-        BagPrintTextOnWindow(ShowBagWindow(BAG_WIN_MSG_W14, 3), FONT_NORMAL, gStringVar4, 0, 2, 1, 0, 0, 1);
+        BagPrintTextOnWindow(ShowBagWindow(BAG_WIN_MSG, 3), FONT_NORMAL, gStringVar4, 0, 2, 1, 0, 0, 1);
         gTasks[taskId].func = Task_WaitAB_RedrawAndReturnToBag;
     }
     else

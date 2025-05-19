@@ -129,6 +129,15 @@ static const struct WindowTemplate sStandardBattleWindowTemplates[] = {
         .paletteNum = 10,
         .baseBlock = 266 // 266
     },
+    [B_WIN_HB_STATUS_1] = {
+        .bg = 0,
+        .tilemapLeft = 17,
+        .tilemapTop = 45,
+        .width = 12, // 12
+        .height = 2, // 2
+        .paletteNum = 10,
+        .baseBlock = 290 // 266
+    },
     [B_WIN_MOVE_CATEGORY] = {
         .bg = 0,
         .tilemapLeft = 21,
@@ -264,5 +273,5 @@ static const struct WindowTemplate sStandardBattleWindowTemplates[] = {
         .paletteNum = 7,
         .baseBlock = 144
     },
-    DUMMY_WIN_TEMPLATE
+    [26] = DUMMY_WIN_TEMPLATE
 };
