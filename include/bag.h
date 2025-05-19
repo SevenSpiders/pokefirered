@@ -3,6 +3,27 @@
 
 #include "menu_helpers.h"
 
+#define BAG_WINID_ITEMS         0
+#define BAG_WINID_MSG           1
+#define BAG_WINID_TITLE         2
+
+// window indexes used in ShowBagWindow(index, nitems)
+#define BAG_WIN_ITEM_QUANTITY   0
+#define BAG_WIN_BUY_QUANTITY    1
+#define BAG_WIN_MONEY           2
+#define BAG_WIN_QUANTITY        3 // little box bottom right
+#define BAG_WIN_4               4
+#define BAG_WIN_MSG             5 // fill MSG box
+#define BAG_WIN_MSG_W14         6 // spare icon left
+#define BAG_WIN_MSG_W15         7 // BAG_WIN_MSG_W14 + 1 width
+#define BAG_WIN_MSG_W16         8 // BAG_WIN_MSG_W14 + 2 width
+#define BAG_WIN_MSG_W23         9 // BAG_WIN_MSG_W14 and fill until right 
+#define BAG_WIN_CONTEXT_H2      10
+#define BAG_WIN_CONTEXT_H4      11
+#define BAG_WIN_CONTEXT_H6      12
+#define BAG_WIN_CONTEXT_H8      13
+
+
 void InitBagWindows(void);
 void BagPrintTextOnWindow(u8 windowId, u8 fontId, const u8 * str, u8 x, u8 y, u8 letterSpacing, u8 lineSpacing, u8 speed, u8 colorIdx);
 void BagPrintTextOnWin1CenteredColor0(const u8 * str, u8 unused);

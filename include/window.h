@@ -60,6 +60,8 @@ struct Window
 typedef void (*WindowFunc)(u8 bg, u8 tilemapLeft, u8 tilemapTop, u8 width, u8 height, u8 paletteNum);
 
 bool16 InitWindows(const struct WindowTemplate *templates);
+
+// returns windowId or 0xFF (255) if fail
 u16 AddWindow(const struct WindowTemplate *template);
 int AddWindowWithoutTileMap(const struct WindowTemplate *template);
 void RemoveWindow(u8 windowId);

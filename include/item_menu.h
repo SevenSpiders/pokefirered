@@ -21,6 +21,7 @@ struct BagStruct
 
 extern struct BagStruct gBagMenuState;
 
+
 extern u16 gSpecialVar_ItemId;
 
 // Exported ROM declarations
