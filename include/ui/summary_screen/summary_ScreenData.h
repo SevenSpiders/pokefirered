@@ -1,7 +1,10 @@
+#ifndef GUARD_SUMMARY_SCREENDATA
+#define GUARD_SUMMARY_SCREENDATA
+
 #include "main.h"
 
 
-struct PokemonSummaryScreenData
+struct SummaryScreenData
 {
     u16 bg1TilemapBuffer[0x800];
     u16 bg2TilemapBuffer[0x800];
@@ -105,3 +108,6 @@ struct PokemonSummaryScreenData
     u8 ALIGNED(4) lastPageFlipDirection; /* 0x3300 */
     u8 ALIGNED(4) unk3304; /* 0x3304 */
 };
+
+
+#endif

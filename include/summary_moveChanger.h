@@ -1,7 +1,0 @@
-#ifndef GUARD_SUMMARY_CHANGE_MOVE
-#define GUARD_SUMMARY_CHANGE_MOVE
-
-
-
-
-#endif

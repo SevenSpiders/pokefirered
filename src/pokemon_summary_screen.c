@@ -36,8 +36,8 @@
 #include "constants/sound.h"
 
 // c files
-#include "summary_screen/summary_moveChanger.c"
-#include "summary_screen/summary_screenData.c"
+#include "ui/summary_screen/summary_moveChanger.h"
+#include "ui/summary_screen/summary_screenData.h"
 
 // needs conflicting header to match (curIndex is s8 in the function, but has to be defined as u8 here)
 extern s16 SeekToNextMonInBox(struct BoxPokemon * boxMons, u8 curIndex, u8 maxIndex, u8 flags);
@@ -215,7 +215,7 @@ struct ShinyStarObjData
     u16 palTag; /* 0x06 */
 };
 
-static EWRAM_DATA struct PokemonSummaryScreenData * sMonSummaryScreen = NULL;
+static EWRAM_DATA struct SummaryScreenData * sMonSummaryScreen = NULL;
 static EWRAM_DATA struct Struct203B144 * sMonSkillsPrinterXpos = NULL;
 static EWRAM_DATA struct MoveSelectionCursor * sMoveSelectionCursorObjs[4] = {};
 static EWRAM_DATA struct MonStatusIconObj * sStatusIcon = NULL;
@@ -882,7 +882,7 @@ static const u16 * const sHpBarPals[] =
 
 void ShowPokemonSummaryScreen(struct Pokemon * party, u8 cursorPos, u8 lastIdx, MainCallback savedCallback, u8 mode)
 {
-    sMonSummaryScreen = AllocZeroed(sizeof(struct PokemonSummaryScreenData));
+    sMonSummaryScreen = AllocZeroed(sizeof(struct SummaryScreenData));
     sMonSkillsPrinterXpos = AllocZeroed(sizeof(struct Struct203B144));
 
     if (sMonSummaryScreen == NULL)
@@ -894,6 +894,7 @@ void ShowPokemonSummaryScreen(struct Pokemon * party, u8 cursorPos, u8 lastIdx, 
     sLastViewedMonIndex = cursorPos;
 
     sMoveSelectionCursorPos = 0;
+    MoveChanger_SetCursor(0);
     sMoveSwapCursorPos = 0;
     sMonSummaryScreen->savedCallback = savedCallback;
     sMonSummaryScreen->monList.mons = party;
@@ -1991,6 +1992,7 @@ static void BufferMonInfo(void)
     u16 gender;
     u16 heldItem;
     u32 otId;
+    MoveChanger_SetPokemon(&sMonSummaryScreen->currentMon);
 
     dexNum = SpeciesToPokedexNum(GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_SPECIES));
     if (dexNum == 0xffff)
@@ -3419,12 +3421,14 @@ static void Task_HandleInput_SelectMove(u8 taskId)
                     {
                         PlaySE(SE_SELECT);
                         sMoveSelectionCursorPos = i - 1;
+                        MoveChanger_SetCursor(i-1);
                         return;
                     }
             }
             else
             {
                 sMoveSelectionCursorPos = 4;
+                MoveChanger_SetCursor(4);
                 sMonSummaryScreen->selectMoveInputHandlerState = 2;
                 PlaySE(SE_SELECT);
 
@@ -3434,6 +3438,7 @@ static void Task_HandleInput_SelectMove(u8 taskId)
                         {
                             PlaySE(SE_SELECT);
                             sMoveSelectionCursorPos = i - 1;
+                            MoveChanger_SetCursor(i-1);
                             return;
                         }
             }
@@ -3451,6 +3456,7 @@ static void Task_HandleInput_SelectMove(u8 taskId)
                     if (sMoveSelectionCursorPos == 5 - 2)
                     {
                         sMoveSelectionCursorPos = 0;
+                        MoveChanger_SetCursor(0);
                         sMonSummaryScreen->selectMoveInputHandlerState = 2;
                         PlaySE(SE_SELECT);
                         return;
@@ -3463,6 +3469,7 @@ static void Task_HandleInput_SelectMove(u8 taskId)
                     {
                         PlaySE(SE_SELECT);
                         sMoveSelectionCursorPos = i + 1;
+                        MoveChanger_SetCursor(i+1);
                         return;
                     }
 
@@ -3470,11 +3477,13 @@ static void Task_HandleInput_SelectMove(u8 taskId)
                 {
                     PlaySE(SE_SELECT);
                     sMoveSelectionCursorPos = i;
+                    MoveChanger_SetCursor(i);
                 }
                 else
                 {
                     PlaySE(SE_SELECT);
                     sMoveSelectionCursorPos = 0;
+                    MoveChanger_SetCursor(0);
                 }
 
                 return;
@@ -3482,6 +3491,7 @@ static void Task_HandleInput_SelectMove(u8 taskId)
             else if (sMoveSelectionCursorPos == 4)
             {
                 sMoveSelectionCursorPos = 0;
+                MoveChanger_SetCursor(0);
                 sMonSummaryScreen->selectMoveInputHandlerState = 2;
                 PlaySE(SE_SELECT);
                 return;
@@ -3490,9 +3500,10 @@ static void Task_HandleInput_SelectMove(u8 taskId)
         else if (JOY_NEW(A_BUTTON))
         {
             PlaySE(SE_SELECT);
-            if (sMoveSelectionCursorPos == 4)
+            if (sMoveSelectionCursorPos == 4) // cancel
             {
                 sMoveSelectionCursorPos = 0;
+                MoveChanger_SetCursor(0);
                 sMoveSwapCursorPos = 0;
                 sMonSummaryScreen->isSwappingMoves = FALSE;
                 ShoworHideMoveSelectionCursor(TRUE);
@@ -3544,6 +3555,7 @@ static void Task_HandleInput_SelectMove(u8 taskId)
             if (sMoveSelectionCursorPos == 4)
             {
                 sMoveSelectionCursorPos = 0;
+                MoveChanger_SetCursor(0);
                 sMoveSwapCursorPos = 0;
             }
 
@@ -3583,37 +3595,38 @@ static void Task_HandleInput_SelectMove(u8 taskId)
 
 static void SwapMonMoveSlots(void)
 {
-    struct Pokemon * partyMons;
-    struct Pokemon * mon;
+    MoveChanger_SwapMonMoveSlots();
+    // struct Pokemon * partyMons;
+    // struct Pokemon * mon;
 
-    u16 move1, move2;
-    u8 pp1, pp2;
-    u8 allMovesPPBonuses;
-    u8 move1ppBonus, move2ppBonus;
+    // u16 move1, move2;
+    // u8 pp1, pp2;
+    // u8 allMovesPPBonuses;
+    // u8 move1ppBonus, move2ppBonus;
 
-    partyMons = sMonSummaryScreen->monList.mons;
-    mon = &partyMons[GetLastViewedMonIndex()];
+    // partyMons = sMonSummaryScreen->monList.mons;
+    // mon = &partyMons[GetLastViewedMonIndex()];
 
-    move1 = GetMonData(mon, MON_DATA_MOVE1 + sMoveSelectionCursorPos);
-    move2 = GetMonData(mon, MON_DATA_MOVE1 + sMoveSwapCursorPos);
+    // move1 = GetMonData(mon, MON_DATA_MOVE1 + sMoveSelectionCursorPos);
+    // move2 = GetMonData(mon, MON_DATA_MOVE1 + sMoveSwapCursorPos);
 
-    pp1 = GetMonData(mon, MON_DATA_PP1 + sMoveSelectionCursorPos);
-    pp2 = GetMonData(mon, MON_DATA_PP1 + sMoveSwapCursorPos);
+    // pp1 = GetMonData(mon, MON_DATA_PP1 + sMoveSelectionCursorPos);
+    // pp2 = GetMonData(mon, MON_DATA_PP1 + sMoveSwapCursorPos);
 
-    allMovesPPBonuses = GetMonData(mon, MON_DATA_PP_BONUSES);
+    // allMovesPPBonuses = GetMonData(mon, MON_DATA_PP_BONUSES);
 
-    move1ppBonus = (allMovesPPBonuses & gPPUpGetMask[sMoveSelectionCursorPos]) >> (sMoveSelectionCursorPos * 2);
-    move2ppBonus = (allMovesPPBonuses & gPPUpGetMask[sMoveSwapCursorPos]) >> (sMoveSwapCursorPos * 2);
+    // move1ppBonus = (allMovesPPBonuses & gPPUpGetMask[sMoveSelectionCursorPos]) >> (sMoveSelectionCursorPos * 2);
+    // move2ppBonus = (allMovesPPBonuses & gPPUpGetMask[sMoveSwapCursorPos]) >> (sMoveSwapCursorPos * 2);
 
-    allMovesPPBonuses &= ~gPPUpGetMask[sMoveSelectionCursorPos];
-    allMovesPPBonuses &= ~gPPUpGetMask[sMoveSwapCursorPos];
-    allMovesPPBonuses |= (move1ppBonus << (sMoveSwapCursorPos * 2)) + (move2ppBonus << (sMoveSelectionCursorPos * 2));
+    // allMovesPPBonuses &= ~gPPUpGetMask[sMoveSelectionCursorPos];
+    // allMovesPPBonuses &= ~gPPUpGetMask[sMoveSwapCursorPos];
+    // allMovesPPBonuses |= (move1ppBonus << (sMoveSwapCursorPos * 2)) + (move2ppBonus << (sMoveSelectionCursorPos * 2));
 
-    SetMonData(mon, MON_DATA_MOVE1 + sMoveSelectionCursorPos, (u8 *)&move2);
-    SetMonData(mon, MON_DATA_MOVE1 + sMoveSwapCursorPos, (u8 *)&move1);
-    SetMonData(mon, MON_DATA_PP1 + sMoveSelectionCursorPos, &pp2);
-    SetMonData(mon, MON_DATA_PP1 + sMoveSwapCursorPos, &pp1);
-    SetMonData(mon, MON_DATA_PP_BONUSES, &allMovesPPBonuses);
+    // SetMonData(mon, MON_DATA_MOVE1 + sMoveSelectionCursorPos, (u8 *)&move2);
+    // SetMonData(mon, MON_DATA_MOVE1 + sMoveSwapCursorPos, (u8 *)&move1);
+    // SetMonData(mon, MON_DATA_PP1 + sMoveSelectionCursorPos, &pp2);
+    // SetMonData(mon, MON_DATA_PP1 + sMoveSwapCursorPos, &pp1);
+    // SetMonData(mon, MON_DATA_PP_BONUSES, &allMovesPPBonuses);
 }
 
 static void SwapBoxMonMoveSlots(void)
@@ -3708,12 +3721,14 @@ static void Task_InputHandler_SelectOrForgetMove(u8 taskId)
                     {
                         PlaySE(SE_SELECT);
                         sMoveSelectionCursorPos = i - 1;
+                        MoveChanger_SetCursor(i-1);
                         return;
                     }
             }
             else
             {
                 sMoveSelectionCursorPos = 4;
+                MoveChanger_SetCursor(4);
                 sMonSummaryScreen->selectMoveInputHandlerState = 3;
                 PlaySE(SE_SELECT);
                 return;
@@ -3735,6 +3750,7 @@ static void Task_InputHandler_SelectOrForgetMove(u8 taskId)
                     {
                         PlaySE(SE_SELECT);
                         sMoveSelectionCursorPos = i + 1;
+                        MoveChanger_SetCursor(i+1);
                         return;
                     }
 
@@ -3742,6 +3758,7 @@ static void Task_InputHandler_SelectOrForgetMove(u8 taskId)
                 {
                     PlaySE(SE_SELECT);
                     sMoveSelectionCursorPos = i;
+                    MoveChanger_SetCursor(i);
                 }
 
                 return;
@@ -3749,6 +3766,7 @@ static void Task_InputHandler_SelectOrForgetMove(u8 taskId)
             else if (sMoveSelectionCursorPos == 4)
             {
                 sMoveSelectionCursorPos = 0;
+                MoveChanger_SetCursor(0);
                 sMonSummaryScreen->selectMoveInputHandlerState = 3;
                 PlaySE(SE_SELECT);
                 return;
@@ -4957,6 +4975,7 @@ static void Task_PokeSum_SwitchDisplayedPokemon(u8 taskId)
     case 0:
         StopCryAndClearCrySongs();
         sMoveSelectionCursorPos = 0;
+        MoveChanger_SetCursor(0);
         sMoveSwapCursorPos = 0;
         sMonSummaryScreen->switchMonTaskState++;
         break;
