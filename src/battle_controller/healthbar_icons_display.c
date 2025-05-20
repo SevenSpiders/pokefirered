@@ -59,7 +59,7 @@ void HealthbarUpdateStatus(s16 posY)
     // BlitMenuInfoIcon(B_WIN_HB_STATUS_0, sSplitIcons_Gfx, status_icons[1], posX + 3, 0);
     PutWindowTilemap(B_WIN_HB_STATUS_0);
     CopyWindowToVram(B_WIN_HB_STATUS_0, COPYWIN_FULL);
-    DebugPrintf("TEST");
+    // DebugPrintf("TEST");
 
     PutWindowTilemap(B_WIN_HB_STATUS_1);
     CopyWindowToVram(B_WIN_HB_STATUS_1, COPYWIN_FULL);
