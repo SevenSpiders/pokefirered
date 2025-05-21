@@ -5,7 +5,7 @@
 #include "list_menu.h" // BlitMenuInfoIcon
 #include "malloc.h" // AllocZeroed
 
-#define POKESUM_WIN_MOVES_TYPE 5 // temp
+#define WIN_MOVES 2
 #define GetMoveNamePrinterYpos(x) ((x) * 28 + 5)
 #define GetMoveCategoryPrinterYpos(x) ((x) * 28 + 17) // icon is 12px high
 
@@ -18,25 +18,33 @@ static SummaryPage *sPage;
 
 SummaryPage *Page_MoveInfos_Init(void)
 {
+    DebugPrintf("init page");
     sPage = AllocZeroed(sizeof(SummaryPage));
     sPage->index = 3;
     return sPage;
 }
 
+void Page_SetWindow(u8 index, u8 windowId)
+{
+    sPage->windowIds[index] = windowId;
+    DebugPrintf("page add window [%d] = %d", index, windowId);
+}
 
 
-static void Page_DrawMoveTypeIcons(void)
+void Page_DrawMoveIcons(void)
 {
     u8 i;
     u8 posXCategory = 4;
     u16 type, category;
-    u8 windowId = sPage->windowIds[POKESUM_WIN_MOVES_TYPE];
+    u8 windowId;
     MoveData *moveData;
-
+    
     FillWindowPixelBuffer(windowId, 0);
-
+    
     for (i = 0; i < 4; i++)
     {
+        windowId = sPage->windowIds[WIN_MOVES];
+        DebugPrintf("draw move icons in window %d", windowId);
         moveData = MoveChanger_GetMoveData(i);
         if (moveData->id == MOVE_NONE)
             continue;

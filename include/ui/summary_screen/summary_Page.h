@@ -4,6 +4,11 @@
 #include "main.h"
 #include "malloc.h"
 
+#define PAGE_INFOS 0
+#define PAGE_SKILLS 1
+#define PAGE_MOVES 2
+#define PAGE_MOVEINFOS 3
+
 typedef struct {
     u8 index;
     u8 windowIds[4];

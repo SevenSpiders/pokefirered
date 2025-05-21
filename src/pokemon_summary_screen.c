@@ -1803,8 +1803,8 @@ static void PokeSum_CopyNewBgTilemapBeforePageFlip(void)
 static void InitPages() {
     // sPages[0] = Page_Info_Init();
     // sPages[1] = Page_Skills_Init();
-    sPages[2] = Page_MoveInfos_Init();
     // sPages[3] = Page_Moves_Init();
+    sPages[PSS_PAGE_MOVES_INFO] = Page_MoveInfos_Init();
 }
 
 static void CB2_SetUpPSS(void)
@@ -2793,7 +2793,8 @@ static void PokeSum_PrintAbilityDataOrMoveTypes(void)
         break;
     case PSS_PAGE_MOVES:
     case PSS_PAGE_MOVES_INFO:
-        PokeSum_DrawMoveTypeIcons();
+        // PokeSum_DrawMoveTypeIcons();
+        Page_DrawMoveIcons();
         break;
     }
 
@@ -3134,6 +3135,9 @@ static void PokeSum_AddWindows(u8 curPageIndex)
         case PSS_PAGE_MOVES:
         case PSS_PAGE_MOVES_INFO:
             sMonSummaryScreen->windowIds[i + 3] = AddWindow(&sWindowTemplates_Moves[i]);
+            sPages[PSS_PAGE_MOVES_INFO]->windowIds[i] = sMonSummaryScreen->windowIds[i + 3];
+            DebugPrintf("screen add window %d", sMonSummaryScreen->windowIds[i + 3]);
+            // Page_SetWindow(i, sMonSummaryScreen->windowIds[i + 3]);
             // 3: POKESUM_WIN_MOVES_TITLE
             // 4: POKESUM_WIN_MOVES_DESCRIPTION
             // 5: POKESUM_WIN_MOVES_TYPE
