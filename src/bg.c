@@ -1009,7 +1009,7 @@ void WriteSequenceToBgTilemapBuffer(u8 bg, u16 firstTileNum, u8 x, u8 y, u8 widt
         mode2 = GetBgMetricTextMode(bg, 0x2) * 0x20;
         switch (GetBgType(bg))
         {
-            case 0:
+            case BG_TYPE_REGULAR:
                 for (y16 = y; y16 < (y + height); y16++)
                 {
                     for (x16 = x; x16 < (x + width); x16++)
@@ -1019,7 +1019,7 @@ void WriteSequenceToBgTilemapBuffer(u8 bg, u16 firstTileNum, u8 x, u8 y, u8 widt
                     }
                 }
                 break;
-            case 1:
+            case BG_TYPE_AFFINE:
                 mode3 = GetBgMetricAffineMode(bg, 0x1);
                 for (y16 = y; y16 < (y + height); y16++)
                 {
@@ -1160,42 +1160,51 @@ u32 GetBgType(u8 bg)
 {
     u8 mode;
 
+    // Assuming GetBgMode() retrieves the current GBA display mode (0-5)
     mode = GetBgMode();
 
-
-    switch (bg)
+    switch (bg) // Check which background layer (BG0, BG1, BG2, BG3)
     {
         case 0:
         case 1:
-            switch (mode)
+            switch (mode) // Check the current display mode
             {
-                case 0:
-                case 1:
-                    return 0;
+                case BG_MODE_0: // Mode 0: All BGs are Regular
+                case BG_MODE_1: // Mode 1: BG0 & BG1 are Regular
+                    return BG_TYPE_REGULAR;
+                // No break needed here, as it returns
             }
-            break;
+            break; // Break from outer switch (bg)
+
         case 2:
             switch (mode)
             {
-                case 0:
-                    return 0;
-                case 1:
-                case 2:
-                    return 1;
+                case BG_MODE_0: // Mode 0: BG2 is Regular
+                    return BG_TYPE_REGULAR;
+                case BG_MODE_1: // Mode 1: BG2 is Affine
+                case BG_MODE_2: // Mode 2: BG2 is Affine
+                    return BG_TYPE_AFFINE;
+                // Note: Modes 3, 4, 5 also use BG2, but as a bitmap.
+                // This function currently doesn't return a "bitmap" type.
+                // It only returns 0 or 1, implying Regular or Affine tiled BGs.
+                // If you need to distinguish bitmap BGs, you'd need another return value.
             }
             break;
+
         case 3:
             switch (mode)
             {
-                case 0:
-                    return 0;
-                case 2:
-                    return 1;
+                case BG_MODE_0: // Mode 0: BG3 is Regular
+                    return BG_TYPE_REGULAR;
+                case BG_MODE_2: // Mode 2: BG3 is Affine
+                    return BG_TYPE_AFFINE;
             }
             break;
     }
 
-    return 0xFFFF;
+    // Return an error/invalid type if the combination is not defined or invalid
+    // 0xFFFF could signify an unknown/unsupported BG type for the given mode/BG
+    return BG_TYPE_NONE;
 }
 
 bool32 IsInvalidBg32(u8 bg)

@@ -8,6 +8,7 @@
 #include "data.h" // move names
 #include "string.h" // pokesum pwr
 #include "text.h"
+// #include "bg.h" // FillBgTilemapBufferRect_Palette0
 
 #define WIN_NAMES           0
 #define WIN_MOVES           2
@@ -17,7 +18,7 @@
 #define GetMoveCategoryPrinterYpos(x) ((x) * 28 + 17) // icon is 12px high
 #define GetMovePpPrinterYpos(x) ((x) * 28 + 16) // names
 
-extern const u8 gText_PokeSum_Power;
+// extern const u8 gText_PokeSum_Power; // not working
 
 
 extern void BlitMenuInfoIcon(u8 windowId, u8 iconId, u16 x, u16 y);
@@ -25,6 +26,8 @@ extern void BlitMenuInfoIcon(u8 windowId, u8 iconId, u16 x, u16 y);
 
 static SummaryPage *sPage;
 static u32 sOffset;
+static u32 sCursorIndex;
+static u32 numMoves;
 
 static const u8 sPrintMoveTextColors[][3] = {
     {0, 7, 8}, // 0 default
@@ -36,8 +39,24 @@ static const u8 sPrintMoveTextColors[][3] = {
 
 void Page_SetOffset(u32 offset)
 {
-    sOffset += offset;
+    if (offset == 0)
+        sOffset -= 1;
+    else
+        sOffset += offset;
+
+    if (sOffset > numMoves - 6)
+        sOffset = numMoves - 6;
+    else if (sOffset < 0)
+        sOffset = 0;
+
     DebugPrintf("set offset %d", sOffset);
+}
+
+void Page_FillRects()
+{
+    // test implementation to darken or lighten move backgrounds
+    DebugPrintf("Fill rect");
+    // FillBgTilemapBufferRect_Palette0(2, 0, 15, 13, 15, 7); // right side
 }
 
 SummaryPage *Page_MoveInfos_Init(void)
@@ -48,10 +67,14 @@ SummaryPage *Page_MoveInfos_Init(void)
     return sPage;
 }
 
+void Page_SetCursor(u32 cursorIndex)
+{
+    sCursorIndex = cursorIndex;
+}
+
 void Page_SetPokemon(struct Pokemon * pokemon) 
 {
-    DebugPrintf("set pokemon");
-    MoveChanger_SetPokemon(pokemon);
+    numMoves = MoveChanger_SetPokemon(pokemon);
 }
 
 void Page_PrintMoveTexts(u8 i)

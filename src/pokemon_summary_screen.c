@@ -235,6 +235,7 @@ extern const u32 gSummaryScreen_PageMoves_Tilemap[];
 extern const u32 gSummaryScreen_PageInfo_Tilemap[];
 extern const u32 gSummaryScreen_PageMovesInfo_Tilemap[];
 extern const u32 gSummaryScreen_PageEgg_Tilemap[];
+// extern const u32 gSummaryScreen_PageDarkMoves_Tilemap[];
 extern const u16 gSummaryScreen_Bg_Pal[];
 extern const u32 gSummaryScreen_Bg_Gfx[];
 extern const u16 gSummaryScreen_HpExpBar_Pal[];
@@ -525,6 +526,7 @@ static const u16 sStarObjPal[] = INCBIN_U16( "graphics/summary_screen/shiny_star
 static const u32 sStarObjTiles[] = INCBIN_U32( "graphics/summary_screen/shiny_star.4bpp.lz");
 static const u32 sBgTilemap_MovesInfoPage[] = INCBIN_U32( "graphics/summary_screen/moves_info_page.bin.lz");
 static const u32 sBgTilemap_MovesPage[] = INCBIN_U32( "graphics/summary_screen/moves_page.bin.lz");
+static const u32 sBgTilemap_DarkMovesPage[] = INCBIN_U32( "graphics/summary_screen/movesDark.bin.lz");
 
 #include "data/text/nature_names.h"
 
@@ -1153,7 +1155,7 @@ static void Task_PokeSum_FlipPages(u8 taskId)
         PokeSum_ShowSpritesBeforePageFlip();
         sMonSummaryScreen->lockMovesFlag = TRUE;
         sMonSummaryScreen->inhibitPageFlipInput = TRUE;
-        PokeSum_UpdateWin1ActiveFlag(sMonSummaryScreen->curPageIndex);
+        PokeSum_UpdateWin1ActiveFlag(sMonSummaryScreen->curPageIndex); // hide window 1
         PokeSum_AddWindows(sMonSummaryScreen->curPageIndex);
         break;
     case 1:
@@ -1161,25 +1163,26 @@ static void Task_PokeSum_FlipPages(u8 taskId)
         {
             if (!(sMonSummaryScreen->curPageIndex == PSS_PAGE_MOVES && sMonSummaryScreen->pageFlipDirection == 0))
             {
-                FillBgTilemapBufferRect_Palette0(0, 0, 0, 0, 30, 20);
+                FillBgTilemapBufferRect_Palette0(0, 0, 0, 0, 30, 20); // bg0 -> clear whole screen
                 CopyBgTilemapBufferToVram(0);
             }
         }
-        FillBgTilemapBufferRect_Palette0(1, 0, 0, 0, 30, 2);
-        FillBgTilemapBufferRect_Palette0(1, 0, 0, 2, 15, 2);
-        FillBgTilemapBufferRect_Palette0(2, 0, 0, 0, 30, 2);
-        FillBgTilemapBufferRect_Palette0(2, 0, 0, 2, 15, 2);
+        FillBgTilemapBufferRect_Palette0(1, 0, 0, 0, 30, 2); // header
+        FillBgTilemapBufferRect_Palette0(1, 0, 0, 2, 15, 2); // nick name
+        FillBgTilemapBufferRect_Palette0(2, 0, 0, 0, 30, 2); // header
+        FillBgTilemapBufferRect_Palette0(2, 0, 0, 2, 15, 2); // nick name
+        Page_FillRects();
         break;
     case 2:
-        PokeSum_CopyNewBgTilemapBeforePageFlip_2();
-        PokeSum_CopyNewBgTilemapBeforePageFlip();
-        PokeSum_DrawPageProgressTiles();
+        PokeSum_CopyNewBgTilemapBeforePageFlip_2(); // copies gSummaryScreen_PageMoves_Tilemap to bg 1 or 2
+        PokeSum_CopyNewBgTilemapBeforePageFlip(); // copies sBgTilemap_MovesInfoPage to bg 3
+        PokeSum_DrawPageProgressTiles(); // removes notch tiles
         PokeSum_PrintPageHeaderText(sMonSummaryScreen->curPageIndex);
         break;
     case 3:
-        CopyWindowToVram(sMonSummaryScreen->windowIds[POKESUM_WIN_PAGE_NAME], 2);
-        CopyWindowToVram(sMonSummaryScreen->windowIds[POKESUM_WIN_CONTROLS], 2);
-        CopyWindowToVram(sMonSummaryScreen->windowIds[POKESUM_WIN_LVL_NICK], 2);
+        CopyWindowToVram(sMonSummaryScreen->windowIds[POKESUM_WIN_PAGE_NAME], COPYWIN_GFX);
+        CopyWindowToVram(sMonSummaryScreen->windowIds[POKESUM_WIN_CONTROLS], COPYWIN_GFX);
+        CopyWindowToVram(sMonSummaryScreen->windowIds[POKESUM_WIN_LVL_NICK], COPYWIN_GFX);
         break;
     case 4:
         if (!IsDma3ManagerBusyWithBgCopy())
@@ -1193,7 +1196,7 @@ static void Task_PokeSum_FlipPages(u8 taskId)
 
         break;
     case 5:
-        PokeSum_InitBgCoordsBeforePageFlips();
+        PokeSum_InitBgCoordsBeforePageFlips(); // prepare for slide in
         sMonSummaryScreen->flippingPages = TRUE;
         break;
     case 6:
@@ -1260,15 +1263,15 @@ static void Task_FlipPages_FromInfo(u8 taskId)
             }
         }
 
-        FillBgTilemapBufferRect_Palette0(1, 0, 0, 0, 30, 2);
-        FillBgTilemapBufferRect_Palette0(1, 0, 0, 2, 15, 2);
-        FillBgTilemapBufferRect_Palette0(2, 0, 0, 0, 30, 2);
-        FillBgTilemapBufferRect_Palette0(2, 0, 0, 2, 15, 2);
+        FillBgTilemapBufferRect_Palette0(1, 0, 0, 0, 30, 2); // whole top header text
+        FillBgTilemapBufferRect_Palette0(1, 0, 0, 2, 15, 2); // pokemon nick name
+        FillBgTilemapBufferRect_Palette0(2, 0, 0, 0, 30, 2); // header??
+        FillBgTilemapBufferRect_Palette0(2, 0, 0, 2, 15, 2); // nickname ??
         break;
     case 2:
         PokeSum_HideSpritesBeforePageFlip();
-        PokeSum_UpdateWin1ActiveFlag(sMonSummaryScreen->curPageIndex);
-        PokeSum_CopyNewBgTilemapBeforePageFlip();
+        PokeSum_UpdateWin1ActiveFlag(sMonSummaryScreen->curPageIndex); // turn window 1 off
+        PokeSum_CopyNewBgTilemapBeforePageFlip(); // copy sBgTilemap_MovesInfoPage
         PokeSum_DrawPageProgressTiles();
         PokeSum_CopyNewBgTilemapBeforePageFlip_2();
         break;
@@ -3267,10 +3270,11 @@ static void PokeSum_DrawPageProgressTiles(void)
         if (sMonSummaryScreen->mode == PSS_MODE_SELECT_MOVE)
         {
             FillBgTilemapBufferRect(3,  1 + PAGE_PROGRESS_BASE_TILE_NUM, 13, 0, 4, 1, 0);
-            FillBgTilemapBufferRect(3, 19 + PAGE_PROGRESS_BASE_TILE_NUM, 13, 1, 4, 1, 0);
+            FillBgTilemapBufferRect(3, 19 + PAGE_PROGRESS_BASE_TILE_NUM, 13, 1, 4, 1, 0); // tilmap width 18?
         }
         else
         {
+            // covers up the first two header notches
             FillBgTilemapBufferRect(3, 49 + PAGE_PROGRESS_BASE_TILE_NUM, 13, 0, 1, 1, 0);
             FillBgTilemapBufferRect(3, 65 + PAGE_PROGRESS_BASE_TILE_NUM, 13, 1, 1, 1, 0);
             FillBgTilemapBufferRect(3,  1 + PAGE_PROGRESS_BASE_TILE_NUM, 14, 0, 1, 1, 0);
@@ -3280,6 +3284,7 @@ static void PokeSum_DrawPageProgressTiles(void)
             FillBgTilemapBufferRect(3,  1 + PAGE_PROGRESS_BASE_TILE_NUM, 16, 0, 1, 1, 0);
             FillBgTilemapBufferRect(3, 19 + PAGE_PROGRESS_BASE_TILE_NUM, 16, 1, 1, 1, 0);
         }
+        // covers the last header notch
         FillBgTilemapBufferRect(3, 50 + PAGE_PROGRESS_BASE_TILE_NUM, 17, 0, 1, 1, 0);
         FillBgTilemapBufferRect(3, 66 + PAGE_PROGRESS_BASE_TILE_NUM, 17, 1, 1, 1, 0);
         FillBgTilemapBufferRect(3, 48 + PAGE_PROGRESS_BASE_TILE_NUM, 18, 0, 1, 1, 0);
@@ -3455,10 +3460,11 @@ static void Task_HandleInput_SelectMove(u8 taskId)
             }
             else
             {
-                sMoveSelectionCursorPos = 4;
-                MoveChanger_SetCursor(4);
+                // sMoveSelectionCursorPos = 4;
+                // MoveChanger_SetCursor(4);
                 sMonSummaryScreen->selectMoveInputHandlerState = 2;
                 PlaySE(SE_SELECT);
+                Page_SetOffset(0);
 
                 if (sMonSummaryScreen->isSwappingMoves == TRUE)
                     for (i = sMoveSelectionCursorPos; i > 0; i--)
@@ -3473,12 +3479,13 @@ static void Task_HandleInput_SelectMove(u8 taskId)
         }
         else if (JOY_NEW(DPAD_DOWN))
         {
-            if (sMoveSelectionCursorPos < 4)
+            if (sMoveSelectionCursorPos < 3) // <4
             {
                 u8 v0 = 4;
 
                 sMonSummaryScreen->selectMoveInputHandlerState = 2;
 
+                // swapping moves -> ???
                 if (sMonSummaryScreen->isSwappingMoves == TRUE)
                 {
                     if (sMoveSelectionCursorPos == 5 - 2)
@@ -3514,6 +3521,13 @@ static void Task_HandleInput_SelectMove(u8 taskId)
                     MoveChanger_SetCursor(0);
                 }
 
+                return;
+            }
+            else if (sMoveSelectionCursorPos == 3)
+            {
+                Page_SetOffset(1);
+                PlaySE(SE_SELECT);
+                sMonSummaryScreen->selectMoveInputHandlerState = 2;
                 return;
             }
             else if (sMoveSelectionCursorPos == 4)
@@ -5053,6 +5067,7 @@ static void Task_PokeSum_SwitchDisplayedPokemon(u8 taskId)
             }
             else
             {
+                // CopyToBgTilemapBuffer(sMonSummaryScreen->skillsPageBgNum, gSummaryScreen_PageDarkMoves_Tilemap, 0,0);
                 CopyToBgTilemapBuffer(sMonSummaryScreen->skillsPageBgNum, gSummaryScreen_PageInfo_Tilemap, 0, 0);
                 CopyToBgTilemapBuffer(sMonSummaryScreen->infoAndMovesPageBgNum, gSummaryScreen_PageSkills_Tilemap, 0, 0);
             }

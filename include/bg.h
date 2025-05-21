@@ -3,6 +3,19 @@
 
 #include "global.h"
 
+#define BG_MODE_0 0 // 4 Regular (Text) BGs
+#define BG_MODE_1 1 // 2 Regular BGs, 1 Affine BG
+#define BG_MODE_2 2 // 2 Affine BGs
+#define BG_MODE_3 3 // 1 Bitmap BG (16-bit color)
+#define BG_MODE_4 4 // 1 Bitmap BG (8-bit color, page-flipping)
+#define BG_MODE_5 5 // 1 Bitmap BG (16-bit color, reduced res, page-flipping)
+
+#define BG_TYPE_REGULAR 0 // Regular (Text) Background: supports normal scrolling
+#define BG_TYPE_AFFINE  1 // Affine Background: supports rotation and scaling
+#define BG_TYPE_BITMAP  2 // Bitmap Background: directly drawn pixels (used for BG2 in modes 3, 4, 5)
+#define BG_TYPE_NONE    0xFFFF // error null type
+
+
 struct BGCntrlBitfield // for the I/O registers
 {
     volatile u16 priority:2;
