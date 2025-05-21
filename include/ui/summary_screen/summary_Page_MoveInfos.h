@@ -3,7 +3,7 @@
 
 #include "summary_Page.h"
 
-SummaryPage SP_MoveInfo_Init(void);
+SummaryPage *Page_MoveInfos_Init(void);
 
 
 #endif

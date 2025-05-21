@@ -29,9 +29,9 @@ static void ClearData()
     mon = NULL;
 }
 
-MoveData MoveChanger_GetMoveData(u8 i)
+MoveData *MoveChanger_GetMoveData(u8 i)
 {
-    return sMoveData[i];
+    return &sMoveData[i];
 }
 
 MoveData *MoveChanger_GetMoveDataAtCursor()

@@ -37,7 +37,7 @@
 
 #include "ui/summary_screen/summary_moveChanger.h"
 #include "ui/summary_screen/summary_screenData.h"
-#include "ui/summary_screen/summary_Page.h"
+#include "ui/summary_screen/summary_PageManager.h"
 
 // needs conflicting header to match (curIndex is s8 in the function, but has to be defined as u8 here)
 extern s16 SeekToNextMonInBox(struct BoxPokemon * boxMons, u8 curIndex, u8 maxIndex, u8 flags);
@@ -1801,10 +1801,10 @@ static void PokeSum_CopyNewBgTilemapBeforePageFlip(void)
 }
 
 static void InitPages() {
-    sPages[0] = Page_Info_Init();
-    sPages[1] = Page_Skills_Init();
+    // sPages[0] = Page_Info_Init();
+    // sPages[1] = Page_Skills_Init();
     sPages[2] = Page_MoveInfos_Init();
-    sPages[3] = Page_Moves_Init();
+    // sPages[3] = Page_Moves_Init();
 }
 
 static void CB2_SetUpPSS(void)
@@ -2767,21 +2767,18 @@ static void PokeSum_PrintSelectedMoveStats(void)
                                      55, 1,
                                      sLevelNickTextColors[6], TEXT_SKIP_DRAW,
                                      moveData->powerStr);
-                                    //  sMonSummaryScreen->summary.movePowerStrBufs[sMoveSelectionCursorPos]);
         // Accuracy
         AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_DESCRIPTION], FONT_NORMAL,
                                      80, 1,
                                      sLevelNickTextColors[7], TEXT_SKIP_DRAW,
                                      moveData->accuracyStr);
-                                    //  sMonSummaryScreen->summary.moveAccuracyStrBufs[sMoveSelectionCursorPos]);
         // Description
         AddTextPrinterParameterized4(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_DESCRIPTION], FONT_SMALL,
-                                     7, 17, // 7, 42
+                                     7, 17,
                                      0, 0,
                                      sLevelNickTextColors[0], TEXT_SKIP_DRAW,
                                      MoveChanger_GetDescription());
                                     //  moveData->GetDescription(moveData));
-                                    //  gMoveDescriptionPointers[sMonSummaryScreen->moveIds[sMoveSelectionCursorPos] - 1]);
     }
 }
 
@@ -2822,20 +2819,18 @@ static void PokeSum_DrawMoveTypeIcons(void)
     u8 posXCategory = 4;
     u16 type, category;
     u8 windowId = sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_TYPE];
+    MoveData *moveData;
 
     FillWindowPixelBuffer(windowId, 0);
 
     for (i = 0; i < 4; i++)
     {
-        if (sMonSummaryScreen->moveIds[i] == MOVE_NONE)
+        moveData = MoveChanger_GetMoveData(i);
+        if (moveData->id == MOVE_NONE)
             continue;
         
-        // type = sMonSummaryScreen->moveTypes[i];
-        // category = sMonSummaryScreen->moveCategories[i];
-        type = MoveChanger_GetType(i);
-        category = MoveChanger_GetCategory(i);
-        BlitMenuInfoIcon(windowId, type + 1, 3, GetMoveNamePrinterYpos(i)-1);
-        BlitMenuInfoIcon(windowId, category + MENU_INFO_ICON_CATEGORY_PHYSICAL, posXCategory, GetMoveCategoryPrinterYpos(i));
+        BlitMenuInfoIcon(windowId, moveData->type + 1, 3, GetMoveNamePrinterYpos(i)-1);
+        BlitMenuInfoIcon(windowId, moveData->category + MENU_INFO_ICON_CATEGORY_PHYSICAL, posXCategory, GetMoveCategoryPrinterYpos(i));
     }
 
     if (sMonSummaryScreen->mode == PSS_MODE_SELECT_MOVE)
