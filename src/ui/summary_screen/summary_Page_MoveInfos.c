@@ -17,7 +17,7 @@
 #define GetMoveCategoryPrinterYpos(x) ((x) * 28 + 17) // icon is 12px high
 #define GetMovePpPrinterYpos(x) ((x) * 28 + 16) // names
 
-extern const u8 *gText_PokeSum_Power;
+extern const u8 gText_PokeSum_Power;
 
 
 extern void BlitMenuInfoIcon(u8 windowId, u8 iconId, u16 x, u16 y);
@@ -57,27 +57,21 @@ void Page_SetPokemon(struct Pokemon * pokemon)
 void Page_PrintMoveTexts(u8 i)
 {
     MoveData *moveData;
-    u8 windowId = 4;
     moveData = MoveChanger_GetMoveData(i + sOffset);
-    DebugPrintf("move id: %d window: %d", moveData->id, sPage->windowIds[WIN_NAMES]);
-
-    // Title
-    // AddTextPrinterParameterized3(windowId, FONT_NORMAL, 
-    //     3, GetMoveNamePrinterYpos(i), sPrintMoveTextColors[0], TEXT_SKIP_DRAW, 
-    //     gMoveNames[moveData->id]);
+    DebugPrintf("move id: %d window: %d", moveData->id, moveData->powerStr[2]);
 
     // Title
     AddTextPrinterParameterized3(sPage->windowIds[WIN_NAMES], FONT_NORMAL, 
         3, GetMoveNamePrinterYpos(i), sPrintMoveTextColors[0], TEXT_SKIP_DRAW, 
         gMoveNames[moveData->id]);
-    // // Power
-    // AddTextPrinterParameterized3(sPage->windowIds[WIN_MOVES_TITLE], FONT_SMALL, 
-    //     21, GetMovePpPrinterYpos(i)-1, sPrintMoveTextColors[4], TEXT_SKIP_DRAW, 
-    //     gText_PokeSum_Power);
-    // // Power Value
-    // AddTextPrinterParameterized3(sPage->windowIds[WIN_MOVES_TITLE], FONT_NORMAL, 
-    //     45, GetMovePpPrinterYpos(i), sPrintMoveTextColors[0], TEXT_SKIP_DRAW, 
-    //     moveData->powerStr);
+    // Power
+    AddTextPrinterParameterized3(sPage->windowIds[WIN_NAMES], FONT_SMALL,
+        21, GetMovePpPrinterYpos(i)-1, sPrintMoveTextColors[4], TEXT_SKIP_DRAW, 
+        gMoveNames[MOVE_PSYCHO_BOOST]);
+    // Power Value
+    AddTextPrinterParameterized3(sPage->windowIds[WIN_NAMES], FONT_NORMAL,
+        45, GetMovePpPrinterYpos(i), sPrintMoveTextColors[0], TEXT_SKIP_DRAW, 
+        moveData->powerStr);
 }
 
 
