@@ -1804,7 +1804,7 @@ static void InitPages() {
     // sPages[0] = Page_Info_Init();
     // sPages[1] = Page_Skills_Init();
     // sPages[3] = Page_Moves_Init();
-    sPages[PSS_PAGE_MOVES_INFO] = Page_MoveInfos_Init();
+    // sPages[PSS_PAGE_MOVES_INFO] = Page_MoveInfos_Init();
 }
 
 static void CB2_SetUpPSS(void)

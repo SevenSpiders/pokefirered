@@ -53,40 +53,40 @@ void Page_PrintMoveTexts(u8 i)
     MoveData *moveData;
     moveData = MoveChanger_GetMoveData(i + sOffset);
 
-    // Title
-    AddTextPrinterParameterized3(sPage->windowIds[WIN_NAMES], FONT_NORMAL, 
-        3, GetMoveNamePrinterYpos(i), sPrintMoveTextColors[0], TEXT_SKIP_DRAW, 
-        gMoveNames[moveData->id]);
-    // Power
-    AddTextPrinterParameterized3(sPage->windowIds[WIN_MOVES_TITLE], FONT_SMALL, 
-        21, GetMovePpPrinterYpos(i)-1, sPrintMoveTextColors[4], TEXT_SKIP_DRAW, 
-        gText_PokeSum_Power);
-    // Power Value
-    AddTextPrinterParameterized3(sPage->windowIds[WIN_MOVES_TITLE], FONT_NORMAL, 
-        45, GetMovePpPrinterYpos(i), sPrintMoveTextColors[0], TEXT_SKIP_DRAW, 
-        moveData->powerStr);
+    // // Title
+    // AddTextPrinterParameterized3(sPage->windowIds[WIN_NAMES], FONT_NORMAL, 
+    //     3, GetMoveNamePrinterYpos(i), sPrintMoveTextColors[0], TEXT_SKIP_DRAW, 
+    //     gMoveNames[moveData->id]);
+    // // Power
+    // AddTextPrinterParameterized3(sPage->windowIds[WIN_MOVES_TITLE], FONT_SMALL, 
+    //     21, GetMovePpPrinterYpos(i)-1, sPrintMoveTextColors[4], TEXT_SKIP_DRAW, 
+    //     gText_PokeSum_Power);
+    // // Power Value
+    // AddTextPrinterParameterized3(sPage->windowIds[WIN_MOVES_TITLE], FONT_NORMAL, 
+    //     45, GetMovePpPrinterYpos(i), sPrintMoveTextColors[0], TEXT_SKIP_DRAW, 
+    //     moveData->powerStr);
 }
 
 
 void Page_DrawMoveIcons(void)
 {
-    u32 i;
-    u32 posXCategory = 4;
-    u32 type, category;
-    u32 windowId;
-    MoveData *moveData;
+    // u32 i;
+    // u32 posXCategory = 4;
+    // u32 type, category;
+    // u32 windowId;
+    // MoveData *moveData;
     
-    FillWindowPixelBuffer(windowId, 0);
+    // FillWindowPixelBuffer(windowId, 0);
     
-    for (i = 0; i < 5; i++)
-    {
-        windowId = sPage->windowIds[WIN_MOVES];
-        DebugPrintf("draw move icons in window %d", windowId);
-        moveData = MoveChanger_GetMoveData(i + sOffset);
-        if (moveData->id == MOVE_NONE)
-            continue;
+    // for (i = 0; i < 5; i++)
+    // {
+    //     windowId = sPage->windowIds[WIN_MOVES];
+    //     DebugPrintf("draw move icons in window %d", windowId);
+    //     moveData = MoveChanger_GetMoveData(i + sOffset);
+    //     if (moveData->id == MOVE_NONE)
+    //         continue;
         
-        BlitMenuInfoIcon(windowId, moveData->type + 1, 3, GetMoveNamePrinterYpos(i)-1);
-        BlitMenuInfoIcon(windowId, moveData->category + 24, posXCategory, GetMoveCategoryPrinterYpos(i));
-    }
+    //     BlitMenuInfoIcon(windowId, moveData->type + 1, 3, GetMoveNamePrinterYpos(i)-1);
+    //     BlitMenuInfoIcon(windowId, moveData->category + 24, posXCategory, GetMoveCategoryPrinterYpos(i));
+    // }
 }
