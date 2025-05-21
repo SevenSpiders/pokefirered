@@ -12,4 +12,6 @@ u16 MoveChanger_GetMove(u8 i);
 void MoveChanger_SelectMove(void);
 void MoveChanger_DeselectMove(void);
 
+const u8 * MoveChanger_GetDescription();
+
 #endif

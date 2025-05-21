@@ -1,12 +1,19 @@
 #include "main.h"
-#define MEMSET0(arr) memset((arr), 0, sizeof(arr))
+#define MEMSET_ARR(arr, val) memset((arr), val, sizeof(arr))
+#define NUM_MOVEDATAS 25
 
+extern const u8 *const gMoveDescriptionPointers[];
 
-static u16 sMoveIds[25];
-static u16 sMoveTypes[25];
-static u8 sMoveCategories[25];
-static u8 sMoveNameStrBufs[25][MOVE_NAME_LENGTH + 1];
+typedef struct {
+    u16 moveId;
+    u16 moveType;
+    u8 moveCategory;
+    u8 movePower;
+    u8 moveName[MOVE_NAME_LENGTH + 1];
+} MoveData;
+
 static u16 sSelectedMoveIndex;
+static MoveData sMoveData[NUM_MOVEDATAS];
 
 static u8 numMoves;
 static u32 sCursorIndex;
@@ -15,10 +22,9 @@ static struct Pokemon * mon;
 
 static void ClearData()
 {
-    MEMSET0(sMoveIds);
-    MEMSET0(sMoveTypes);
-    MEMSET0(sMoveCategories);
-    MEMSET0(sMoveNameStrBufs);
+    u32 i;
+    MEMSET_ARR(sMoveData, 0);
+    
     sSelectedMoveIndex = -1;
     numMoves = 0;
     sCursorIndex = 0;
@@ -28,17 +34,17 @@ static void ClearData()
 
 u16 MoveChanger_GetType(u8 i)
 {
-    return sMoveTypes[10-i];
+    return sMoveData[i].moveType;
 }
 
 u16 MoveChanger_GetCategory(u8 i)
 {
-    return sMoveCategories[10-i];
+    return sMoveData[i].moveCategory;
 }
 
 u16 MoveChanger_GetMove(u8 i)
 {
-    return sMoveIds[10-i];
+    return sMoveData[i].moveId;
 }
 
 void MoveChanger_SelectMove()
@@ -51,36 +57,42 @@ void MoveChanger_DeselectMove()
     sSelectedMoveIndex = 0;
 }
 
+const u8 *MoveChanger_GetDescription() {
+    return gMoveDescriptionPointers[sCursorIndex];
+}
+
 void MoveChanger_SetPokemon(struct Pokemon * pokemon) 
 {
     u32 i;
     u16 species = GetMonData(mon, MON_DATA_SPECIES, NULL);
     u8 level = GetMonData(mon, MON_DATA_LEVEL, NULL);
+    u16 moveId;
 
     ClearData();
-    numMoves = GetMoveRelearnerMoves(pokemon, sMoveIds);
     mon = pokemon;
 
     for (i = 0; i < MAX_MON_MOVES; i++)
     {
-        sMoveIds[i] = GetMonData(mon, MON_DATA_MOVE1 + i, NULL);
-        if (sMoveIds[i] != 0) 
+        moveId = GetMonData(mon, MON_DATA_MOVE1 + i, NULL);
+        sMoveData[i].moveId = moveId;
+        if (moveId != 0) 
         {
-            sMoveTypes[i] = gBattleMoves[sMoveIds[i]].type;
-            sMoveCategories[i] = gBattleMoves[sMoveIds[i]].category;
+            sMoveData[i].moveType = gBattleMoves[moveId].type;
+            sMoveData[i].moveCategory = gBattleMoves[moveId].category;
         }
     }
 
     for (i = MAX_MON_MOVES; i < MAX_LEVEL_UP_MOVES; i++)
-    {
-        sMoveIds[i] = gLevelUpLearnsets[species][i] & LEVEL_UP_MOVE_ID;
-        if (sMoveIds[i] == 0)
+    {   
+        moveId = gLevelUpLearnsets[species][i] & LEVEL_UP_MOVE_ID;
+        sMoveData[i].moveId = moveId; 
+        if (moveId == 0)
         {
             numMoves = i;
             break;
         }
-        sMoveTypes[i] = gBattleMoves[sMoveIds[i]].type;
-        sMoveCategories[i] = gBattleMoves[sMoveIds[i]].category;
+        sMoveData[i].moveType = gBattleMoves[moveId].type;
+        sMoveData[i].moveCategory = gBattleMoves[moveId].category;
     }
 
 
@@ -90,8 +102,8 @@ void MoveChanger_SetCursor(u32 cursorIndex)
 {
     u16 move;
     sCursorIndex = cursorIndex;
-    move = sMoveIds[cursorIndex];
-    DebugPrintf("cursor: %d move: %d",cursorIndex, sMoveIds[cursorIndex]);
+    move = sMoveData[cursorIndex].moveId;
+    // DebugPrintf("cursor: %d move: %d",cursorIndex, sMoveIds[cursorIndex]);
 }
 
 
@@ -99,11 +111,11 @@ void MoveChanger_SwapMonMoveSlots(void)
 {
     u32 i;
     u16 move;
-    move = sMoveIds[sCursorIndex];
+    move = sMoveData[sCursorIndex].moveId;
     SetMonData(mon, MON_DATA_MOVE1 + sCursorIndex, (u8 *)&move);
     // DebugPrintf("pokemon num moves: %d", numMoves);
     for(i=0; i < 25; i++) 
     {
-        DebugPrintf("moveId: %d, type: %d, category: %d", sMoveIds[i], sMoveTypes[i], sMoveCategories[i] );
+        // DebugPrintf("moveId: %d, type: %d, category: %d", sMoveIds[i], sMoveTypes[i], sMoveCategories[i] );
     }
 }
