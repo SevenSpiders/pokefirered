@@ -145,7 +145,7 @@ static s8 SeekToNextMonInSingleParty(s8 direction);
 static s8 SeekToNextMonInMultiParty(s8 direction);
 static void InitPages(void);
 
-static SummaryPage *sPages[4];
+// static SummaryPage *sPages[4];
 
 struct Struct203B144
 {
@@ -2004,7 +2004,7 @@ static void BufferMonInfo(void)
     u16 gender;
     u16 heldItem;
     u32 otId;
-    MoveChanger_SetPokemon(&sMonSummaryScreen->currentMon);
+    Page_SetPokemon(&sMonSummaryScreen->currentMon);
 
     dexNum = SpeciesToPokedexNum(GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_SPECIES));
     if (dexNum == 0xffff)
@@ -2795,7 +2795,7 @@ static void PokeSum_PrintAbilityDataOrMoveTypes(void)
     case PSS_PAGE_MOVES:
     case PSS_PAGE_MOVES_INFO:
         // PokeSum_DrawMoveTypeIcons();
-        Page_DrawMoveIcons();
+        // Page_DrawMoveIcons();
         break;
     }
 
@@ -2817,29 +2817,29 @@ static void PokeSum_PrintAbilityNameAndDesc(void)
 
 static void PokeSum_DrawMoveTypeIcons(void)
 {
-    u8 i;
-    u8 posXCategory = 4;
-    u16 type, category;
-    u8 windowId = sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_TYPE];
-    MoveData *moveData;
+    // u8 i;
+    // u8 posXCategory = 4;
+    // u16 type, category;
+    // u8 windowId = sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_TYPE];
+    // MoveData *moveData;
 
-    FillWindowPixelBuffer(windowId, 0);
+    // FillWindowPixelBuffer(windowId, 0);
 
-    for (i = 0; i < 4; i++)
-    {
-        moveData = MoveChanger_GetMoveData(i);
-        if (moveData->id == MOVE_NONE)
-            continue;
+    // for (i = 0; i < 4; i++)
+    // {
+    //     moveData = MoveChanger_GetMoveData(i);
+    //     if (moveData->id == MOVE_NONE)
+    //         continue;
         
-        BlitMenuInfoIcon(windowId, moveData->type + 1, 3, GetMoveNamePrinterYpos(i)-1);
-        BlitMenuInfoIcon(windowId, moveData->category + MENU_INFO_ICON_CATEGORY_PHYSICAL, posXCategory, GetMoveCategoryPrinterYpos(i));
-    }
+    //     BlitMenuInfoIcon(windowId, moveData->type + 1, 3, GetMoveNamePrinterYpos(i)-1);
+    //     BlitMenuInfoIcon(windowId, moveData->category + MENU_INFO_ICON_CATEGORY_PHYSICAL, posXCategory, GetMoveCategoryPrinterYpos(i));
+    // }
 
-    if (sMonSummaryScreen->mode == PSS_MODE_SELECT_MOVE)
-    {
-        BlitMenuInfoIcon(windowId, sMonSummaryScreen->moveTypes[4] + 1, 3, GetMoveNamePrinterYpos(4)-1);
-        BlitMenuInfoIcon(windowId, sMonSummaryScreen->moveCategories[4] + MENU_INFO_ICON_CATEGORY_PHYSICAL, posXCategory, GetMoveCategoryPrinterYpos(4));
-    }
+    // if (sMonSummaryScreen->mode == PSS_MODE_SELECT_MOVE)
+    // {
+    //     BlitMenuInfoIcon(windowId, sMonSummaryScreen->moveTypes[4] + 1, 3, GetMoveNamePrinterYpos(4)-1);
+    //     BlitMenuInfoIcon(windowId, sMonSummaryScreen->moveCategories[4] + MENU_INFO_ICON_CATEGORY_PHYSICAL, posXCategory, GetMoveCategoryPrinterYpos(4));
+    // }
 }
 
 static void PokeSum_PrintPageHeaderText(u8 curPageIndex)
@@ -2907,10 +2907,10 @@ static void Task_DestroyResourcesOnExit(u8 taskId)
 
     FREE_AND_SET_NULL_IF_SET(sMonSummaryScreen);
     FREE_AND_SET_NULL_IF_SET(sMonSkillsPrinterXpos);
-    FREE_AND_SET_NULL_IF_SET(sPages[0]);
-    FREE_AND_SET_NULL_IF_SET(sPages[1]);
-    FREE_AND_SET_NULL_IF_SET(sPages[2]);
-    FREE_AND_SET_NULL_IF_SET(sPages[3]);
+    // FREE_AND_SET_NULL_IF_SET(sPages[0]);
+    // FREE_AND_SET_NULL_IF_SET(sPages[1]);
+    // FREE_AND_SET_NULL_IF_SET(sPages[2]);
+    // FREE_AND_SET_NULL_IF_SET(sPages[3]);
 }
 
 static void CB2_RunPokemonSummaryScreen(void)
@@ -3136,8 +3136,8 @@ static void PokeSum_AddWindows(u8 curPageIndex)
         case PSS_PAGE_MOVES:
         case PSS_PAGE_MOVES_INFO:
             sMonSummaryScreen->windowIds[i + 3] = AddWindow(&sWindowTemplates_Moves[i]);
-            sPages[PSS_PAGE_MOVES_INFO]->windowIds[i] = sMonSummaryScreen->windowIds[i + 3];
-            DebugPrintf("screen add window %d", sMonSummaryScreen->windowIds[i + 3]);
+            // sPages[PSS_PAGE_MOVES_INFO]->windowIds[i] = sMonSummaryScreen->windowIds[i + 3];
+            // DebugPrintf("screen add window %d", sMonSummaryScreen->windowIds[i + 3]);
             // Page_SetWindow(i, sMonSummaryScreen->windowIds[i + 3]);
             // 3: POKESUM_WIN_MOVES_TITLE
             // 4: POKESUM_WIN_MOVES_DESCRIPTION
@@ -3519,9 +3519,9 @@ static void Task_HandleInput_SelectMove(u8 taskId)
             else if (sMoveSelectionCursorPos == 4)
             {
                 // sMoveSelectionCursorPos = 0;
-                // MoveChanger_SetCursor(0);
+                MoveChanger_SetCursor(0);
                 sMonSummaryScreen->selectMoveInputHandlerState = 2;
-                Page_SetOffset(1);
+                // Page_SetOffset(1);
                 PlaySE(SE_SELECT);
                 return;
             }
@@ -3533,7 +3533,7 @@ static void Task_HandleInput_SelectMove(u8 taskId)
             {
                 sMoveSelectionCursorPos = 0;
                 MoveChanger_SetCursor(0);
-                MoveChanger_DeselectMove();
+                // MoveChanger_DeselectMove();
                 sMoveSwapCursorPos = 0;
                 sMonSummaryScreen->isSwappingMoves = FALSE;
                 ShoworHideMoveSelectionCursor(TRUE);

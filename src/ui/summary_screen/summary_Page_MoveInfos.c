@@ -48,12 +48,25 @@ SummaryPage *Page_MoveInfos_Init(void)
     return sPage;
 }
 
+void Page_SetPokemon(struct Pokemon * pokemon) 
+{
+    DebugPrintf("set pokemon");
+    MoveChanger_SetPokemon(pokemon);
+}
+
 void Page_PrintMoveTexts(u8 i)
 {
     MoveData *moveData;
+    u8 windowId = 5;
     moveData = MoveChanger_GetMoveData(i + sOffset);
+    DebugPrintf("move id %d", moveData->id);
 
-    // // Title
+    // Title
+    AddTextPrinterParameterized3(windowId, FONT_NORMAL, 
+        3, ((i) * 28 + 5), sPrintMoveTextColors[0], TEXT_SKIP_DRAW, 
+        gMoveNames[moveData->id]);
+
+    // Title
     // AddTextPrinterParameterized3(sPage->windowIds[WIN_NAMES], FONT_NORMAL, 
     //     3, GetMoveNamePrinterYpos(i), sPrintMoveTextColors[0], TEXT_SKIP_DRAW, 
     //     gMoveNames[moveData->id]);

@@ -7,4 +7,5 @@ SummaryPage *Page_MoveInfos_Init(void);
 void Page_DrawMoveIcons(void);
 void Page_PrintMoveTexts(u8 i);
 void Page_SetOffset(u32 offset);
+void Page_SetPokemon(struct Pokemon * pokemon);
 #endif
