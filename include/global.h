@@ -12,6 +12,9 @@
 #include "constants/easy_chat.h"
 #include "constants/rgb.h"
 
+// my stuff
+#define CALL_METHOD(obj, method) ((obj).method(&(obj)))
+
 // Prevent cross-jump optimization.
 #define BLOCK_CROSS_JUMP asm("");
 

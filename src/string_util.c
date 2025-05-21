@@ -217,6 +217,14 @@ u8 *ConvertIntToDecimalStringN(u8 *dest, s32 value, enum StringConvertMode mode,
     return dest;
 }
 
+u8 *ConvertIntToPercentageString(u8 *dest, s32 value, enum StringConvertMode mode, u8 n)
+{
+    u8 *endOfNumberString = ConvertIntToDecimalStringN(dest, value, mode, n-1);
+    *endOfNumberString = CHAR_PERCENT;
+    *(endOfNumberString + 1) = EOS;
+    return dest;
+}
+
 u8 *ConvertIntToHexStringN(u8 *dest, s32 value, enum StringConvertMode mode, u8 n)
 {
     enum { WAITING_FOR_NONZERO_DIGIT, WRITING_DIGITS, WRITING_SPACES } state;

@@ -2754,26 +2754,33 @@ static void PokeSum_PrintExpPoints_NextLv(void)
 
 static void PokeSum_PrintSelectedMoveStats(void)
 {
+    MoveData *moveData;
+
     if (sMoveSelectionCursorPos < 5)
     {
         if (sMonSummaryScreen->mode != PSS_MODE_SELECT_MOVE && sMoveSelectionCursorPos == 4)
             return;
+
+        moveData = MoveChanger_GetMoveDataAtCursor();
         // Power
         AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_DESCRIPTION], FONT_NORMAL,
-                                     55, 1, // 57, 1
+                                     55, 1,
                                      sLevelNickTextColors[6], TEXT_SKIP_DRAW,
-                                     sMonSummaryScreen->summary.movePowerStrBufs[sMoveSelectionCursorPos]);
+                                     moveData->powerStr);
+                                    //  sMonSummaryScreen->summary.movePowerStrBufs[sMoveSelectionCursorPos]);
         // Accuracy
         AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_DESCRIPTION], FONT_NORMAL,
-                                     80, 1, // 57, 15
+                                     80, 1,
                                      sLevelNickTextColors[7], TEXT_SKIP_DRAW,
-                                     sMonSummaryScreen->summary.moveAccuracyStrBufs[sMoveSelectionCursorPos]);
+                                     moveData->accuracyStr);
+                                    //  sMonSummaryScreen->summary.moveAccuracyStrBufs[sMoveSelectionCursorPos]);
         // Description
         AddTextPrinterParameterized4(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_DESCRIPTION], FONT_SMALL,
                                      7, 17, // 7, 42
                                      0, 0,
                                      sLevelNickTextColors[0], TEXT_SKIP_DRAW,
                                      MoveChanger_GetDescription());
+                                    //  moveData->GetDescription(moveData));
                                     //  gMoveDescriptionPointers[sMonSummaryScreen->moveIds[sMoveSelectionCursorPos] - 1]);
     }
 }
