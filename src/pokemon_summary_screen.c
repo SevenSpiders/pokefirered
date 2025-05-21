@@ -145,7 +145,7 @@ static s8 SeekToNextMonInSingleParty(s8 direction);
 static s8 SeekToNextMonInMultiParty(s8 direction);
 static void InitPages(void);
 
-// static SummaryPage *sPages[4];
+static SummaryPage *sPages[4];
 
 struct Struct203B144
 {
@@ -1804,7 +1804,7 @@ static void InitPages() {
     // sPages[0] = Page_Info_Init();
     // sPages[1] = Page_Skills_Init();
     // sPages[3] = Page_Moves_Init();
-    // sPages[PSS_PAGE_MOVES_INFO] = Page_MoveInfos_Init();
+    sPages[PSS_PAGE_MOVES_INFO] = Page_MoveInfos_Init();
 }
 
 static void CB2_SetUpPSS(void)
@@ -3136,8 +3136,8 @@ static void PokeSum_AddWindows(u8 curPageIndex)
         case PSS_PAGE_MOVES:
         case PSS_PAGE_MOVES_INFO:
             sMonSummaryScreen->windowIds[i + 3] = AddWindow(&sWindowTemplates_Moves[i]);
-            // sPages[PSS_PAGE_MOVES_INFO]->windowIds[i] = sMonSummaryScreen->windowIds[i + 3];
-            // DebugPrintf("screen add window %d", sMonSummaryScreen->windowIds[i + 3]);
+            sPages[PSS_PAGE_MOVES_INFO]->windowIds[i] = sMonSummaryScreen->windowIds[i + 3];
+            DebugPrintf("screen add window %d", sMonSummaryScreen->windowIds[i + 3]);
             // Page_SetWindow(i, sMonSummaryScreen->windowIds[i + 3]);
             // 3: POKESUM_WIN_MOVES_TITLE
             // 4: POKESUM_WIN_MOVES_DESCRIPTION
