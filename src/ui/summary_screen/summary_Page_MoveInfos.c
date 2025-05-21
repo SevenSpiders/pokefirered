@@ -77,23 +77,24 @@ void Page_PrintMoveTexts(u8 i)
 
 void Page_DrawMoveIcons(void)
 {
-    // u32 i;
-    // u32 posXCategory = 4;
-    // u32 type, category;
-    // u32 windowId;
-    // MoveData *moveData;
+    u32 i;
+    u32 posXCategory = 4;
+    u32 type, category;
+    u32 windowId;
+    MoveData *moveData;
+
+    windowId = sPage->windowIds[WIN_MOVES];
     
-    // FillWindowPixelBuffer(windowId, 0);
+    FillWindowPixelBuffer(windowId, 0);
     
-    // for (i = 0; i < 5; i++)
-    // {
-    //     windowId = sPage->windowIds[WIN_MOVES];
-    //     DebugPrintf("draw move icons in window %d", windowId);
-    //     moveData = MoveChanger_GetMoveData(i + sOffset);
-    //     if (moveData->id == MOVE_NONE)
-    //         continue;
+    for (i = 0; i < 5; i++)
+    {
+        DebugPrintf("draw move icons in window %d", windowId);
+        moveData = MoveChanger_GetMoveData(i + sOffset);
+        if (moveData->id == MOVE_NONE)
+            continue;
         
-    //     BlitMenuInfoIcon(windowId, moveData->type + 1, 3, GetMoveNamePrinterYpos(i)-1);
-    //     BlitMenuInfoIcon(windowId, moveData->category + 24, posXCategory, GetMoveCategoryPrinterYpos(i));
-    // }
+        BlitMenuInfoIcon(windowId, moveData->type + 1, 3, GetMoveNamePrinterYpos(i)-1);
+        BlitMenuInfoIcon(windowId, moveData->category + 24, posXCategory, GetMoveCategoryPrinterYpos(i));
+    }
 }

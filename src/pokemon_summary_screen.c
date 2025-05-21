@@ -2795,7 +2795,7 @@ static void PokeSum_PrintAbilityDataOrMoveTypes(void)
     case PSS_PAGE_MOVES:
     case PSS_PAGE_MOVES_INFO:
         // PokeSum_DrawMoveTypeIcons();
-        // Page_DrawMoveIcons();
+        Page_DrawMoveIcons();
         break;
     }
 
