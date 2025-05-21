@@ -5,5 +5,6 @@
 
 SummaryPage *Page_MoveInfos_Init(void);
 void Page_DrawMoveIcons(void);
-void Page_SetWindow(u8 index, u8 windowId);
+void Page_PrintMoveTexts(u8 i);
+void Page_SetOffset(u32 offset);
 #endif

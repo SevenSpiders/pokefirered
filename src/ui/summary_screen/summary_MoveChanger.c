@@ -105,12 +105,6 @@ void MoveChanger_SetPokemon(struct Pokemon * pokemon)
     {
         id = GetMonData(mon, MON_DATA_MOVE1 + i, NULL);
         SetData(i, id);
-        // sMoveData[i].id = id;
-        // if (id != 0) 
-        // {
-        //     sMoveData[i].type = gBattleMoves[id].type;
-        //     sMoveData[i].category = gBattleMoves[id].category;
-        // }
     }
 
     for (i = MAX_MON_MOVES; i < MAX_LEVEL_UP_MOVES; i++)
@@ -122,12 +116,8 @@ void MoveChanger_SetPokemon(struct Pokemon * pokemon)
             numMoves = i;
             break;
         }
-        // sMoveData[i].type = gBattleMoves[id].type;
-        // sMoveData[i].category = gBattleMoves[id].category;
         SetData(i, id);
     }
-
-
 }
 
 void MoveChanger_SetCursor(u32 cursorIndex)

@@ -2459,22 +2459,23 @@ static void PrintMovesPage(void)
 
 static void PokeSum_PrintMoveName(u8 i)
 {
-    u16 move = sMonSummaryScreen->moveIds[i];
-    move = MoveChanger_GetMove(i);
+    Page_PrintMoveTexts(i);
+    // u16 move = sMonSummaryScreen->moveIds[i];
+    // move = MoveChanger_GetMove(i);
 
-    // Title
-    AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_RIGHT_PANE], FONT_NORMAL, 
-        3, GetMoveNamePrinterYpos(i), sPrintMoveTextColors[0], TEXT_SKIP_DRAW, 
-        gMoveNames[move]);
-        // sMonSummaryScreen->summary.moveNameStrBufs[i]);
-    // Power
-    AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_TITLE], FONT_SMALL, 
-        21, GetMovePpPrinterYpos(i)-1, sPrintMoveTextColors[4], TEXT_SKIP_DRAW, 
-        gText_PokeSum_Power);
-    // Power Value
-    AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_TITLE], FONT_NORMAL, 
-        45, GetMovePpPrinterYpos(i), sPrintMoveTextColors[0], TEXT_SKIP_DRAW, 
-        sMonSummaryScreen->summary.movePowerStrBufs[i]);
+    // // Title
+    // AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_RIGHT_PANE], FONT_NORMAL, 
+    //     3, GetMoveNamePrinterYpos(i), sPrintMoveTextColors[0], TEXT_SKIP_DRAW, 
+    //     gMoveNames[move]);
+    //     // sMonSummaryScreen->summary.moveNameStrBufs[i]);
+    // // Power
+    // AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_TITLE], FONT_SMALL, 
+    //     21, GetMovePpPrinterYpos(i)-1, sPrintMoveTextColors[4], TEXT_SKIP_DRAW, 
+    //     gText_PokeSum_Power);
+    // // Power Value
+    // AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_TITLE], FONT_NORMAL, 
+    //     45, GetMovePpPrinterYpos(i), sPrintMoveTextColors[0], TEXT_SKIP_DRAW, 
+    //     sMonSummaryScreen->summary.movePowerStrBufs[i]);
 }
 
 static void PokeSum_PrintBottomPaneText(void)
@@ -3517,9 +3518,10 @@ static void Task_HandleInput_SelectMove(u8 taskId)
             }
             else if (sMoveSelectionCursorPos == 4)
             {
-                sMoveSelectionCursorPos = 0;
-                MoveChanger_SetCursor(0);
+                // sMoveSelectionCursorPos = 0;
+                // MoveChanger_SetCursor(0);
                 sMonSummaryScreen->selectMoveInputHandlerState = 2;
+                Page_SetOffset(1);
                 PlaySE(SE_SELECT);
                 return;
             }
