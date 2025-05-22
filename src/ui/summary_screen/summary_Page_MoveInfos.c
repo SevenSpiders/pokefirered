@@ -23,17 +23,19 @@
 
 extern void BlitMenuInfoIcon(u8 windowId, u8 iconId, u16 x, u16 y);
 
-
+static u8 state;
 static SummaryPage *sPage;
 static u32 sScrollIndex;
 static u32 maxScroll;
 
+// 0 transparent, 1 beige, 2 light yellow, 3 orange, 4 yellow, 5 red, 6 ligth orange, 7 black, 8 light grey
+// new 9 white -> edit summary_screen\text_moves.pal
 static const u8 sPrintMoveTextColors[][3] = {
     {0, 7, 8}, // 0 default
-    {0, 1, 2}, // 1 red
-    {0, 3, 4}, // 2 yellow
-    {0, 5, 6}, // 3 green
-    {0, 8, 0}, // 4 power 
+    {0, 7, 9}, // 1 on dark bg
+    {0, 3, 4}, // 2 
+    {0, 8, 0}, // 3 power
+    {0, 9, 0}, // 4 power on dark bg
 };
 
 void Page_ScrollDown(u32 amount)
@@ -70,12 +72,12 @@ void Page_SetPokemon(struct Pokemon * pokemon)
 }
 
 static void DrawRectA(u32 y0) {
-    u8 x0 = 16;
-    u8 w = 14;
-    u8 pal = 4;
-    u8 bg = 2;
-    u32 tile_fill = 0x7c;
-    u32 tile_right = 0x4e;
+    const u8 x0 = 16;
+    const u8 w = 14;
+    const u8 pal = 4;
+    const u8 bg = 2;
+    const u32 tile_fill = 0x7c;
+    const u32 tile_right = 0x4e;
     u32 tile_top = 0x3d;
     u32 tile_bot = 0x5d;
     u32 corner_a = 0x3c;
@@ -115,52 +117,53 @@ static void DrawRectA(u32 y0) {
     |     |
     C --- D
 */
-#define CORNER_A    (0X6C) // TOP LEFT  -> +1: inv, 0: top, -1: right corner
-#define CORNER_B    (CORNER_A + 2)
-#define CORNER_C    (0X8C)
-#define CORNER_D    (CORNER_C + 0x2)
-#define TILE_FILL   (0x7c)
-#define TILE_BOTTOM (CORNER_C + 0x1)
-#define TILE_TOP    (CORNER_A + 1)
-#define TILE_RIGHT  (TILE_FILL + 0x2)
-
 static void DrawRectB(u32 y0) {
-    u8 x0 = 16;
-    u8 w = 14;
-    u8 pal = 4;
-    u8 bg = 2;
-    FillBgTilemapBufferRect(bg, TILE_FILL, x0, y0+1, w, 2, pal);
-    FillBgTilemapBufferRect(bg, TILE_TOP, x0+1, y0, w-2, 1, pal);
-    FillBgTilemapBufferRect(bg, TILE_RIGHT, 29, y0+1, 1, 1, pal);
-    FillBgTilemapBufferRect(bg, CORNER_A, x0, y0, 1, 1, pal); // pal 0: top violet, 1 top grey, 2 violet
+    const u8 x0 = 16;
+    const u8 w = 14;
+    const u8 pal = 4;
+    const u8 bg = 2;
+
+    const u16 corner_a = 0x6C; // TOP LEFT
+    const u16 CORNER_B = (corner_a + 2);
+    const u16 CORNER_C = 0x8C;
+    const u16 CORNER_D = (CORNER_C + 0x2);
+    const u16 TILE_FILL = 0x7C;
+    const u16 TILE_BOTTOM = (CORNER_C + 0x1);
+    const u16 TILE_TOP = (corner_a + 1);
+    const u16 TILE_RIGHT = (TILE_FILL + 0x2);
+
+    FillBgTilemapBufferRect(bg, TILE_FILL, x0, y0 + 1, w, 2, pal);
+    FillBgTilemapBufferRect(bg, TILE_TOP, x0 + 1, y0, w - 2, 1, pal);
+    FillBgTilemapBufferRect(bg, TILE_RIGHT, 29, y0 + 1, 1, 1, pal);
+    FillBgTilemapBufferRect(bg, corner_a, x0, y0, 1, 1, pal);
     FillBgTilemapBufferRect(bg, CORNER_B, 29, y0, 1, 1, pal);
-    FillBgTilemapBufferRect(bg, CORNER_C, x0, y0+2, 1, 1, pal);
-    FillBgTilemapBufferRect(bg, CORNER_D, 29, y0+2, 1, 1, pal);
+    FillBgTilemapBufferRect(bg, CORNER_C, x0, y0 + 2, 1, 1, pal);
+    FillBgTilemapBufferRect(bg, CORNER_D, 29, y0 + 2, 1, 1, pal);
 }
 
 static void DrawRect1()
 {
-    DrawRectA(2); // move 1
+    DrawRectA(2);
 }
 
 static void DrawRect2()
 {
-    DrawRectB(6); // move 2
+    DrawRectB(6);
 }
 
 static void DrawRect3()
 {
-    DrawRectA(9); // move 1
+    DrawRectA(9);
 }
 
 static void DrawRect4()
 {
-    DrawRectB(13); // move 2
+    DrawRectB(13);
 }
 
 static void DrawRect5()
 {
-    DrawRectA(16); // move 1
+    DrawRectA(16);
 }
 
 void Page_FillRects() {
@@ -175,20 +178,31 @@ void Page_FillRects() {
 void Page_PrintMoveTexts(u8 i)
 {
     MoveData *moveData;
+    const u8 *titleColor = sPrintMoveTextColors[0];
+    const u8 *pwrColor = sPrintMoveTextColors[3];
     moveData = MoveChanger_GetMoveData(i + sScrollIndex);
+
+    if (moveData == NULL)
+        return;
+
     DebugPrintf("move id: %d window: %d", moveData->id, moveData->powerStr[2]);
+
+    if (i + sScrollIndex >= 4) {
+        // titleColor = sPrintMoveTextColors[1];
+        pwrColor = sPrintMoveTextColors[4];
+    }
 
     // Title
     AddTextPrinterParameterized3(sPage->windowIds[WIN_NAMES], FONT_NORMAL, 
-        3, GetMoveNamePrinterYpos(i), sPrintMoveTextColors[0], TEXT_SKIP_DRAW, 
+        3, GetMoveNamePrinterYpos(i), titleColor, TEXT_SKIP_DRAW, 
         gMoveNames[moveData->id]);
     // Power
     AddTextPrinterParameterized3(sPage->windowIds[WIN_NAMES], FONT_SMALL,
-        21, GetMovePpPrinterYpos(i)-1, sPrintMoveTextColors[4], TEXT_SKIP_DRAW, 
+        21, GetMovePpPrinterYpos(i)-1, pwrColor, TEXT_SKIP_DRAW, 
         gMoveNames[MOVE_PSYCHO_BOOST]);
     // Power Value
     AddTextPrinterParameterized3(sPage->windowIds[WIN_NAMES], FONT_NORMAL,
-        45, GetMovePpPrinterYpos(i), sPrintMoveTextColors[0], TEXT_SKIP_DRAW, 
+        45, GetMovePpPrinterYpos(i), titleColor, TEXT_SKIP_DRAW, 
         moveData->powerStr);
 }
 
@@ -209,6 +223,8 @@ void Page_DrawMoveIcons(void)
     {
         DebugPrintf("draw move icons in window %d", windowId);
         moveData = MoveChanger_GetMoveData(i + sScrollIndex);
+        if (moveData == NULL)
+            continue;
         if (moveData->id == MOVE_NONE)
             continue;
         

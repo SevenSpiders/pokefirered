@@ -31,6 +31,7 @@ static void ClearData()
 
 MoveData *MoveChanger_GetMoveData(u8 i)
 {
+    if (i >= numMoves) return NULL;
     return &sMoveData[i];
 }
 
@@ -110,9 +111,9 @@ void MoveChanger_SetPokemon(struct Pokemon * pokemon)
     {   
         id = gLevelUpLearnsets[species][i] & LEVEL_UP_MOVE_ID;
         sMoveData[i].id = id; 
+        numMoves = i;
         if (id == 0)
         {
-            numMoves = i;
             break;
         }
         SetData(i, id);
