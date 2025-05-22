@@ -93,10 +93,9 @@ static void SetData(u32 index, u32 moveId)
 
 void MoveChanger_SetPokemon(struct Pokemon * pokemon) 
 {
-    u32 i;
-    // u16 species = GetMonData(mon, MON_DATA_SPECIES, NULL);
-    // u8 level = GetMonData(mon, MON_DATA_LEVEL, NULL);
-    u16 id;
+    u32 i, id;
+    u16 species = GetMonData(pokemon, MON_DATA_SPECIES, NULL);
+    u8 level = GetMonData(pokemon, MON_DATA_LEVEL, NULL);
 
     // ClearData();
     mon = pokemon;
@@ -107,17 +106,17 @@ void MoveChanger_SetPokemon(struct Pokemon * pokemon)
         SetData(i, id);
     }
 
-    // for (i = MAX_MON_MOVES; i < MAX_LEVEL_UP_MOVES; i++)
-    // {   
-    //     id = gLevelUpLearnsets[species][i] & LEVEL_UP_MOVE_ID;
-    //     sMoveData[i].id = id; 
-    //     if (id == 0)
-    //     {
-    //         numMoves = i;
-    //         break;
-    //     }
-    //     SetData(i, id);
-    // }
+    for (i = MAX_MON_MOVES; i < MAX_LEVEL_UP_MOVES; i++)
+    {   
+        id = gLevelUpLearnsets[species][i] & LEVEL_UP_MOVE_ID;
+        sMoveData[i].id = id; 
+        if (id == 0)
+        {
+            numMoves = i;
+            break;
+        }
+        SetData(i, id);
+    }
 }
 
 void MoveChanger_SetCursor(u32 cursorIndex)

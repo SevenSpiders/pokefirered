@@ -18,14 +18,15 @@
 #define GetMoveCategoryPrinterYpos(x) ((x) * 28 + 17) // icon is 12px high
 #define GetMovePpPrinterYpos(x) ((x) * 28 + 16) // names
 
-extern const u8 gText_PokeSum_Power;
+// extern const u8 gText_PokeSum_Power; // does not work
 
 
 extern void BlitMenuInfoIcon(u8 windowId, u8 iconId, u16 x, u16 y);
 
 
 static SummaryPage *sPage;
-static u32 sOffset;
+static u32 sScrollIndex;
+static u32 maxScroll;
 
 static const u8 sPrintMoveTextColors[][3] = {
     {0, 7, 8}, // 0 default
@@ -35,11 +36,23 @@ static const u8 sPrintMoveTextColors[][3] = {
     {0, 8, 0}, // 4 power 
 };
 
-void Page_SetOffset(u32 offset)
+void Page_ScrollDown(u32 amount)
 {
-    sOffset += offset;
-    DebugPrintf("set offset %d", sOffset);
+    sScrollIndex += amount;
+    if (sScrollIndex > maxScroll)
+        sScrollIndex = maxScroll;
+    DebugPrintf("scroll %d", sScrollIndex);
 }
+
+void Page_ScrollUp(u32 amount)
+{
+    if (sScrollIndex > amount)
+        sScrollIndex -= amount;
+    else
+        sScrollIndex = 0;
+    DebugPrintf("scroll %d", sScrollIndex);
+}
+
 
 SummaryPage *Page_MoveInfos_Init(void)
 {
@@ -53,12 +66,14 @@ void Page_SetPokemon(struct Pokemon * pokemon)
 {
     DebugPrintf("set pokemon");
     MoveChanger_SetPokemon(pokemon);
+    maxScroll = 7;
 }
 
-static void DrawRect1(u32 y0) {
+static void DrawRectA(u32 y0) {
     u8 x0 = 16;
     u8 w = 14;
     u8 pal = 4;
+    u8 bg = 2;
     u32 tile_fill = 0x7c;
     u32 tile_right = 0x4e;
     u32 tile_top = 0x3d;
@@ -84,14 +99,14 @@ static void DrawRect1(u32 y0) {
         corner_d = 0x11e;
     }
 
-    FillBgTilemapBufferRect(2, tile_fill, x0, y0+1, w-1, 2, pal);
-    FillBgTilemapBufferRect(2, tile_bot, x0+1, y0+3, w-2, 1, pal);
-    FillBgTilemapBufferRect(2, tile_top, x0+1, y0, w-2, 1, pal);
-    FillBgTilemapBufferRect(2, tile_right, 29, y0+1, 1, 2, pal);
-    FillBgTilemapBufferRect(2, corner_a, x0, y0, 1, 1, pal); // pal 0: top violet, 1 top grey, 2 violet
-    FillBgTilemapBufferRect(2, corner_b, 29, y0, 1, 1, pal);
-    FillBgTilemapBufferRect(2, corner_c, x0, y0+3, 1, 1, pal);
-    FillBgTilemapBufferRect(2, corner_d, 29, y0+3, 1, 1, pal);
+    FillBgTilemapBufferRect(bg, tile_fill, x0, y0+1, w-1, 2, pal);
+    FillBgTilemapBufferRect(bg, tile_bot, x0+1, y0+3, w-2, 1, pal);
+    FillBgTilemapBufferRect(bg, tile_top, x0+1, y0, w-2, 1, pal);
+    FillBgTilemapBufferRect(bg, tile_right, 29, y0+1, 1, 2, pal);
+    FillBgTilemapBufferRect(bg, corner_a, x0, y0, 1, 1, pal); // pal 0: top violet, 1 top grey, 2 violet
+    FillBgTilemapBufferRect(bg, corner_b, 29, y0, 1, 1, pal);
+    FillBgTilemapBufferRect(bg, corner_c, x0, y0+3, 1, 1, pal);
+    FillBgTilemapBufferRect(bg, corner_d, 29, y0+3, 1, 1, pal);
 }
 
 // tile set indexes
@@ -109,35 +124,58 @@ static void DrawRect1(u32 y0) {
 #define TILE_TOP    (CORNER_A + 1)
 #define TILE_RIGHT  (TILE_FILL + 0x2)
 
-static void DrawRect2(u32 y0) {
+static void DrawRectB(u32 y0) {
     u8 x0 = 16;
     u8 w = 14;
     u8 pal = 4;
-    FillBgTilemapBufferRect(2, TILE_FILL, x0, y0+1, w, 2, pal);
-    FillBgTilemapBufferRect(2, TILE_TOP, x0+1, y0, w-2, 1, pal);
-    FillBgTilemapBufferRect(2, TILE_RIGHT, 29, y0+1, 1, 1, pal);
-    FillBgTilemapBufferRect(2, CORNER_A, x0, y0, 1, 1, pal); // pal 0: top violet, 1 top grey, 2 violet
-    FillBgTilemapBufferRect(2, CORNER_B, 29, y0, 1, 1, pal);
-    FillBgTilemapBufferRect(2, CORNER_C, x0, y0+2, 1, 1, pal);
-    FillBgTilemapBufferRect(2, CORNER_D, 29, y0+2, 1, 1, pal);
+    u8 bg = 2;
+    FillBgTilemapBufferRect(bg, TILE_FILL, x0, y0+1, w, 2, pal);
+    FillBgTilemapBufferRect(bg, TILE_TOP, x0+1, y0, w-2, 1, pal);
+    FillBgTilemapBufferRect(bg, TILE_RIGHT, 29, y0+1, 1, 1, pal);
+    FillBgTilemapBufferRect(bg, CORNER_A, x0, y0, 1, 1, pal); // pal 0: top violet, 1 top grey, 2 violet
+    FillBgTilemapBufferRect(bg, CORNER_B, 29, y0, 1, 1, pal);
+    FillBgTilemapBufferRect(bg, CORNER_C, x0, y0+2, 1, 1, pal);
+    FillBgTilemapBufferRect(bg, CORNER_D, 29, y0+2, 1, 1, pal);
+}
+
+static void DrawRect1()
+{
+    DrawRectA(2); // move 1
+}
+
+static void DrawRect2()
+{
+    DrawRectB(6); // move 2
+}
+
+static void DrawRect3()
+{
+    DrawRectA(9); // move 1
+}
+
+static void DrawRect4()
+{
+    DrawRectB(13); // move 2
+}
+
+static void DrawRect5()
+{
+    DrawRectA(16); // move 1
 }
 
 void Page_FillRects() {
-   
-    DebugPrintf("_____________fill rect");
-    
-    DrawRect1(2); // move 1
-    DrawRect2(6); // move 2
-    DrawRect1(9); // move 3
-    DrawRect2(13); // move 4
-    DrawRect1(16); // move 5
+    DrawRect1();
+    DrawRect2();
+    DrawRect3();
+    DrawRect4();
+    DrawRect5();
 }
 
 
 void Page_PrintMoveTexts(u8 i)
 {
     MoveData *moveData;
-    moveData = MoveChanger_GetMoveData(i + sOffset);
+    moveData = MoveChanger_GetMoveData(i + sScrollIndex);
     DebugPrintf("move id: %d window: %d", moveData->id, moveData->powerStr[2]);
 
     // Title
@@ -170,11 +208,17 @@ void Page_DrawMoveIcons(void)
     for (i = 0; i < 5; i++)
     {
         DebugPrintf("draw move icons in window %d", windowId);
-        moveData = MoveChanger_GetMoveData(i + sOffset);
+        moveData = MoveChanger_GetMoveData(i + sScrollIndex);
         if (moveData->id == MOVE_NONE)
             continue;
         
         BlitMenuInfoIcon(windowId, moveData->type + 1, 3, GetMoveNamePrinterYpos(i)-1);
         BlitMenuInfoIcon(windowId, moveData->category + 24, posXCategory, GetMoveCategoryPrinterYpos(i));
     }
+
+    // if (sScrollIndex > 0) DrawRect5();
+    // if (sScrollIndex > 1) DrawRect4();
+    // if (sScrollIndex > 2) DrawRect3();
+    // if (sScrollIndex > 3) DrawRect4();
+    // if (sScrollIndex > 4) DrawRect5();
 }
