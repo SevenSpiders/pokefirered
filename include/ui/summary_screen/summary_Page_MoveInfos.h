@@ -9,5 +9,7 @@ void Page_PrintMoveTexts(u8 i);
 void Page_ScrollDown(u32 amount);
 void Page_ScrollUp(u32 amount);
 void Page_SetPokemon(struct Pokemon * pokemon);
-void Page_FillRects(void);
+void Page_DrawBoxes(void);
+void Page_SetScrolling(bool8 b);
+void Page_SetSwapping(bool8 b);
 #endif

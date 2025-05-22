@@ -1206,7 +1206,7 @@ static void Task_PokeSum_FlipPages(u8 taskId)
         if (sMonSummaryScreen->curPageIndex != PSS_PAGE_MOVES_INFO)
             PokeSum_PrintBottomPaneText();
 
-        Page_FillRects();
+        Page_DrawBoxes();
         PokeSum_PrintAbilityDataOrMoveTypes();
         PokeSum_PrintMonTypeIcons();
         break;
@@ -1852,7 +1852,6 @@ static void CB2_SetUpPSS(void)
             CopyToBgTilemapBuffer(3, sBgTilemap_MovesPage, 0, 0);
         else
             CopyToBgTilemapBuffer(3, sBgTilemap_MovesInfoPage, 0, 0);
-
         PokeSum_DrawPageProgressTiles();
         break;
     case 11:
@@ -3432,6 +3431,8 @@ static void Task_HandleInput_SelectMove(u8 taskId)
 {
     u8 i;
 
+    Page_SetScrolling(TRUE);
+
     switch (sMonSummaryScreen->selectMoveInputHandlerState)
     {
     case 0:
@@ -3544,6 +3545,7 @@ static void Task_HandleInput_SelectMove(u8 taskId)
                 // MoveChanger_DeselectMove();
                 sMoveSwapCursorPos = 0;
                 sMonSummaryScreen->isSwappingMoves = FALSE;
+                Page_SetSwapping(FALSE);
                 ShoworHideMoveSelectionCursor(TRUE);
                 sMonSummaryScreen->pageFlipDirection = 0;
                 PokeSum_RemoveWindows(sMonSummaryScreen->curPageIndex);
@@ -3560,6 +3562,7 @@ static void Task_HandleInput_SelectMove(u8 taskId)
                 {
                     sMoveSwapCursorPos = sMoveSelectionCursorPos;
                     sMonSummaryScreen->isSwappingMoves = TRUE;
+                    Page_SetSwapping(TRUE);
                     MoveChanger_SelectMove();
                 }
                 return;
@@ -3567,6 +3570,7 @@ static void Task_HandleInput_SelectMove(u8 taskId)
             else
             {
                 sMonSummaryScreen->isSwappingMoves = FALSE;
+                Page_SetSwapping(FALSE);
 
                 if (sMoveSelectionCursorPos == sMoveSwapCursorPos)
                     return;
@@ -3588,6 +3592,7 @@ static void Task_HandleInput_SelectMove(u8 taskId)
             {
                 sMoveSwapCursorPos = sMoveSelectionCursorPos;
                 sMonSummaryScreen->isSwappingMoves = FALSE;
+                Page_SetSwapping(FALSE);
                 return;
             }
 

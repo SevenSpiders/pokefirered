@@ -31,7 +31,7 @@ static void ClearData()
 
 MoveData *MoveChanger_GetMoveData(u8 i)
 {
-    if (i >= numMoves) return NULL;
+    if (i >= NELEMS(sMoveData)) return NULL;
     return &sMoveData[i];
 }
 
@@ -92,7 +92,7 @@ static void SetData(u32 index, u32 moveId)
         StringCopy( sMoveData[index].accuracyStr, gText_ThreeHyphens);
 }
 
-void MoveChanger_SetPokemon(struct Pokemon * pokemon) 
+u32 MoveChanger_SetPokemon(struct Pokemon * pokemon) 
 {
     u32 i, id;
     u16 species = GetMonData(pokemon, MON_DATA_SPECIES, NULL);
@@ -105,19 +105,24 @@ void MoveChanger_SetPokemon(struct Pokemon * pokemon)
     {
         id = GetMonData(mon, MON_DATA_MOVE1 + i, NULL);
         SetData(i, id);
+        numMoves = i;
     }
 
-    for (i = MAX_MON_MOVES; i < MAX_LEVEL_UP_MOVES; i++)
+    for (i = MAX_MON_MOVES-1; i < MAX_LEVEL_UP_MOVES; i++)
     {   
         id = gLevelUpLearnsets[species][i] & LEVEL_UP_MOVE_ID;
+        DebugPrintf("move %d", id);
+        if (id == 0 || id == LEVEL_UP_END || id == 511)
+        {
+            DebugPrintf("end");
+            return numMoves;
+        }
+
         sMoveData[i].id = id; 
         numMoves = i;
-        if (id == 0)
-        {
-            break;
-        }
         SetData(i, id);
     }
+    return numMoves;
 }
 
 void MoveChanger_SetCursor(u32 cursorIndex)

@@ -28,6 +28,21 @@ static u8 state;
 static SummaryPage *sPage;
 static u32 sScrollIndex;
 static u32 maxScroll;
+static bool8 isScrolling, isSwapping;
+
+#define NUM_BOXES           5
+#define BOX_STATE_NORMAL    0
+#define BOX_STATE_DARK      1
+#define BOX_STATE_INVISIBLE 2
+
+typedef struct {
+    u8 index;
+    u16 type;
+    u32 state; // BOX_STATE_X
+    bool8 dirty;
+} BoxState;
+
+static BoxState boxes[NUM_BOXES];
 
 // 0 transparent, 1 beige, 2 light yellow, 3 orange, 4 yellow, 5 red, 6 ligth orange, 7 black, 8 light grey
 // new 9 white -> edit summary_screen\text_moves.pal
@@ -39,27 +54,58 @@ static const u8 sPrintMoveTextColors[][3] = {
     {0, 9, 0}, // 4 power on dark bg
 };
 
+static void SetBoxState(u32 i, u32 state)
+{
+    DebugPrintf("set box %d state %d -> state %d", i, boxes[i].state, state);
+    if (boxes[i].state == state)
+        return;
+    
+    boxes[i].state = state;
+    boxes[i].dirty = TRUE;
+}
+
 void Page_ScrollDown(u32 amount)
 {
-    sScrollIndex += amount;
+    sScrollIndex += 1;
     if (sScrollIndex > maxScroll)
         sScrollIndex = maxScroll;
-    DebugPrintf("scroll %d", sScrollIndex);
+    
+    if (sScrollIndex < NUM_BOXES)
+        SetBoxState( NUM_BOXES - sScrollIndex -1, BOX_STATE_DARK);
 }
 
 void Page_ScrollUp(u32 amount)
 {
-    if (sScrollIndex > amount)
-        sScrollIndex -= amount;
+    if (sScrollIndex > 1)
+        sScrollIndex -= 1;
     else
         sScrollIndex = 0;
-    DebugPrintf("scroll %d", sScrollIndex);
+    
+    if (sScrollIndex < NUM_BOXES)
+        SetBoxState( NUM_BOXES - sScrollIndex-1, BOX_STATE_NORMAL);
+}
+
+void Page_SetScrolling(bool8 b)
+{
+    isScrolling = b;
+}
+
+void Page_SetSwapping(bool8 b)
+{
+    isSwapping = b;
 }
 
 
 SummaryPage *Page_MoveInfos_Init(void)
 {
+    u32 i;
     DebugPrintf("init page");
+    for(i=0; i<5; i++)
+    {
+        boxes[0].index = i;
+    }
+    boxes[4].state = BOX_STATE_INVISIBLE;
+
     sPage = AllocZeroed(sizeof(SummaryPage));
     sPage->index = 3;
     return sPage;
@@ -67,17 +113,16 @@ SummaryPage *Page_MoveInfos_Init(void)
 
 void Page_SetPokemon(struct Pokemon * pokemon) 
 {
-    DebugPrintf("set pokemon");
-    MoveChanger_SetPokemon(pokemon);
-    maxScroll = 7;
+    maxScroll = MoveChanger_SetPokemon(pokemon) - 3;
+    DebugPrintf("set pokemon -> moves %d", maxScroll);
 }
 
-void Page_FillRects() {
-    u32 i;
-    for (i =0; i < 5; i++)
-    {
-        DrawBox(i, 0);
-    }
+void Page_DrawBoxes() {
+    // u32 i;
+    // for (i =0; i < 5; i++)
+    // {
+    //     DrawBox(i, 0);
+    // }
 }
 
 
@@ -86,12 +131,23 @@ void Page_PrintMoveTexts(u8 i)
     MoveData *moveData;
     const u8 *titleColor = sPrintMoveTextColors[0];
     const u8 *pwrColor = sPrintMoveTextColors[3];
-    moveData = MoveChanger_GetMoveData(i + sScrollIndex);
 
-    if (moveData == NULL)
+    if (boxes[i].dirty == TRUE)
+    {
+        DrawBox(i, state);
+        CopyWindowToVram(2, COPYWIN_MAP);
+        boxes[i].dirty = FALSE;
+    }
+
+    if (i == 4 && isScrolling == FALSE)
         return;
 
-    DebugPrintf("move id: %d window: %d", moveData->id, moveData->powerStr[2]);
+    moveData = MoveChanger_GetMoveData(i + sScrollIndex);
+
+    if (moveData == NULL || moveData->id == 0)
+        return;
+
+    // DebugPrintf("move id: %d window: %d", moveData->id, moveData->powerStr[2]);
 
     if (i + sScrollIndex >= 4) {
         // titleColor = sPrintMoveTextColors[1];
@@ -116,18 +172,21 @@ void Page_PrintMoveTexts(u8 i)
 void Page_DrawMoveIcons(void)
 {
     u32 i;
+    u32 iMax = 4;
     u32 posXCategory = 4;
     u32 type, category;
     u32 windowId;
     MoveData *moveData;
+    if (isScrolling == TRUE)
+        iMax = 5;
 
     windowId = sPage->windowIds[WIN_MOVES];
     
     FillWindowPixelBuffer(windowId, 0);
     
-    for (i = 0; i < 5; i++)
+    for (i = 0; i < iMax; i++)
     {
-        DebugPrintf("draw move icons in window %d", windowId);
+        // DebugPrintf("draw move icons in window %d", windowId);
         moveData = MoveChanger_GetMoveData(i + sScrollIndex);
         if (moveData == NULL)
             continue;
@@ -138,9 +197,6 @@ void Page_DrawMoveIcons(void)
         BlitMenuInfoIcon(windowId, moveData->category + 24, posXCategory, GetMoveCategoryPrinterYpos(i));
     }
 
-    // if (sScrollIndex > 0) DrawRect5();
-    // if (sScrollIndex > 1) DrawRect4();
-    // if (sScrollIndex > 2) DrawRect3();
-    // if (sScrollIndex > 3) DrawRect4();
-    // if (sScrollIndex > 4) DrawRect5();
+    // DrawBox(0, 0);
+    // CopyWindowToVram(2, COPYWIN_FULL);
 }
