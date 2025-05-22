@@ -1206,6 +1206,7 @@ static void Task_PokeSum_FlipPages(u8 taskId)
         if (sMonSummaryScreen->curPageIndex != PSS_PAGE_MOVES_INFO)
             PokeSum_PrintBottomPaneText();
 
+        Page_FillRects();
         PokeSum_PrintAbilityDataOrMoveTypes();
         PokeSum_PrintMonTypeIcons();
         break;

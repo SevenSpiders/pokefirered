@@ -8,4 +8,5 @@ void Page_DrawMoveIcons(void);
 void Page_PrintMoveTexts(u8 i);
 void Page_SetOffset(u32 offset);
 void Page_SetPokemon(struct Pokemon * pokemon);
+void Page_FillRects(void);
 #endif

@@ -8,6 +8,7 @@
 #include "data.h" // move names
 #include "string.h" // pokesum pwr
 #include "text.h"
+#include "bg.h"
 
 #define WIN_NAMES           0
 #define WIN_MOVES           2
@@ -53,6 +54,64 @@ void Page_SetPokemon(struct Pokemon * pokemon)
     DebugPrintf("set pokemon");
     MoveChanger_SetPokemon(pokemon);
 }
+
+static void DrawRect1(u32 y0) {
+    u8 x0 = 16;
+    u8 w = 14;
+    u8 pal = 4;
+    u32 tile_fill = 0x7c;
+    u32 tile_right = 0x4e;
+    u32 tile_top = 0x3d;
+    u32 corner_a = 0x3c;
+    u32 corner_b = 0x3e;
+    u32 corner_c = 0x5c;
+    u32 corner_d = 0x5e;
+
+    FillBgTilemapBufferRect(2, tile_fill, x0, y0+1, w, 2, pal);
+    FillBgTilemapBufferRect(2, tile_top, x0+1, y0, w-2, 1, pal);
+    FillBgTilemapBufferRect(2, tile_right, 29, y0+1, 1, 1, pal);
+    FillBgTilemapBufferRect(2, corner_a, x0, y0, 1, 1, pal); // pal 0: top violet, 1 top grey, 2 violet
+    FillBgTilemapBufferRect(2, corner_b, 29, y0, 1, 1, pal);
+    FillBgTilemapBufferRect(2, corner_c, x0, y0+2, 1, 1, pal);
+    FillBgTilemapBufferRect(2, corner_d, 29, y0+2, 1, 1, pal);
+}
+
+// tile set indexes
+/*
+    A --- B
+    |     |
+    C --- D
+*/
+#define CORNER_A    (0X6C) // TOP LEFT  -> +1: inv, 0: top, -1: right corner
+#define CORNER_B    (CORNER_A + 2)
+#define CORNER_C    (0X8C)
+#define CORNER_D    (CORNER_C + 0x2)
+#define TILE_FILL   (0x7c)
+#define TILE_BOTTOM (CORNER_C + 0x1)
+#define TILE_TOP    (CORNER_A + 1)
+#define TILE_RIGHT  (TILE_FILL + 0x2)
+
+static void DrawRect2(u32 y0) {
+    u8 x0 = 16;
+    u8 w = 14;
+    u8 pal = 4;
+    FillBgTilemapBufferRect(2, TILE_FILL, x0, y0+1, w, 2, pal);
+    FillBgTilemapBufferRect(2, TILE_TOP, x0+1, y0, w-2, 1, pal);
+    FillBgTilemapBufferRect(2, TILE_RIGHT, 29, y0+1, 1, 1, pal);
+    FillBgTilemapBufferRect(2, CORNER_A, x0, y0, 1, 1, pal); // pal 0: top violet, 1 top grey, 2 violet
+    FillBgTilemapBufferRect(2, CORNER_B, 29, y0, 1, 1, pal);
+    FillBgTilemapBufferRect(2, CORNER_C, x0, y0+2, 1, 1, pal);
+    FillBgTilemapBufferRect(2, CORNER_D, 29, y0+2, 1, 1, pal);
+}
+
+void Page_FillRects() {
+   
+    DebugPrintf("_____________fill rect");
+    
+    DrawRect2(16);
+
+}
+
 
 void Page_PrintMoveTexts(u8 i)
 {
