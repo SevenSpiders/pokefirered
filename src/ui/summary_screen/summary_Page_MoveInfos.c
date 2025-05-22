@@ -62,18 +62,36 @@ static void DrawRect1(u32 y0) {
     u32 tile_fill = 0x7c;
     u32 tile_right = 0x4e;
     u32 tile_top = 0x3d;
+    u32 tile_bot = 0x5d;
     u32 corner_a = 0x3c;
     u32 corner_b = 0x3e;
     u32 corner_c = 0x5c;
     u32 corner_d = 0x5e;
 
-    FillBgTilemapBufferRect(2, tile_fill, x0, y0+1, w, 2, pal);
+    if (y0 <= 6)
+    {
+        // implement different top tiles
+        corner_a = 0x119;
+        tile_top = 0x11a;
+        corner_b = 0x11b;
+    }
+
+    if (y0 >= 15)
+    {
+        // implement different bottom tiles
+        corner_c = 0x11c;
+        tile_bot = 0x11d;
+        corner_d = 0x11e;
+    }
+
+    FillBgTilemapBufferRect(2, tile_fill, x0, y0+1, w-1, 2, pal);
+    FillBgTilemapBufferRect(2, tile_bot, x0+1, y0+3, w-2, 1, pal);
     FillBgTilemapBufferRect(2, tile_top, x0+1, y0, w-2, 1, pal);
-    FillBgTilemapBufferRect(2, tile_right, 29, y0+1, 1, 1, pal);
+    FillBgTilemapBufferRect(2, tile_right, 29, y0+1, 1, 2, pal);
     FillBgTilemapBufferRect(2, corner_a, x0, y0, 1, 1, pal); // pal 0: top violet, 1 top grey, 2 violet
     FillBgTilemapBufferRect(2, corner_b, 29, y0, 1, 1, pal);
-    FillBgTilemapBufferRect(2, corner_c, x0, y0+2, 1, 1, pal);
-    FillBgTilemapBufferRect(2, corner_d, 29, y0+2, 1, 1, pal);
+    FillBgTilemapBufferRect(2, corner_c, x0, y0+3, 1, 1, pal);
+    FillBgTilemapBufferRect(2, corner_d, 29, y0+3, 1, 1, pal);
 }
 
 // tile set indexes
@@ -108,8 +126,11 @@ void Page_FillRects() {
    
     DebugPrintf("_____________fill rect");
     
-    DrawRect2(16);
-
+    DrawRect1(2); // move 1
+    DrawRect2(6); // move 2
+    DrawRect1(9); // move 3
+    DrawRect2(13); // move 4
+    DrawRect1(16); // move 5
 }
 
 
