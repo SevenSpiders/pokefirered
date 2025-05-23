@@ -898,7 +898,7 @@ void ShowPokemonSummaryScreen(struct Pokemon * party, u8 cursorPos, u8 lastIdx, 
     sLastViewedMonIndex = cursorPos;
 
     sMoveSelectionCursorPos = 0;
-    MoveChanger_SetCursor(0);
+    Page_SetCursor(0);
     sMoveSwapCursorPos = 0;
     sMonSummaryScreen->savedCallback = savedCallback;
     sMonSummaryScreen->monList.mons = party;
@@ -1099,7 +1099,8 @@ static void Task_InputHandler_Info(u8 taskId)
                     PlaySE(SE_SELECT);
                     sMonSummaryScreen->pageFlipDirection = 1;
                     PokeSum_RemoveWindows(sMonSummaryScreen->curPageIndex);
-                    sMonSummaryScreen->curPageIndex++;
+                    sMonSummaryScreen->curPageIndex = PSS_PAGE_MOVES_INFO;
+                    Page_SetScrolling(TRUE);
                     sMonSummaryScreen->state3270 = PSS_STATE3270_FLIPPAGES;
                 }
                 return;
@@ -1206,7 +1207,6 @@ static void Task_PokeSum_FlipPages(u8 taskId)
         if (sMonSummaryScreen->curPageIndex != PSS_PAGE_MOVES_INFO)
             PokeSum_PrintBottomPaneText();
 
-        Page_DrawBoxes();
         PokeSum_PrintAbilityDataOrMoveTypes();
         PokeSum_PrintMonTypeIcons();
         break;
@@ -2382,7 +2382,7 @@ static void PokeSum_PrintRightPaneText(void)
         break;
     case PSS_PAGE_MOVES:
     case PSS_PAGE_MOVES_INFO:
-        PrintMovesPage();
+        Page_PrintMoveTexts(); // PrintMovesPage();
         break;
     }
 
@@ -2439,27 +2439,27 @@ static void PrintSkillsPage(void)
 #define GetMoveCategoryPrinterYpos(x) ((x) * 28 + 17) // icon is 12px high
 #define GetMovePpPrinterYpos(x) ((x) * 28 + 16)
 
-static void PrintMovesPage(void)
-{
-    u8 i;
+// static void PrintMovesPage(void)
+// {
+//     u8 i;
 
-    for (i = 0; i < 5; i++)
-        PokeSum_PrintMoveName(i);
+//     for (i = 0; i < 5; i++)
+//         PokeSum_PrintMoveName(i);
 
-    // if (sMonSummaryScreen->curPageIndex == PSS_PAGE_MOVES_INFO)
-    // {
-    //     if (sMonSummaryScreen->mode == PSS_MODE_SELECT_MOVE)
-    //         PokeSum_PrintMoveName(4);
-    //     else
-    //         AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_RIGHT_PANE], FONT_NORMAL,
-    //                                      3, GetMoveNamePrinterYpos(4),
-    //                                      sPrintMoveTextColors[0], TEXT_SKIP_DRAW, gFameCheckerText_Cancel);
-    // }
-}
+//     // if (sMonSummaryScreen->curPageIndex == PSS_PAGE_MOVES_INFO)
+//     // {
+//     //     if (sMonSummaryScreen->mode == PSS_MODE_SELECT_MOVE)
+//     //         PokeSum_PrintMoveName(4);
+//     //     else
+//     //         AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_RIGHT_PANE], FONT_NORMAL,
+//     //                                      3, GetMoveNamePrinterYpos(4),
+//     //                                      sPrintMoveTextColors[0], TEXT_SKIP_DRAW, gFameCheckerText_Cancel);
+//     // }
+// }
 
-static void PokeSum_PrintMoveName(u8 i)
-{
-    Page_PrintMoveTexts(i);
+// static void PokeSum_PrintMoveName(u8 i)
+// {
+//     Page_PrintMoveTexts(i);
     // u16 move = sMonSummaryScreen->moveIds[i];
     // move = MoveChanger_GetMove(i);
 
@@ -2476,7 +2476,7 @@ static void PokeSum_PrintMoveName(u8 i)
     // AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_TITLE], FONT_NORMAL, 
     //     45, GetMovePpPrinterYpos(i), sPrintMoveTextColors[0], TEXT_SKIP_DRAW, 
     //     sMonSummaryScreen->summary.movePowerStrBufs[i]);
-}
+// }
 
 static void PokeSum_PrintBottomPaneText(void)
 {
@@ -2491,7 +2491,8 @@ static void PokeSum_PrintBottomPaneText(void)
         PokeSum_PrintExpPoints_NextLv();
         break;
     case PSS_PAGE_MOVES_INFO:
-        PokeSum_PrintSelectedMoveStats();
+        // PokeSum_PrintSelectedMoveStats();
+        Page_PrintMoveDescription();
         break;
     case PSS_PAGE_MOVES:
         break;
@@ -2753,35 +2754,37 @@ static void PokeSum_PrintExpPoints_NextLv(void)
                                  gText_PokeSum_NextLv);
 }
 
-static void PokeSum_PrintSelectedMoveStats(void)
-{
-    MoveData *moveData;
+// static void PokeSum_PrintSelectedMoveStats(void)
+// {
+    // Page_PrintMoveDescription();
+    // DebugPrintf("windowid %d", sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_DESCRIPTION]);
+    // MoveData *moveData;
 
-    if (sMoveSelectionCursorPos < 5)
-    {
-        if (sMonSummaryScreen->mode != PSS_MODE_SELECT_MOVE && sMoveSelectionCursorPos == 4)
-            return;
+    // if (sMoveSelectionCursorPos < 5)
+    // {
+    //     if (sMonSummaryScreen->mode != PSS_MODE_SELECT_MOVE && sMoveSelectionCursorPos == 4)
+    //         return;
 
-        moveData = MoveChanger_GetMoveDataAtCursor();
-        // Power
-        AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_DESCRIPTION], FONT_NORMAL,
-                                     55, 1,
-                                     sLevelNickTextColors[6], TEXT_SKIP_DRAW,
-                                     moveData->powerStr);
-        // Accuracy
-        AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_DESCRIPTION], FONT_NORMAL,
-                                     80, 1,
-                                     sLevelNickTextColors[7], TEXT_SKIP_DRAW,
-                                     moveData->accuracyStr);
-        // Description
-        AddTextPrinterParameterized4(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_DESCRIPTION], FONT_SMALL,
-                                     7, 17,
-                                     0, 0,
-                                     sLevelNickTextColors[0], TEXT_SKIP_DRAW,
-                                     MoveChanger_GetDescription());
-                                    //  moveData->GetDescription(moveData));
-    }
-}
+    //     moveData = MoveChanger_GetMoveDataAtCursor();
+    //     // Power
+    //     AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_DESCRIPTION], FONT_NORMAL,
+    //                                  55, 1,
+    //                                  sLevelNickTextColors[6], TEXT_SKIP_DRAW,
+    //                                  moveData->powerStr);
+    //     // Accuracy
+    //     AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_DESCRIPTION], FONT_NORMAL,
+    //                                  80, 1,
+    //                                  sLevelNickTextColors[7], TEXT_SKIP_DRAW,
+    //                                  moveData->accuracyStr);
+    //     // Description
+    //     AddTextPrinterParameterized4(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_DESCRIPTION], FONT_SMALL,
+    //                                  7, 17,
+    //                                  0, 0,
+    //                                  sLevelNickTextColors[0], TEXT_SKIP_DRAW,
+    //                                  MoveChanger_GetDescription());
+    //                                 //  moveData->GetDescription(moveData));
+    // }
+// }
 
 static void PokeSum_PrintAbilityDataOrMoveTypes(void)
 {
@@ -3427,23 +3430,26 @@ static u8 StatusToAilment(u32 status)
     return AILMENT_NONE;
 }
 
+#define SELECT_STATE_INPUT      0
+#define SELECT_STATE_BACK_OUT   1
+#define SELECT_STATE_REDRAW     2
+#define SELECT_STATE_RENDER     3
+
 static void Task_HandleInput_SelectMove(u8 taskId)
 {
     u8 i;
 
-    Page_SetScrolling(TRUE);
-
     switch (sMonSummaryScreen->selectMoveInputHandlerState)
     {
-    case 0:
+    case SELECT_STATE_INPUT: // 0
         if (IsActiveOverworldLinkBusy() == TRUE || IsLinkRecvQueueAtOverworldMax() == TRUE)
             return;
 
-        if (JOY_NEW(DPAD_UP))
+        if (JOY_NEW(DPAD_UP) || JOY_HELD(DPAD_UP))
         {
             if (sMoveSelectionCursorPos > 0)
             {
-                sMonSummaryScreen->selectMoveInputHandlerState = 2;
+                sMonSummaryScreen->selectMoveInputHandlerState = SELECT_STATE_REDRAW;
                 PlaySE(SE_SELECT);
 
                 for (i = sMoveSelectionCursorPos; i > 0; i--)
@@ -3451,16 +3457,15 @@ static void Task_HandleInput_SelectMove(u8 taskId)
                     {
                         PlaySE(SE_SELECT);
                         sMoveSelectionCursorPos = i - 1;
-                        MoveChanger_SetCursor(i-1);
+                        Page_SetCursor(i-1);
                         return;
                     }
             }
-            else
+            else // is at top most move
             {
                 // sMoveSelectionCursorPos = 4;
-                // MoveChanger_SetCursor(4);
                 Page_ScrollUp(1);
-                sMonSummaryScreen->selectMoveInputHandlerState = 2;
+                sMonSummaryScreen->selectMoveInputHandlerState = SELECT_STATE_REDRAW;
                 PlaySE(SE_SELECT);
 
                 if (sMonSummaryScreen->isSwappingMoves == TRUE)
@@ -3469,52 +3474,54 @@ static void Task_HandleInput_SelectMove(u8 taskId)
                         {
                             PlaySE(SE_SELECT);
                             sMoveSelectionCursorPos = i - 1;
-                            MoveChanger_SetCursor(i-1);
+                            Page_SetCursor(i-1);
                             return;
                         }
             }
         }
-        else if (JOY_NEW(DPAD_DOWN))
+        else if (JOY_NEW(DPAD_DOWN) || JOY_HELD(DPAD_DOWN))
         {
             if (sMoveSelectionCursorPos < 3)
             {
-                u8 v0 = 4;
+                u8 iMax = 4;
 
-                sMonSummaryScreen->selectMoveInputHandlerState = 2;
+                sMonSummaryScreen->selectMoveInputHandlerState = SELECT_STATE_REDRAW;
 
-                if (sMonSummaryScreen->isSwappingMoves == TRUE)
+                // if (sMonSummaryScreen->isSwappingMoves == TRUE)
+                // {
+                //     if (sMoveSelectionCursorPos == 3)
+                //     {
+                //         sMoveSelectionCursorPos = 0;
+                //         Page_SetCursor(0);
+                //         sMonSummaryScreen->selectMoveInputHandlerState = SELECT_STATE_REDRAW;
+                //         PlaySE(SE_SELECT);
+                //         return;
+                //     }
+                //     iMax--;
+                // }
+
+                for (i = sMoveSelectionCursorPos; i < iMax; i++)
                 {
-                    if (sMoveSelectionCursorPos == 5 - 2)
-                    {
-                        sMoveSelectionCursorPos = 0;
-                        MoveChanger_SetCursor(0);
-                        sMonSummaryScreen->selectMoveInputHandlerState = 2;
-                        PlaySE(SE_SELECT);
-                        return;
-                    }
-                    v0--;
-                }
-
-                for (i = sMoveSelectionCursorPos; i < v0; i++)
                     if (sMonSummaryScreen->moveIds[i + 1] != 0)
                     {
                         PlaySE(SE_SELECT);
                         sMoveSelectionCursorPos = i + 1;
-                        MoveChanger_SetCursor(i+1);
+                        Page_SetCursor(i+1);
                         return;
                     }
 
-                if (!sMonSummaryScreen->isSwappingMoves)
-                {
-                    PlaySE(SE_SELECT);
-                    sMoveSelectionCursorPos = i;
-                    MoveChanger_SetCursor(i);
-                }
-                else
-                {
-                    PlaySE(SE_SELECT);
-                    sMoveSelectionCursorPos = 0;
-                    MoveChanger_SetCursor(0);
+                    else if (!sMonSummaryScreen->isSwappingMoves)
+                    {
+                        PlaySE(SE_SELECT);
+                        sMoveSelectionCursorPos = i;
+                        Page_SetCursor(i);
+                    }
+                    else
+                    {
+                        PlaySE(SE_SELECT);
+                        sMoveSelectionCursorPos = 0;
+                        Page_SetCursor(0);
+                    }
                 }
 
                 return;
@@ -3528,7 +3535,7 @@ static void Task_HandleInput_SelectMove(u8 taskId)
             else if (sMoveSelectionCursorPos == 4)
             {
                 // sMoveSelectionCursorPos = 0;
-                MoveChanger_SetCursor(0);
+                Page_SetCursor(0);
                 sMonSummaryScreen->selectMoveInputHandlerState = 2;
                 // Page_ScrollDown(1);
                 PlaySE(SE_SELECT);
@@ -3538,21 +3545,22 @@ static void Task_HandleInput_SelectMove(u8 taskId)
         else if (JOY_NEW(A_BUTTON))
         {
             PlaySE(SE_SELECT);
-            if (sMoveSelectionCursorPos == 4) // cancel
-            {
-                sMoveSelectionCursorPos = 0;
-                MoveChanger_SetCursor(0);
-                // MoveChanger_DeselectMove();
-                sMoveSwapCursorPos = 0;
-                sMonSummaryScreen->isSwappingMoves = FALSE;
-                Page_SetSwapping(FALSE);
-                ShoworHideMoveSelectionCursor(TRUE);
-                sMonSummaryScreen->pageFlipDirection = 0;
-                PokeSum_RemoveWindows(sMonSummaryScreen->curPageIndex);
-                sMonSummaryScreen->curPageIndex--;
-                sMonSummaryScreen->selectMoveInputHandlerState = 1;
-                return;
-            }
+            // if (sMoveSelectionCursorPos == 4) // cancel
+            // {
+            //     sMoveSelectionCursorPos = 0;
+            //     Page_SetCursor(0);
+            //     Page_SetScrolling(FALSE);
+            //     // MoveChanger_DeselectMove();
+            //     sMoveSwapCursorPos = 0;
+            //     sMonSummaryScreen->isSwappingMoves = FALSE;
+            //     Page_SetSwapping(FALSE);
+            //     ShoworHideMoveSelectionCursor(TRUE);
+            //     sMonSummaryScreen->pageFlipDirection = 0;
+            //     PokeSum_RemoveWindows(sMonSummaryScreen->curPageIndex);
+            //     sMonSummaryScreen->curPageIndex--;
+            //     sMonSummaryScreen->selectMoveInputHandlerState = SELECT_STATE_INPUT;
+            //     return;
+            // }
 
             if (sMonSummaryScreen->isSwappingMoves != TRUE)
             {
@@ -3582,7 +3590,7 @@ static void Task_HandleInput_SelectMove(u8 taskId)
 
                 UpdateCurrentMonBufferFromPartyOrBox(&sMonSummaryScreen->currentMon);
                 BufferMonMoves();
-                sMonSummaryScreen->selectMoveInputHandlerState = 2;
+                sMonSummaryScreen->selectMoveInputHandlerState = SELECT_STATE_REDRAW;
                 return;
             }
         }
@@ -3599,28 +3607,30 @@ static void Task_HandleInput_SelectMove(u8 taskId)
             if (sMoveSelectionCursorPos == 4)
             {
                 sMoveSelectionCursorPos = 0;
-                MoveChanger_SetCursor(0);
+                Page_SetCursor(0);
                 sMoveSwapCursorPos = 0;
             }
 
             ShoworHideMoveSelectionCursor(TRUE);
             sMonSummaryScreen->pageFlipDirection = 0;
             PokeSum_RemoveWindows(sMonSummaryScreen->curPageIndex);
-            sMonSummaryScreen->curPageIndex--;
-            sMonSummaryScreen->selectMoveInputHandlerState = 1;
+            sMonSummaryScreen->curPageIndex = PSS_PAGE_MOVES;
+            sMonSummaryScreen->selectMoveInputHandlerState = SELECT_STATE_BACK_OUT;
         }
         break;
-    case 1:
+    case SELECT_STATE_BACK_OUT: // 1
         gTasks[sMonSummaryScreen->inputHandlerTaskId].func = Task_BackOutOfSelectMove;
-        sMonSummaryScreen->selectMoveInputHandlerState = 0;
+        sMonSummaryScreen->selectMoveInputHandlerState = SELECT_STATE_INPUT;
+        Page_SetScrolling(FALSE);
         break;
-    case 2:
-        PokeSum_PrintRightPaneText();
-        PokeSum_PrintBottomPaneText();
+    case SELECT_STATE_REDRAW: // 2
+        PokeSum_PrintRightPaneText(); // Page_PrintMoveTexts
+        PokeSum_PrintBottomPaneText(); //  Page_PrintMoveDescription()
         PokeSum_PrintAbilityDataOrMoveTypes();
-        sMonSummaryScreen->selectMoveInputHandlerState = 3;
+        // Page_DrawTweens(1); // up
+        sMonSummaryScreen->selectMoveInputHandlerState = SELECT_STATE_REDRAW + 1;
         break;
-    case 3:
+    case SELECT_STATE_REDRAW + 1: // 3
         if (IsActiveOverworldLinkBusy() == TRUE || IsLinkRecvQueueAtOverworldMax() == TRUE)
             return;
 
@@ -3630,8 +3640,16 @@ static void Task_HandleInput_SelectMove(u8 taskId)
         CopyWindowToVram(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_MINI], 2);
         CopyBgTilemapBufferToVram(0);
         CopyBgTilemapBufferToVram(3);
-        sMonSummaryScreen->selectMoveInputHandlerState = 0;
+        // CopyWindowToVram(2, COPYWIN_MAP); // boxes
+        Page_DrawBoxes();
+        sMonSummaryScreen->selectMoveInputHandlerState = SELECT_STATE_RENDER + 1;
         break;
+
+    case SELECT_STATE_REDRAW + 2:
+        CopyWindowToVram(2, COPYWIN_MAP); // boxes
+        sMonSummaryScreen->selectMoveInputHandlerState = SELECT_STATE_INPUT;
+        break;
+
     default:
         break;
     }
@@ -3639,7 +3657,8 @@ static void Task_HandleInput_SelectMove(u8 taskId)
 
 static void SwapMonMoveSlots(void)
 {
-    MoveChanger_SwapMonMoveSlots();
+    // MoveChanger_SwapMonMoveSlots();
+    Page_SwapMoves();
     // struct Pokemon * partyMons;
     // struct Pokemon * mon;
 
@@ -3765,14 +3784,14 @@ static void Task_InputHandler_SelectOrForgetMove(u8 taskId)
                     {
                         PlaySE(SE_SELECT);
                         sMoveSelectionCursorPos = i - 1;
-                        MoveChanger_SetCursor(i-1);
+                        Page_SetCursor(i-1);
                         return;
                     }
             }
             else
             {
                 sMoveSelectionCursorPos = 4;
-                MoveChanger_SetCursor(4);
+                Page_SetCursor(4);
                 sMonSummaryScreen->selectMoveInputHandlerState = 3;
                 PlaySE(SE_SELECT);
                 return;
@@ -3794,7 +3813,7 @@ static void Task_InputHandler_SelectOrForgetMove(u8 taskId)
                     {
                         PlaySE(SE_SELECT);
                         sMoveSelectionCursorPos = i + 1;
-                        MoveChanger_SetCursor(i+1);
+                        Page_SetCursor(i+1);
                         return;
                     }
 
@@ -3802,7 +3821,7 @@ static void Task_InputHandler_SelectOrForgetMove(u8 taskId)
                 {
                     PlaySE(SE_SELECT);
                     sMoveSelectionCursorPos = i;
-                    MoveChanger_SetCursor(i);
+                    Page_SetCursor(i);
                 }
 
                 return;
@@ -3810,7 +3829,7 @@ static void Task_InputHandler_SelectOrForgetMove(u8 taskId)
             else if (sMoveSelectionCursorPos == 4)
             {
                 sMoveSelectionCursorPos = 0;
-                MoveChanger_SetCursor(0);
+                Page_SetCursor(0);
                 sMonSummaryScreen->selectMoveInputHandlerState = 3;
                 PlaySE(SE_SELECT);
                 return;
@@ -5019,7 +5038,7 @@ static void Task_PokeSum_SwitchDisplayedPokemon(u8 taskId)
     case 0:
         StopCryAndClearCrySongs();
         sMoveSelectionCursorPos = 0;
-        MoveChanger_SetCursor(0);
+        Page_SetCursor(0);
         sMoveSwapCursorPos = 0;
         sMonSummaryScreen->switchMonTaskState++;
         break;
