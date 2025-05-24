@@ -1,5 +1,6 @@
 #include "main.h"
 #include "gflib.h" // maloc
+#include "ui/summary_screen/summary_Page_MoveInfos.h"
 
 #define FREE_AND_SET_NULL_IF_SET(ptr) \
 {                                     \
@@ -10,6 +11,7 @@
     }                                 \
 }
 
+#define BLINK_SPEED 30
 
 struct MoveSelectionCursor
 {
@@ -54,8 +56,8 @@ static const union AnimCmd * const sMoveSelectionCursorOamAnimTable[] =
     sMoveSelectionCursorOamAnim_Blue
 };
 
-static EWRAM_DATA u8 sMoveSelectionCursorPos = 0;
-static EWRAM_DATA bool8 isSwappingMoves = FALSE;
+// static EWRAM_DATA u8 sMoveSelectionCursorPos = 0;
+// static EWRAM_DATA bool8 isSwappingMoves = FALSE;
 static EWRAM_DATA struct MoveSelectionCursor * sMoveSelectionCursorObjs[4] = {};
 static const u32 sMoveSelectionCursorTiles_Left[] = INCBIN_U32("graphics/summary_screen/move_selection_cursor_left.4bpp.lz");
 static const u32 sMoveSelectionCursorTiles_Right[] = INCBIN_U32("graphics/summary_screen/move_selection_cursor_right.4bpp.lz");
@@ -112,7 +114,7 @@ void SS_CreateMoveSelectionCursorObjs(u16 tileTag, u16 palTag)
         LoadSpriteSheet(&sheet);
         LoadSpritePalette(&palette);
 
-        spriteId = CreateSprite(&template, 64 * (i % 2) + 152, sMoveSelectionCursorPos * 28 + 34, i % 2);
+        spriteId = CreateSprite(&template, 64 * (i % 2) + 152, Page_GetCursor() * 28 + 34, i % 2);
         sMoveSelectionCursorObjs[i]->sprite = &gSprites[spriteId];
         sMoveSelectionCursorObjs[i]->whichSprite = i;
         sMoveSelectionCursorObjs[i]->tileTag = tileTag + i;
@@ -134,35 +136,36 @@ void SS_CreateMoveSelectionCursorObjs(u16 tileTag, u16 palTag)
 static void SpriteCB_MoveSelectionCursor(struct Sprite *sprite)
 {
     u8 i;
+    u8 cursorY = Page_GetCursor() * 28 + 34;
+    bool8 isSwapping = Page_IsSwapping();
 
+    // Update Y position of cursor sprites
     for (i = 0; i < 4; i++)
     {
-        if (isSwappingMoves == TRUE && i > 1)
+        if (isSwapping && i > 1)
             continue;
 
-        sMoveSelectionCursorObjs[i]->sprite->y = sMoveSelectionCursorPos * 28 + 34;
+        sMoveSelectionCursorObjs[i]->sprite->y = cursorY;
     }
 
-    if (isSwappingMoves != TRUE)
+    if (!isSwapping)
     {
-        // if (sMonSummaryScreen->curPageIndex == PSS_PAGE_MOVES_INFO)
-        // {
-        sMoveSelectionCursorObjs[0]->sprite->invisible = FALSE;
-        sMoveSelectionCursorObjs[1]->sprite->invisible = FALSE;
-        // }
+        if (Page_IsScrolling())
+        {
+            sMoveSelectionCursorObjs[0]->sprite->invisible = FALSE;
+            sMoveSelectionCursorObjs[1]->sprite->invisible = FALSE;
+        }
         return;
     }
 
-    // Handle Swapping blink
+    // Handle blinking effect when swapping
     for (i = 0; i < 2; i++)
     {
-        sprite = sMoveSelectionCursorObjs[i]->sprite;
-        sprite->data[0]++; // frame counter
-
-        if (sprite->data[0] > 60)
+        struct Sprite *cursorSprite = sMoveSelectionCursorObjs[i]->sprite;
+        if (++cursorSprite->data[0] > BLINK_SPEED)
         {
-            sprite->invisible = !sprite->invisible;
-            sprite->data[0] = 0;
+            cursorSprite->invisible ^= TRUE;  // toggle invisibility
+            cursorSprite->data[0] = 0;
         }
     }
 }

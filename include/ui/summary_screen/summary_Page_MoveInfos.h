@@ -15,5 +15,8 @@ void Page_SetScrolling(bool8 b);
 void Page_SetSwapping(bool8 b);
 void Page_SwapMoves(void);
 void Page_SetCursor(u32 index);
+u32 Page_GetCursor(void);
+bool8 Page_IsSwapping();
+bool32 Page_IsScrolling();
 void Page_PrintMoveDescription(void);
 #endif

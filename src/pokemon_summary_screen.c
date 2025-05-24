@@ -38,6 +38,7 @@
 #include "ui/summary_screen/summary_moveChanger.h"
 #include "ui/summary_screen/summary_screenData.h"
 #include "ui/summary_screen/summary_PageManager.h"
+#include "ui/summary_screen/summary_CursorObjs.h"
 
 // needs conflicting header to match (curIndex is s8 in the function, but has to be defined as u8 here)
 extern s16 SeekToNextMonInBox(struct BoxPokemon * boxMons, u8 curIndex, u8 maxIndex, u8 flags);
@@ -79,7 +80,7 @@ static void ShowOrHideBallIconObj(u8 invisible);
 static void ShowOrHideStatusIcon(u8 invisible);
 static void HideShowPokerusIcon(u8 invisible);
 static void HideShowShinyStar(u8 invisible);
-static void ShoworHideMoveSelectionCursor(u8 invisible);
+// static void SS_ShoworHideMoveSelectionCursor(u8 invisible);
 static void PokeSum_ShowOrHideMonIconSprite(u8 invisible);
 static void PokeSum_Setup_ResetCallbacks(void);
 static void PokeSum_Setup_InitGpu(void);
@@ -1555,7 +1556,7 @@ static void PokeSum_HideSpritesBeforePageFlip(void)
 
         break;
     case PSS_PAGE_MOVES_INFO:
-        ShoworHideMoveSelectionCursor(TRUE);
+        SS_ShoworHideMoveSelectionCursor(TRUE);
         PokeSum_ShowOrHideMonIconSprite(TRUE);
         ShowOrHideStatusIcon(TRUE);
         HideShowPokerusIcon(TRUE);
@@ -1589,7 +1590,7 @@ static void PokeSum_ShowSpritesBeforePageFlip(void)
         }
         else
         {
-            ShoworHideMoveSelectionCursor(FALSE);
+            SS_ShoworHideMoveSelectionCursor(FALSE);
             HideShowPokerusIcon(FALSE);
             PokeSum_ShowOrHideMonIconSprite(FALSE);
             HideShowShinyStar(FALSE);
@@ -1897,7 +1898,7 @@ static void CB2_SetUpPSS(void)
         if (sMonSummaryScreen->mode == PSS_MODE_SELECT_MOVE || sMonSummaryScreen->mode == PSS_MODE_FORGET_MOVE)
         {
             PokeSum_ShowOrHideMonIconSprite(FALSE);
-            ShoworHideMoveSelectionCursor(FALSE);
+            SS_ShoworHideMoveSelectionCursor(FALSE);
         }
         else
         {
@@ -2243,7 +2244,8 @@ static u8 PokeSum_HandleCreateSprites(void)
         PokeSum_CreateMonMarkingsSprite();
         break;
     case 3:
-        CreateMoveSelectionCursorObjs(TAG_PSS_UNK_64, TAG_PSS_UNK_64);
+        // CreateMoveSelectionCursorObjs(TAG_PSS_UNK_64, TAG_PSS_UNK_64);
+        SS_CreateMoveSelectionCursorObjs(TAG_PSS_UNK_64, TAG_PSS_UNK_64);
         break;
     case 4:
         CreateMonStatusIconObj(TAG_PSS_UNK_6E, TAG_PSS_UNK_6E);
@@ -3554,7 +3556,7 @@ static void Task_HandleInput_SelectMove(u8 taskId)
             //     sMoveSwapCursorPos = 0;
             //     sMonSummaryScreen->isSwappingMoves = FALSE;
             //     Page_SetSwapping(FALSE);
-            //     ShoworHideMoveSelectionCursor(TRUE);
+            //     SS_ShoworHideMoveSelectionCursor(TRUE);
             //     sMonSummaryScreen->pageFlipDirection = 0;
             //     PokeSum_RemoveWindows(sMonSummaryScreen->curPageIndex);
             //     sMonSummaryScreen->curPageIndex--;
@@ -3614,7 +3616,7 @@ static void Task_HandleInput_SelectMove(u8 taskId)
                 sMoveSwapCursorPos = 0;
             }
 
-            ShoworHideMoveSelectionCursor(TRUE);
+            SS_ShoworHideMoveSelectionCursor(TRUE);
             sMonSummaryScreen->pageFlipDirection = 0;
             PokeSum_RemoveWindows(sMonSummaryScreen->curPageIndex);
             sMonSummaryScreen->curPageIndex = PSS_PAGE_MOVES;
@@ -4170,67 +4172,67 @@ static void PokeSum_DestroyMonIconSprite(void)
     DestroyMonIcon(&gSprites[sMonSummaryScreen->monIconSpriteId]);
 }
 
-static void CreateMoveSelectionCursorObjs(u16 tileTag, u16 palTag)
-{
-    u8 i;
-    u8 spriteId;
-    void *gfxBufferPtrs[2];
-    gfxBufferPtrs[0] = AllocZeroed(0x20 * 64);
-    gfxBufferPtrs[1] = AllocZeroed(0x20 * 64);
+// static void CreateMoveSelectionCursorObjs(u16 tileTag, u16 palTag)
+// {
+//     u8 i;
+//     u8 spriteId;
+//     void *gfxBufferPtrs[2];
+//     gfxBufferPtrs[0] = AllocZeroed(0x20 * 64);
+//     gfxBufferPtrs[1] = AllocZeroed(0x20 * 64);
 
-    sMoveSelectionCursorObjs[0] = AllocZeroed(sizeof(struct MoveSelectionCursor));
-    sMoveSelectionCursorObjs[1] = AllocZeroed(sizeof(struct MoveSelectionCursor));
-    sMoveSelectionCursorObjs[2] = AllocZeroed(sizeof(struct MoveSelectionCursor));
-    sMoveSelectionCursorObjs[3] = AllocZeroed(sizeof(struct MoveSelectionCursor));
+//     sMoveSelectionCursorObjs[0] = AllocZeroed(sizeof(struct MoveSelectionCursor));
+//     sMoveSelectionCursorObjs[1] = AllocZeroed(sizeof(struct MoveSelectionCursor));
+//     sMoveSelectionCursorObjs[2] = AllocZeroed(sizeof(struct MoveSelectionCursor));
+//     sMoveSelectionCursorObjs[3] = AllocZeroed(sizeof(struct MoveSelectionCursor));
 
-    LZ77UnCompWram(sMoveSelectionCursorTiles_Left, gfxBufferPtrs[0]);
-    LZ77UnCompWram(sMoveSelectionCursorTiles_Right, gfxBufferPtrs[1]);
+//     LZ77UnCompWram(sMoveSelectionCursorTiles_Left, gfxBufferPtrs[0]);
+//     LZ77UnCompWram(sMoveSelectionCursorTiles_Right, gfxBufferPtrs[1]);
 
-    for (i = 0; i < 4; i++)
-    {
-        struct SpriteSheet sheet = {
-            .data = gfxBufferPtrs[i % 2],
-            .size = 0x20 * 64,
-            .tag = tileTag + i
-        };
+//     for (i = 0; i < 4; i++)
+//     {
+//         struct SpriteSheet sheet = {
+//             .data = gfxBufferPtrs[i % 2],
+//             .size = 0x20 * 64,
+//             .tag = tileTag + i
+//         };
 
-        struct SpritePalette palette = {.data = sMoveSelectionCursorPals, .tag = palTag};
-        struct SpriteTemplate template = {
-            .tileTag = tileTag + i,
-            .paletteTag = palTag,
-            .oam = &sMoveSelectionCursorOamData,
-            .anims = sMoveSelectionCursorOamAnimTable,
-            .images = NULL,
-            .affineAnims = gDummySpriteAffineAnimTable,
-            .callback = SpriteCB_MoveSelectionCursor,
-        };
+//         struct SpritePalette palette = {.data = sMoveSelectionCursorPals, .tag = palTag};
+//         struct SpriteTemplate template = {
+//             .tileTag = tileTag + i,
+//             .paletteTag = palTag,
+//             .oam = &sMoveSelectionCursorOamData,
+//             .anims = sMoveSelectionCursorOamAnimTable,
+//             .images = NULL,
+//             .affineAnims = gDummySpriteAffineAnimTable,
+//             .callback = SpriteCB_MoveSelectionCursor,
+//         };
 
-        LoadSpriteSheet(&sheet);
-        LoadSpritePalette(&palette);
+//         LoadSpriteSheet(&sheet);
+//         LoadSpritePalette(&palette);
 
-        spriteId = CreateSprite(&template, 64 * (i % 2) + 152, sMoveSelectionCursorPos * 28 + 34, i % 2);
-        sMoveSelectionCursorObjs[i]->sprite = &gSprites[spriteId];
-        sMoveSelectionCursorObjs[i]->whichSprite = i;
-        sMoveSelectionCursorObjs[i]->tileTag = tileTag + i;
-        sMoveSelectionCursorObjs[i]->palTag = palTag;
-        sMoveSelectionCursorObjs[i]->sprite->subpriority = i;
+//         spriteId = CreateSprite(&template, 64 * (i % 2) + 152, sMoveSelectionCursorPos * 28 + 34, i % 2);
+//         sMoveSelectionCursorObjs[i]->sprite = &gSprites[spriteId];
+//         sMoveSelectionCursorObjs[i]->whichSprite = i;
+//         sMoveSelectionCursorObjs[i]->tileTag = tileTag + i;
+//         sMoveSelectionCursorObjs[i]->palTag = palTag;
+//         sMoveSelectionCursorObjs[i]->sprite->subpriority = i;
 
-        if (i > 1)
-            StartSpriteAnim(sMoveSelectionCursorObjs[i]->sprite, 1);
-    }
+//         if (i > 1)
+//             StartSpriteAnim(sMoveSelectionCursorObjs[i]->sprite, 1);
+//     }
 
-    ShoworHideMoveSelectionCursor(TRUE);
+//     ShoworHideMoveSelectionCursor(TRUE);
 
-    FREE_AND_SET_NULL_IF_SET(gfxBufferPtrs[0]);
-    FREE_AND_SET_NULL_IF_SET(gfxBufferPtrs[1]);
-}
+//     FREE_AND_SET_NULL_IF_SET(gfxBufferPtrs[0]);
+//     FREE_AND_SET_NULL_IF_SET(gfxBufferPtrs[1]);
+// }
 
-static void ShoworHideMoveSelectionCursor(bool8 invisible)
-{
-    u8 i;
-    for (i = 0; i < 4; i++)
-        sMoveSelectionCursorObjs[i]->sprite->invisible = invisible;
-}
+// static void ShoworHideMoveSelectionCursor(bool8 invisible)
+// {
+//     u8 i;
+//     for (i = 0; i < 4; i++)
+//         sMoveSelectionCursorObjs[i]->sprite->invisible = invisible;
+// }
 
 static void SpriteCB_MoveSelectionCursor(struct Sprite *sprite)
 {

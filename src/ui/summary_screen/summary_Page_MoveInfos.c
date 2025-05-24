@@ -121,15 +121,30 @@ void Page_SetScrolling(bool8 b)
     UpdateBoxes();
 }
 
+bool32 Page_IsScrolling()
+{
+    return isScrolling;
+}
+
 void Page_SetSwapping(bool8 b)
 {
     isSwapping = b;
     sSelectedIndex = sScrollIndex + sCursorIndex;
 }
 
+bool8 Page_IsSwapping()
+{
+    return isSwapping;
+}
+
 void Page_SetCursor(u32 index)
 {
     sCursorIndex = index;
+}
+
+u32 Page_GetCursor()
+{
+    return sCursorIndex;
 }
 
 void Page_SwapMoves()
