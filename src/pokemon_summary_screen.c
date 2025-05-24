@@ -3562,7 +3562,7 @@ static void Task_HandleInput_SelectMove(u8 taskId)
             //     return;
             // }
 
-            if (sMonSummaryScreen->isSwappingMoves != TRUE)
+            if (sMonSummaryScreen->isSwappingMoves != TRUE) // start swapping
             {
                 if (sMonSummaryScreen->isEnemyParty == FALSE
                     && gMain.inBattle == 0
@@ -3571,11 +3571,11 @@ static void Task_HandleInput_SelectMove(u8 taskId)
                     sMoveSwapCursorPos = sMoveSelectionCursorPos;
                     sMonSummaryScreen->isSwappingMoves = TRUE;
                     Page_SetSwapping(TRUE);
-                    MoveChanger_SelectMove();
+                    // MoveChanger_SelectMove();
                 }
                 return;
             }
-            else
+            else // Swap moves
             {
                 sMonSummaryScreen->isSwappingMoves = FALSE;
                 Page_SetSwapping(FALSE);
@@ -3584,12 +3584,15 @@ static void Task_HandleInput_SelectMove(u8 taskId)
                     return;
 
                 if (sMonSummaryScreen->isBoxMon == 0)
-                    SwapMonMoveSlots();
+                {
+                    // SwapMonMoveSlots();
+                    Page_SwapMoves();
+                }
                 else
                     SwapBoxMonMoveSlots();
 
-                UpdateCurrentMonBufferFromPartyOrBox(&sMonSummaryScreen->currentMon);
-                BufferMonMoves();
+                // UpdateCurrentMonBufferFromPartyOrBox(&sMonSummaryScreen->currentMon);
+                // BufferMonMoves();
                 sMonSummaryScreen->selectMoveInputHandlerState = SELECT_STATE_REDRAW;
                 return;
             }
@@ -4251,6 +4254,7 @@ static void SpriteCB_MoveSelectionCursor(struct Sprite *sprite)
         return;
     }
 
+    // Handle Swapping blink
     for (i = 0; i < 2; i++)
     {
         sprite = sMoveSelectionCursorObjs[i]->sprite;
