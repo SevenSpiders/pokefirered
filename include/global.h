@@ -14,6 +14,8 @@
 
 // my stuff
 #define CALL_METHOD(obj, method) ((obj).method(&(obj)))
+#define MIN(a, b) ((a) < (b) ? (a) : (b))
+#define MAX(a, b) ((a) > (b) ? (a) : (b))
 
 // Prevent cross-jump optimization.
 #define BLOCK_CROSS_JUMP asm("");

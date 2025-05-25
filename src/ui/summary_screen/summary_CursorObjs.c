@@ -137,15 +137,23 @@ static void SpriteCB_MoveSelectionCursor(struct Sprite *sprite)
 {
     u8 i;
     u8 cursorY = Page_GetCursor() * 28 + 34;
+    u8 selectionCursorY;
+    u8 selectionCursorIndex = Page_GetSelectionCursor();
     bool8 isSwapping = Page_IsSwapping();
+
+    if (selectionCursorIndex < 5)
+        selectionCursorY = selectionCursorIndex * 28 + 34;
+
 
     // Update Y position of cursor sprites
     for (i = 0; i < 4; i++)
     {
-        if (isSwapping && i > 1)
-            continue;
-
-        sMoveSelectionCursorObjs[i]->sprite->y = cursorY;
+        if (isSwapping && i >= 2 && selectionCursorIndex < 5) // update selected cursor
+        {
+            sMoveSelectionCursorObjs[i]->sprite->y = selectionCursorY;
+        }
+        else 
+            sMoveSelectionCursorObjs[i]->sprite->y = cursorY;
     }
 
     if (!isSwapping)
@@ -162,7 +170,11 @@ static void SpriteCB_MoveSelectionCursor(struct Sprite *sprite)
     for (i = 0; i < 2; i++)
     {
         struct Sprite *cursorSprite = sMoveSelectionCursorObjs[i]->sprite;
-        if (++cursorSprite->data[0] > BLINK_SPEED)
+        
+        if (selectionCursorIndex > 4) // out of range
+            cursorSprite->invisible = TRUE;
+
+        else if (++cursorSprite->data[0] > BLINK_SPEED)
         {
             cursorSprite->invisible ^= TRUE;  // toggle invisibility
             cursorSprite->data[0] = 0;

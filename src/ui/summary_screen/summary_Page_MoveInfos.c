@@ -129,7 +129,9 @@ bool32 Page_IsScrolling()
 void Page_SetSwapping(bool8 b)
 {
     isSwapping = b;
-    sSelectedIndex = sScrollIndex + sCursorIndex;
+    if (b)
+        sSelectedIndex = sScrollIndex + sCursorIndex;
+    DebugPrintf("start swapping %d", sSelectedIndex);
 }
 
 bool8 Page_IsSwapping()
@@ -140,6 +142,7 @@ bool8 Page_IsSwapping()
 void Page_SetCursor(u32 index)
 {
     sCursorIndex = index;
+    DebugPrintf("set cursor %d", sCursorIndex);
 }
 
 u32 Page_GetCursor()
@@ -147,9 +150,25 @@ u32 Page_GetCursor()
     return sCursorIndex;
 }
 
-void Page_SwapMoves()
+u32 Page_GetSelectionCursor()
 {
-    DebugPrintf("swap moves");
+    return sSelectedIndex - sScrollIndex;
+}
+
+bool32 Page_SwapMoves()
+{
+    bool32 b;
+    u32 index = sScrollIndex + sCursorIndex;
+    
+    DebugPrintf("try swap moves -> %d %d", sScrollIndex + sCursorIndex, sSelectedIndex);
+    b = MoveChanger_SwapMonMoveSlots(sScrollIndex + sCursorIndex, sSelectedIndex);
+    if (b)
+    {
+        sCursorIndex = MIN(index, sCursorIndex);
+        sScrollIndex = 0;
+        UpdateBoxes();
+    }
+    return b;
 }
 
 void Page_PrintMoveDescription()

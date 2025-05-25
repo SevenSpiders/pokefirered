@@ -3440,6 +3440,8 @@ static u8 StatusToAilment(u32 status)
 static void Task_HandleInput_SelectMove(u8 taskId)
 {
     u8 i;
+    struct Pokemon * partyMons;
+    struct Pokemon * mon;
 
     switch (sMonSummaryScreen->selectMoveInputHandlerState)
     {
@@ -3588,6 +3590,8 @@ static void Task_HandleInput_SelectMove(u8 taskId)
                 if (sMonSummaryScreen->isBoxMon == 0)
                 {
                     // SwapMonMoveSlots();
+                    partyMons = sMonSummaryScreen->monList.mons;
+                    mon = &partyMons[GetLastViewedMonIndex()];
                     Page_SwapMoves();
                 }
                 else
@@ -3660,41 +3664,40 @@ static void Task_HandleInput_SelectMove(u8 taskId)
     }
 }
 
+// replaced
 static void SwapMonMoveSlots(void)
 {
-    // MoveChanger_SwapMonMoveSlots();
-    Page_SwapMoves();
-    // struct Pokemon * partyMons;
-    // struct Pokemon * mon;
+    struct Pokemon * partyMons;
+    struct Pokemon * mon;
 
-    // u16 move1, move2;
-    // u8 pp1, pp2;
-    // u8 allMovesPPBonuses;
-    // u8 move1ppBonus, move2ppBonus;
+    u16 move1, move2;
+    u8 pp1, pp2;
+    u8 allMovesPPBonuses;
+    u8 move1ppBonus, move2ppBonus;
 
-    // partyMons = sMonSummaryScreen->monList.mons;
-    // mon = &partyMons[GetLastViewedMonIndex()];
+    partyMons = sMonSummaryScreen->monList.mons;
+    mon = &partyMons[GetLastViewedMonIndex()];
 
-    // move1 = GetMonData(mon, MON_DATA_MOVE1 + sMoveSelectionCursorPos);
-    // move2 = GetMonData(mon, MON_DATA_MOVE1 + sMoveSwapCursorPos);
+    move1 = GetMonData(mon, MON_DATA_MOVE1 + sMoveSelectionCursorPos);
+    move2 = GetMonData(mon, MON_DATA_MOVE1 + sMoveSwapCursorPos);
 
-    // pp1 = GetMonData(mon, MON_DATA_PP1 + sMoveSelectionCursorPos);
-    // pp2 = GetMonData(mon, MON_DATA_PP1 + sMoveSwapCursorPos);
+    pp1 = GetMonData(mon, MON_DATA_PP1 + sMoveSelectionCursorPos);
+    pp2 = GetMonData(mon, MON_DATA_PP1 + sMoveSwapCursorPos);
 
-    // allMovesPPBonuses = GetMonData(mon, MON_DATA_PP_BONUSES);
+    allMovesPPBonuses = GetMonData(mon, MON_DATA_PP_BONUSES);
 
-    // move1ppBonus = (allMovesPPBonuses & gPPUpGetMask[sMoveSelectionCursorPos]) >> (sMoveSelectionCursorPos * 2);
-    // move2ppBonus = (allMovesPPBonuses & gPPUpGetMask[sMoveSwapCursorPos]) >> (sMoveSwapCursorPos * 2);
+    move1ppBonus = (allMovesPPBonuses & gPPUpGetMask[sMoveSelectionCursorPos]) >> (sMoveSelectionCursorPos * 2);
+    move2ppBonus = (allMovesPPBonuses & gPPUpGetMask[sMoveSwapCursorPos]) >> (sMoveSwapCursorPos * 2);
 
-    // allMovesPPBonuses &= ~gPPUpGetMask[sMoveSelectionCursorPos];
-    // allMovesPPBonuses &= ~gPPUpGetMask[sMoveSwapCursorPos];
-    // allMovesPPBonuses |= (move1ppBonus << (sMoveSwapCursorPos * 2)) + (move2ppBonus << (sMoveSelectionCursorPos * 2));
+    allMovesPPBonuses &= ~gPPUpGetMask[sMoveSelectionCursorPos];
+    allMovesPPBonuses &= ~gPPUpGetMask[sMoveSwapCursorPos];
+    allMovesPPBonuses |= (move1ppBonus << (sMoveSwapCursorPos * 2)) + (move2ppBonus << (sMoveSelectionCursorPos * 2));
 
-    // SetMonData(mon, MON_DATA_MOVE1 + sMoveSelectionCursorPos, (u8 *)&move2);
-    // SetMonData(mon, MON_DATA_MOVE1 + sMoveSwapCursorPos, (u8 *)&move1);
-    // SetMonData(mon, MON_DATA_PP1 + sMoveSelectionCursorPos, &pp2);
-    // SetMonData(mon, MON_DATA_PP1 + sMoveSwapCursorPos, &pp1);
-    // SetMonData(mon, MON_DATA_PP_BONUSES, &allMovesPPBonuses);
+    SetMonData(mon, MON_DATA_MOVE1 + sMoveSelectionCursorPos, (u8 *)&move2);
+    SetMonData(mon, MON_DATA_MOVE1 + sMoveSwapCursorPos, (u8 *)&move1);
+    SetMonData(mon, MON_DATA_PP1 + sMoveSelectionCursorPos, &pp2);
+    SetMonData(mon, MON_DATA_PP1 + sMoveSwapCursorPos, &pp1);
+    SetMonData(mon, MON_DATA_PP_BONUSES, &allMovesPPBonuses);
 }
 
 static void SwapBoxMonMoveSlots(void)
