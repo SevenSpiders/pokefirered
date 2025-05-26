@@ -3,172 +3,335 @@
 #include "string_util.h"
 #include "strings.h"
 #include "characters.h"
-#include "constants/moves.h" // temp hyper beam
+#include "constants/moves.h"
 
 #define MEMSET_ARR(arr, val) memset((arr), val, sizeof(arr))
-#define NUM_MOVEDATAS 25
+#define MAX_LEARNABLE_MOVES 48 /* Reduced for GBA memory constraints */
 
 extern const u8 *const gMoveDescriptionPointers[];
 
-static MoveData sMoveData[NUM_MOVEDATAS];
+// /* Improved MoveData structure */
+// typedef struct {
+//     u16 moveId;
+//     u8 learnLevel;
+//     u8 learnMethod; /* 0=level up, 1=TM/HM, 2=tutor, 3=egg, etc. */
+//     u8 isEquipped;  /* bool8 -> u8 for C89 */
+//     u8 equipSlot;   /* 0-3 if equipped, 255 if not */
+//     u8 type;
+//     u8 category;
+//     u8 power;
+//     u8 accuracy;
+//     u8 powerStr[4];
+//     u8 accuracyStr[5];
+// } LearnableMoveData;
 
-static u8 numMoves;
-static struct Pokemon * mon;
+static LearnableMoveData sLearnableMoves[MAX_LEARNABLE_MOVES];
+static u8 sNumLearnableMoves;
+static struct Pokemon *sPokemon;
 
-static void ClearData()
+/* Simple bubble sort optimized for small datasets */
+static void SortMoves(void)
 {
-    MEMSET_ARR(sMoveData, 0);
-    numMoves = 0;
-    mon = NULL;
-}
-
-static void SortMoves()
-{
-    u32 i, j;
-    MoveData temp; // Temporary variable for swapping structs
-    u32 n = NUM_MOVEDATAS; // Get the number of elements
-
-    // Outer loop for passes
-    for (i = 0; i < n - 1; i++)
+    u8 i, j;
+    LearnableMoveData temp;
+    u8 swapped;
+    
+    /* Early exit if no moves to sort */
+    if (sNumLearnableMoves <= 1)
+        return;
+    
+    /* Optimized bubble sort with early termination */
+    for (i = 0; i < sNumLearnableMoves - 1; i++)
     {
-        // Inner loop for comparisons and swaps
-        for (j = 0; j < n - i - 1; j++)
+        swapped = FALSE;
+        for (j = 0; j < sNumLearnableMoves - i - 1; j++)
         {
-            /*
-             * Comparison Logic:
-             * 1. Compare by moveSlot first.
-             * 2. If moveSlot values are equal, then compare by learnIndex.
-             *
-             * If the current element (sMoveData[j]) should come AFTER
-             * the next element (sMoveData[j+1]) based on the sorting criteria,
-             * then swap them.
-             */
-            if (sMoveData[j].moveSlot > sMoveData[j+1].moveSlot)
+            /* Sort by: equipped status (equipped first), then learn method, then level/ID */
+            if ((sLearnableMoves[j].isEquipped < sLearnableMoves[j+1].isEquipped) ||
+                (sLearnableMoves[j].isEquipped == sLearnableMoves[j+1].isEquipped && 
+                 sLearnableMoves[j].learnMethod > sLearnableMoves[j+1].learnMethod) ||
+                (sLearnableMoves[j].isEquipped == sLearnableMoves[j+1].isEquipped && 
+                 sLearnableMoves[j].learnMethod == sLearnableMoves[j+1].learnMethod &&
+                 ((sLearnableMoves[j].learnMethod == 0 && sLearnableMoves[j].learnLevel > sLearnableMoves[j+1].learnLevel) ||
+                  (sLearnableMoves[j].learnMethod != 0 && sLearnableMoves[j].moveId > sLearnableMoves[j+1].moveId))))
             {
-                // Primary key (moveSlot) is out of order, so swap
-                temp = sMoveData[j];
-                sMoveData[j] = sMoveData[j+1];
-                sMoveData[j+1] = temp;
-            }
-            else if (sMoveData[j].moveSlot == sMoveData[j+1].moveSlot)
-            {
-                // Primary key (moveSlot) is equal, compare secondary key (learnIndex)
-                if (sMoveData[j].learnIndex > sMoveData[j+1].learnIndex)
-                {
-                    // Secondary key (learnIndex) is out of order, so swap
-                    temp = sMoveData[j];
-                    sMoveData[j] = sMoveData[j+1];
-                    sMoveData[j+1] = temp;
-                }
+                temp = sLearnableMoves[j];
+                sLearnableMoves[j] = sLearnableMoves[j+1];
+                sLearnableMoves[j+1] = temp;
+                swapped = TRUE;
             }
         }
+        if (!swapped)
+            break; /* Array is sorted */
     }
 }
 
-MoveData *MoveChanger_GetMoveData(u8 i)
+static void ClearData(void)
 {
-    if (i >= NELEMS(sMoveData)) return NULL;
-    return &sMoveData[i];
+    MEMSET_ARR(sLearnableMoves, 0);
+    sNumLearnableMoves = 0;
+    sPokemon = NULL;
 }
 
-static void SetData(u32 index, u32 moveId)
+static void FormatMoveStats(LearnableMoveData *moveData)
 {
-    u8 power, accuracy;
-    sMoveData[index].id = moveId;
-    sMoveData[index].learnIndex = index;
-    sMoveData[index].moveSlot = 255;
-    if (moveId == 0)
-        return; 
+    if (moveData->moveId == MOVE_NONE)
+        return;
     
-    sMoveData[index].type = gBattleMoves[moveId].type;
-    sMoveData[index].category = gBattleMoves[moveId].category;
-
-    power = gBattleMoves[moveId].power;
-    if (power > 1) // 1 is 0 
-        ConvertIntToDecimalStringN( sMoveData[index].powerStr, power, STR_CONV_MODE_RIGHT_ALIGN, 3);
+    /* Format power */
+    if (moveData->power > 1) /* 1 represents 0 power */
+        ConvertIntToDecimalStringN(moveData->powerStr, moveData->power, STR_CONV_MODE_RIGHT_ALIGN, 3);
     else
-        StringCopy( sMoveData[index].powerStr, gText_ThreeHyphens);
-
-    accuracy = gBattleMoves[moveId].accuracy;
-    if (accuracy > 1) // 1 is 0 
-        ConvertIntToPercentageString( sMoveData[index].accuracyStr, power, STR_CONV_MODE_RIGHT_ALIGN, 4);
+        StringCopy(moveData->powerStr, gText_ThreeHyphens);
+    
+    /* Format accuracy - Fixed bug: was using 'power' instead of 'accuracy' */
+    if (moveData->accuracy > 1) /* 1 represents 0 accuracy (never misses) */
+        ConvertIntToPercentageString(moveData->accuracyStr, moveData->accuracy, STR_CONV_MODE_RIGHT_ALIGN, 4);
     else
-        StringCopy( sMoveData[index].accuracyStr, gText_ThreeHyphens);
+        StringCopy(moveData->accuracyStr, gText_ThreeHyphens);
 }
 
-u32 MoveChanger_SetPokemon(struct Pokemon * pokemon) 
+static u8 IsMoveEquipped(u16 moveId)
 {
-    u32 i, j, id;
-    u16 species = GetMonData(pokemon, MON_DATA_SPECIES, NULL);
-    u8 level = GetMonData(pokemon, MON_DATA_LEVEL, NULL);
-    bool32 isEquipped;
-
-    ClearData();
-    mon = pokemon;
-
+    u32 i;
     for (i = 0; i < MAX_MON_MOVES; i++)
     {
-        id = GetMonData(mon, MON_DATA_MOVE1 + i, NULL);
-        SetData(i, id);
-        sMoveData[i].moveSlot = i;
-        numMoves = i;
+        if (GetMonData(sPokemon, MON_DATA_MOVE1 + i, NULL) == moveId)
+            return TRUE;
     }
-
-    for (i = 0; i < MAX_LEVEL_UP_MOVES; i++)
-    {   
-        id = gLevelUpLearnsets[species][i] & LEVEL_UP_MOVE_ID; // remove level encoding in the first 8 bits
-        if (id == 0 || id >= 511) // end of learnset
-            return numMoves;
-
-        isEquipped = FALSE;
-        numMoves = i;
-        for (j = 0; j < MAX_MON_MOVES; j++)
-        {
-            if (id == GetMonData(mon, MON_DATA_MOVE1 + j, NULL))
-            {
-                isEquipped = TRUE;
-                break;
-            }
-        }
-        if (isEquipped)
-            continue; // already known
-        
-        SetData(i, id);
-    }
-    return numMoves;
+    return FALSE;
 }
 
-bool32 MoveChanger_SwapMonMoveSlots(struct Pokemon *mon0, u32 indexA, u32 indexB)
+static u8 GetEquippedSlot(u16 moveId)
 {
-    MoveData tempMove;
-
-    if (indexA > 3 && indexB > 3)
-        return FALSE;
-
-    if (indexA == indexB)
-        return FALSE;
-
-    // Swap the MoveData structs
-    tempMove = sMoveData[indexA];
-    sMoveData[indexA] = sMoveData[indexB];
-    sMoveData[indexB] = tempMove;
-
-    // Swap their moveSlot fields back to preserve original slot identity
+    u32 i;
+    for (i = 0; i < MAX_MON_MOVES; i++)
     {
-        u16 tempSlot = sMoveData[indexA].moveSlot;
-        sMoveData[indexA].moveSlot = sMoveData[indexB].moveSlot;
-        sMoveData[indexB].moveSlot = tempSlot;
+        if (GetMonData(sPokemon, MON_DATA_MOVE1 + i, NULL) == moveId)
+            return i;
     }
+    return 255; /* Not equipped */
+}
 
-    // Update Pokémon move list if needed
-    if (indexA < 4)
-        SetMonData(mon0, MON_DATA_MOVE1 + indexA, (u8 *)&sMoveData[indexA].id);
+/* Check if move already exists in our list to avoid duplicates */
+static u8 FindMoveInList(u16 moveId)
+{
+    u8 i;
+    for (i = 0; i < sNumLearnableMoves; i++)
+    {
+        if (sLearnableMoves[i].moveId == moveId)
+            return i;
+    }
+    return 255; /* Not found */
+}
 
-    if (indexB < 4)
-        SetMonData(mon0, MON_DATA_MOVE1 + indexB, (u8 *)&sMoveData[indexB].id);
+static void AddLearnableMove(u16 moveId, u8 learnLevel, u8 learnMethod)
+{
+    LearnableMoveData *move;
+    u8 existingIndex;
+    
+    if (sNumLearnableMoves >= MAX_LEARNABLE_MOVES || moveId == MOVE_NONE)
+        return;
+    
+    /* Check for duplicates */
+    existingIndex = FindMoveInList(moveId);
+    if (existingIndex != 255)
+    {
+        /* Update existing entry with better learn method if needed */
+        if (learnMethod < sLearnableMoves[existingIndex].learnMethod)
+        {
+            sLearnableMoves[existingIndex].learnMethod = learnMethod;
+            sLearnableMoves[existingIndex].learnLevel = learnLevel;
+        }
+        return;
+    }
+    
+    move = &sLearnableMoves[sNumLearnableMoves];
+    
+    move->moveId = moveId;
+    move->learnLevel = learnLevel;
+    move->learnMethod = learnMethod;
+    move->isEquipped = IsMoveEquipped(moveId);
+    move->equipSlot = move->isEquipped ? GetEquippedSlot(moveId) : 255;
+    
+    /* Set move stats from battle data */
+    move->type = gBattleMoves[moveId].type;
+    move->category = gBattleMoves[moveId].category;
+    move->power = gBattleMoves[moveId].power;
+    move->accuracy = gBattleMoves[moveId].accuracy;
+    
+    FormatMoveStats(move);
+    sNumLearnableMoves++;
+}
 
-    DebugPrintf("pokemon swap moves: %d <-> %d", sMoveData[indexA].moveSlot, sMoveData[indexB].moveSlot);
+static void PopulateLevelUpMoves(u16 species, u8 level)
+{
+    u32 i;
+    u16 moveId;
+    u8 moveLevel;
+    u16 learnsetEntry;
+    
+    for (i = 0; i < MAX_LEVEL_UP_MOVES; i++)
+    {
+        learnsetEntry = gLevelUpLearnsets[species][i];
+        if (learnsetEntry == LEVEL_UP_END)
+            break;
+            
+        moveLevel = learnsetEntry >> 8; // 0xFE00
+        moveId = learnsetEntry & LEVEL_UP_MOVE_ID; // 0x01FF
+        
+        /* Only include moves the Pokemon can learn at its current level or lower */
+        // if (moveLevel <= level)
+            AddLearnableMove(moveId, moveLevel, 0); /* 0 = level up method */
+    }
+}
 
+/* Public API functions */
+u32 MoveChanger_SetPokemon(struct Pokemon *pokemon)
+{
+    u16 species;
+    u8 level;
+    
+    if (pokemon == NULL)
+        return 0;
+    
+    species = GetMonData(pokemon, MON_DATA_SPECIES, NULL);
+    level = GetMonData(pokemon, MON_DATA_LEVEL, NULL);
+    
+    ClearData();
+    sPokemon = pokemon;
+    
+    /* Populate level-up moves */
+    PopulateLevelUpMoves(species, level);
+    
+    /* TODO: Add TM/HM moves, tutor moves, etc. */
+    /* PopulateTMMoves(species); */
+    /* PopulateTutorMoves(species); */
+    
+    /* Sort moves for better organization */
+    SortMoves();
+    
+    return sNumLearnableMoves;
+}
+
+LearnableMoveData *MoveChanger_GetMoveData(u8 index)
+{
+    if (index >= sNumLearnableMoves)
+        return NULL;
+    return &sLearnableMoves[index];
+}
+
+u8 MoveChanger_GetNumMoves(void)
+{
+    return sNumLearnableMoves;
+}
+
+u8 MoveChanger_GetNumEquippedMoves(void)
+{
+    u8 count;
+    u32 i;
+    
+    count = 0;
+    for (i = 0; i < sNumLearnableMoves; i++)
+    {
+        if (sLearnableMoves[i].isEquipped)
+            count++;
+    }
+    return count;
+}
+
+u8 MoveChanger_GetNumUnequippedMoves(void)
+{
+    return sNumLearnableMoves - MoveChanger_GetNumEquippedMoves();
+}
+
+u32 MoveChanger_SwapMoves(u8 newMoveIndex, u8 slotToReplace)
+{
+    LearnableMoveData *moveToTeach;
+    u16 oldMoveId;
+    u32 i;
+    
+    if (newMoveIndex >= sNumLearnableMoves || slotToReplace >= MAX_MON_MOVES)
+        return FALSE;
+    
+    moveToTeach = &sLearnableMoves[newMoveIndex];
+    
+    /* Can't teach a move that's already equipped */
+    if (moveToTeach->isEquipped)
+        return FALSE;
+    
+    /* Get the move currently in the slot we're replacing */
+    oldMoveId = GetMonData(sPokemon, MON_DATA_MOVE1 + slotToReplace, NULL);
+    
+    /* Atomic swap - update Pokemon data first */
+    SetMonData(sPokemon, MON_DATA_MOVE1 + slotToReplace, &moveToTeach->moveId);
+    
+    /* Update new move status */
+    moveToTeach->isEquipped = TRUE;
+    moveToTeach->equipSlot = slotToReplace;
+    
+    /* Update old move status in a single pass */
+    for (i = 0; i < sNumLearnableMoves; i++)
+    {
+        if (sLearnableMoves[i].moveId == oldMoveId && sLearnableMoves[i].equipSlot == slotToReplace)
+        {
+            sLearnableMoves[i].isEquipped = FALSE;
+            sLearnableMoves[i].equipSlot = 255;
+            break;
+        }
+    }
+    
+    /* Single sort after both changes */
+    SortMoves();
+    
     return TRUE;
 }
 
+/* Separate function for just forgetting a move (if still needed) */
+u32 MoveChanger_ForgetMove(u8 slotToForget)
+{
+    u16 moveToForget;
+    u16 noMove;
+    u32 i;
+    
+    if (slotToForget >= MAX_MON_MOVES)
+        return FALSE;
+    
+    moveToForget = GetMonData(sPokemon, MON_DATA_MOVE1 + slotToForget, NULL);
+    if (moveToForget == MOVE_NONE)
+        return FALSE;
+    
+    /* Clear the move slot */
+    noMove = MOVE_NONE;
+    SetMonData(sPokemon, MON_DATA_MOVE1 + slotToForget, &noMove);
+    
+    /* Update data structure */
+    for (i = 0; i < sNumLearnableMoves; i++)
+    {
+        if (sLearnableMoves[i].moveId == moveToForget && sLearnableMoves[i].equipSlot == slotToForget)
+        {
+            sLearnableMoves[i].isEquipped = FALSE;
+            sLearnableMoves[i].equipSlot = 255;
+            break;
+        }
+    }
+    
+    SortMoves();
+    
+    return TRUE;
+}
+
+/* Lightweight function to refresh equipped status without full rebuild */
+void MoveChanger_RefreshEquippedStatus(void)
+{
+    u32 i;
+    
+    for (i = 0; i < sNumLearnableMoves; i++)
+    {
+        sLearnableMoves[i].isEquipped = IsMoveEquipped(sLearnableMoves[i].moveId);
+        sLearnableMoves[i].equipSlot = sLearnableMoves[i].isEquipped ? 
+            GetEquippedSlot(sLearnableMoves[i].moveId) : 255;
+    }
+    
+    SortMoves();
+}

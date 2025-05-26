@@ -9,6 +9,7 @@
 #include "menu.h" // AddText
 #include "data.h" // move names
 #include "string.h" // pokesum pwr
+// #include "strings.h" // three hyphens
 #include "text.h"
 #include "bg.h"
 
@@ -25,6 +26,7 @@
 
 extern void BlitMenuInfoIcon(u8 windowId, u8 iconId, u16 x, u16 y);
 extern const u8 *const gMoveDescriptionPointers[];
+extern const u8 *const gMgText_ThreeHyphens;
 
 static u8 state;
 static SummaryPage *sPage;
@@ -159,11 +161,14 @@ bool32 Page_SwapMoves(struct Pokemon * mon)
 {
     bool32 b;
     u32 index = sScrollIndex + sCursorIndex;
+    u32 slotIndex = MIN(index, sSelectedIndex);
+    u32 moveIndex = MAX(index, sSelectedIndex);
+
     // u16 move1 = MOVE_HYPER_BEAM;
     // SetMonData(mon, MON_DATA_MOVE1 + 0, (u8 *)&move1);
     
-    DebugPrintf("try swap moves -> %d %d", sScrollIndex + sCursorIndex, sSelectedIndex);
-    b = MoveChanger_SwapMonMoveSlots(mon, sScrollIndex + sCursorIndex, sSelectedIndex);
+    DebugPrintf("try swap moves -> %d %d", moveIndex, slotIndex);
+    b = MoveChanger_SwapMoves(moveIndex, slotIndex);
     if (b)
     {
         sCursorIndex = MIN(index, sCursorIndex);
@@ -177,13 +182,13 @@ void Page_PrintMoveDescription()
 {
     u32 WindowId = 4;
 
-    MoveData *moveData;
+    LearnableMoveData *moveData;
     if (sCursorIndex >= 5)
         return;
 
     moveData = MoveChanger_GetMoveData(sCursorIndex + sScrollIndex);
 
-    if (moveData == NULL || moveData->id == 0)
+    if (moveData == NULL || moveData->moveId == 0)
         return;
 
     // DebugPrintf("print description %d", moveData->id);
@@ -199,7 +204,7 @@ void Page_PrintMoveDescription()
     // Description
     AddTextPrinterParameterized4(WindowId, FONT_SMALL, 7, 17, 0, 0,
                                     sLevelNickTextColors[0], TEXT_SKIP_DRAW,
-                                    gMoveDescriptionPointers[moveData->id]);
+                                    gMoveDescriptionPointers[moveData->moveId]);
 }
 
 
@@ -255,7 +260,7 @@ static bool8 Page_DrawBox(u32 i, u32 direction)
 
 static void PrintMoveText(u8 i)
 {
-    MoveData *moveData;
+    LearnableMoveData *moveData;
     const u8 *titleColor = sPrintMoveTextColors[0];
     const u8 *pwrColor = sPrintMoveTextColors[3];
 
@@ -266,8 +271,13 @@ static void PrintMoveText(u8 i)
 
     moveData = MoveChanger_GetMoveData(i + sScrollIndex);
 
-    if (moveData == NULL || moveData->id == 0)
+    if (moveData == NULL || moveData->moveId == 0)
+    {
+        // AddTextPrinterParameterized3(sPage->windowIds[WIN_NAMES], FONT_NORMAL, 
+        //     3, GetMoveNamePrinterYpos(i), titleColor, TEXT_SKIP_DRAW, 
+        //     gMgText_ThreeHyphens);
         return;
+    }
 
     // DebugPrintf("move id: %d window: %d", moveData->id, moveData->powerStr[2]);
 
@@ -279,7 +289,7 @@ static void PrintMoveText(u8 i)
     // Title
     AddTextPrinterParameterized3(sPage->windowIds[WIN_NAMES], FONT_NORMAL, 
         3, GetMoveNamePrinterYpos(i), titleColor, TEXT_SKIP_DRAW, 
-        gMoveNames[moveData->id]);
+        gMoveNames[moveData->moveId]);
     // Power
     AddTextPrinterParameterized3(sPage->windowIds[WIN_NAMES], FONT_SMALL,
         21, GetMovePpPrinterYpos(i)-1, pwrColor, TEXT_SKIP_DRAW, 
@@ -295,13 +305,15 @@ void Page_PrintMoveTexts()
     u32 i;
     bool8 dirty;
 
-    for (i=0; i< 5; i++)
+    for (i=0; i< 4; i++)
     {
-        // dirty |= Page_DrawBox(i);
         PrintMoveText(i);
     }
-    // if (dirty) 
-    //     CopyWindowToVram(2, COPYWIN_MAP); // backgrounds
+    if (isScrolling == TRUE)
+    {
+        PrintMoveText(4);
+        UpdateBoxes();
+    }
 }
 
 
@@ -312,7 +324,7 @@ void Page_DrawMoveIcons(void)
     u32 posXCategory = 4;
     u32 type, category;
     u32 windowId;
-    MoveData *moveData;
+    LearnableMoveData *moveData;
     if (isScrolling == TRUE)
         iMax = 5;
 
@@ -326,7 +338,7 @@ void Page_DrawMoveIcons(void)
         moveData = MoveChanger_GetMoveData(i + sScrollIndex);
         if (moveData == NULL)
             continue;
-        if (moveData->id == MOVE_NONE)
+        if (moveData->moveId == MOVE_NONE)
             continue;
         
         BlitMenuInfoIcon(windowId, moveData->type + 1, 3, GetMoveNamePrinterYpos(i)-1);
