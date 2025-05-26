@@ -14,7 +14,7 @@ typedef struct {
 
 
 u32 MoveChanger_SetPokemon(struct Pokemon * pokemon);
-bool32 MoveChanger_SwapMonMoveSlots(u32 indexA, u32 indexB);
+bool32 MoveChanger_SwapMonMoveSlots(struct Pokemon * mon, u32 indexA, u32 indexB);
 // void MoveChanger_SetCursor(u32 cursorIndex);
 
 MoveData *MoveChanger_GetMoveData(u8 i);

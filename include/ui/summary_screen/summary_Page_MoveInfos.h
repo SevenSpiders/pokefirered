@@ -13,7 +13,7 @@ void Page_DrawBoxes(void);
 void Page_DrawTweens(u8 direction); // 1 = up, 2 = down
 void Page_SetScrolling(bool8 b);
 void Page_SetSwapping(bool8 b);
-bool32 Page_SwapMoves(void);
+bool32 Page_SwapMoves(struct Pokemon * mon);
 void Page_SetCursor(u32 index);
 u32 Page_GetCursor(void);
 u32 Page_GetSelectionCursor(void);

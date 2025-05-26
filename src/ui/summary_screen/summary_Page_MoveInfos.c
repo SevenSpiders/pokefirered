@@ -155,13 +155,15 @@ u32 Page_GetSelectionCursor()
     return sSelectedIndex - sScrollIndex;
 }
 
-bool32 Page_SwapMoves()
+bool32 Page_SwapMoves(struct Pokemon * mon)
 {
     bool32 b;
     u32 index = sScrollIndex + sCursorIndex;
+    // u16 move1 = MOVE_HYPER_BEAM;
+    // SetMonData(mon, MON_DATA_MOVE1 + 0, (u8 *)&move1);
     
     DebugPrintf("try swap moves -> %d %d", sScrollIndex + sCursorIndex, sSelectedIndex);
-    b = MoveChanger_SwapMonMoveSlots(sScrollIndex + sCursorIndex, sSelectedIndex);
+    b = MoveChanger_SwapMonMoveSlots(mon, sScrollIndex + sCursorIndex, sSelectedIndex);
     if (b)
     {
         sCursorIndex = MIN(index, sCursorIndex);
