@@ -30,4 +30,10 @@ u32 MoveChanger_SwapMoves(u8 newMoveIndex, u8 slotToReplace);
 u32 MoveChanger_ForgetMove(u8 slotToForget);
 void MoveChanger_RefreshEquippedStatus(void);
 
+/* Efficient slot access functions */
+u16 MoveChanger_GetSlot(u8 slot);
+u8 MoveChanger_IsSlotEmpty(u8 slot);
+u8 MoveChanger_GetFirstEmptySlot(void);
+u8 MoveChanger_GetNumOccupiedSlots(void);
+
 #endif /* GUARD_SUMMARY_MOVE_CHANGER_H */

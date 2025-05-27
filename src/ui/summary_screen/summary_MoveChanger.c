@@ -7,27 +7,22 @@
 
 #define MEMSET_ARR(arr, val) memset((arr), val, sizeof(arr))
 #define MAX_LEARNABLE_MOVES 48 /* Reduced for GBA memory constraints */
+#define EMTPY_SLOT 255
 
 extern const u8 *const gMoveDescriptionPointers[];
-
-// /* Improved MoveData structure */
-// typedef struct {
-//     u16 moveId;
-//     u8 learnLevel;
-//     u8 learnMethod; /* 0=level up, 1=TM/HM, 2=tutor, 3=egg, etc. */
-//     u8 isEquipped;  /* bool8 -> u8 for C89 */
-//     u8 equipSlot;   /* 0-3 if equipped, 255 if not */
-//     u8 type;
-//     u8 category;
-//     u8 power;
-//     u8 accuracy;
-//     u8 powerStr[4];
-//     u8 accuracyStr[5];
-// } LearnableMoveData;
 
 static LearnableMoveData sLearnableMoves[MAX_LEARNABLE_MOVES];
 static u8 sNumLearnableMoves;
 static struct Pokemon *sPokemon;
+
+/* Cached move slots for fast access */
+static u16 sSlotIndex[MAX_MON_MOVES];
+static u8 sSlotsDirty;
+
+static void RefreshMoveSlots(void);
+static void InvalidateMoveSlots(void);
+
+
 
 /* Simple bubble sort optimized for small datasets */
 static void SortMoves(void)
@@ -69,7 +64,9 @@ static void SortMoves(void)
 static void ClearData(void)
 {
     MEMSET_ARR(sLearnableMoves, 0);
+    MEMSET_ARR(sSlotIndex, 0);
     sNumLearnableMoves = 0;
+    sSlotsDirty = TRUE;
     sPokemon = NULL;
 }
 
@@ -110,7 +107,7 @@ static u8 GetEquippedSlot(u16 moveId)
         if (GetMonData(sPokemon, MON_DATA_MOVE1 + i, NULL) == moveId)
             return i;
     }
-    return 255; /* Not equipped */
+    return EMTPY_SLOT; /* Not equipped */
 }
 
 /* Check if move already exists in our list to avoid duplicates */
@@ -122,7 +119,7 @@ static u8 FindMoveInList(u16 moveId)
         if (sLearnableMoves[i].moveId == moveId)
             return i;
     }
-    return 255; /* Not found */
+    return EMTPY_SLOT; /* Not found */
 }
 
 static void AddLearnableMove(u16 moveId, u8 learnLevel, u8 learnMethod)
@@ -177,8 +174,8 @@ static void PopulateLevelUpMoves(u16 species, u8 level)
         if (learnsetEntry == LEVEL_UP_END)
             break;
             
-        moveLevel = learnsetEntry >> 8; // 0xFE00
-        moveId = learnsetEntry & LEVEL_UP_MOVE_ID; // 0x01FF
+        moveLevel = learnsetEntry >> 8;
+        moveId = learnsetEntry & LEVEL_UP_MOVE_ID;
         
         /* Only include moves the Pokemon can learn at its current level or lower */
         // if (moveLevel <= level)
@@ -210,15 +207,39 @@ u32 MoveChanger_SetPokemon(struct Pokemon *pokemon)
     
     /* Sort moves for better organization */
     SortMoves();
+
+    // sets sSlotIndex
+    RefreshMoveSlots();
     
     return sNumLearnableMoves;
 }
 
 LearnableMoveData *MoveChanger_GetMoveData(u8 index)
 {
-    if (index >= sNumLearnableMoves)
-        return NULL;
-    return &sLearnableMoves[index];
+    u32 i, skips;
+
+    if (index < MAX_MON_MOVES) // first 4 moves are equipped moves
+    {
+        index = sSlotIndex[index];
+        if (index == EMTPY_SLOT || index >= sNumLearnableMoves) // no move in this slot
+            return NULL;
+        return &sLearnableMoves[index];
+    }
+    else
+    {
+        index -= MAX_MON_MOVES; // learnabled moves are after equipped moves
+        for (i = 0; i < sNumLearnableMoves; i++) // loop through moves ignoring equipped ones
+        {
+            if (sLearnableMoves[i].isEquipped)
+            {
+                skips++; // count equipped moves to skip them
+                continue; // skip this move, we want the next one
+            }
+            if (i == index + skips)
+                return &sLearnableMoves[i];
+        }
+        return NULL; // no move found at this index
+    }
 }
 
 u8 MoveChanger_GetNumMoves(void)
@@ -226,30 +247,33 @@ u8 MoveChanger_GetNumMoves(void)
     return sNumLearnableMoves;
 }
 
-u8 MoveChanger_GetNumEquippedMoves(void)
-{
-    u8 count;
-    u32 i;
+// u8 MoveChanger_GetNumEquippedMoves(void)
+// {
+//     u8 count;
+//     u32 i;
     
-    count = 0;
-    for (i = 0; i < sNumLearnableMoves; i++)
-    {
-        if (sLearnableMoves[i].isEquipped)
-            count++;
-    }
-    return count;
-}
+//     count = 0;
+//     for (i = 0; i < sNumLearnableMoves; i++)
+//     {
+//         if (sLearnableMoves[i].isEquipped)
+//             count++;
+//     }
+//     return count;
+// }
 
-u8 MoveChanger_GetNumUnequippedMoves(void)
-{
-    return sNumLearnableMoves - MoveChanger_GetNumEquippedMoves();
-}
+// u8 MoveChanger_GetNumUnequippedMoves(void)
+// {
+//     return sNumLearnableMoves - MoveChanger_GetNumEquippedMoves();
+// }
 
-u32 MoveChanger_SwapMoves(u8 newMoveIndex, u8 slotToReplace)
+
+u32 MoveChanger_SwapMoves(u8 indexA, u8 indexB)
 {
     LearnableMoveData *moveToTeach;
-    u16 oldMoveId;
-    u32 i;
+    u32 i, oldMoveIndex, newMoveIndex, slotToReplace;
+
+    slotToReplace = MIN(indexA, indexB);
+    newMoveIndex = MAX(indexA, indexB) - MAX_MON_MOVES; // Adjust for learnable moves offset
     
     if (newMoveIndex >= sNumLearnableMoves || slotToReplace >= MAX_MON_MOVES)
         return FALSE;
@@ -261,77 +285,80 @@ u32 MoveChanger_SwapMoves(u8 newMoveIndex, u8 slotToReplace)
         return FALSE;
     
     /* Get the move currently in the slot we're replacing */
-    oldMoveId = GetMonData(sPokemon, MON_DATA_MOVE1 + slotToReplace, NULL);
+    oldMoveIndex = sSlotIndex[slotToReplace];
     
     /* Atomic swap - update Pokemon data first */
     SetMonData(sPokemon, MON_DATA_MOVE1 + slotToReplace, &moveToTeach->moveId);
+    
+    /* Update cache immediately */
+    sSlotIndex[slotToReplace] = newMoveIndex;
     
     /* Update new move status */
     moveToTeach->isEquipped = TRUE;
     moveToTeach->equipSlot = slotToReplace;
     
     /* Update old move status in a single pass */
-    for (i = 0; i < sNumLearnableMoves; i++)
+    if (oldMoveIndex != EMTPY_SLOT)
     {
-        if (sLearnableMoves[i].moveId == oldMoveId && sLearnableMoves[i].equipSlot == slotToReplace)
-        {
-            sLearnableMoves[i].isEquipped = FALSE;
-            sLearnableMoves[i].equipSlot = 255;
-            break;
-        }
+        sLearnableMoves[oldMoveIndex].isEquipped = FALSE;
+        sLearnableMoves[oldMoveIndex].equipSlot = EMTPY_SLOT; // 255
     }
-    
-    /* Single sort after both changes */
-    SortMoves();
     
     return TRUE;
 }
 
-/* Separate function for just forgetting a move (if still needed) */
-u32 MoveChanger_ForgetMove(u8 slotToForget)
+// u32 MoveChanger_ForgetMove(u8 slotToForget)
+// {
+//     u16 moveToForget;
+//     u16 noMove;
+//     u32 i;
+    
+//     if (slotToForget >= MAX_MON_MOVES)
+//         return FALSE;
+    
+//     moveToForget = MoveChanger_GetSlot(slotToForget);
+//     if (moveToForget == MOVE_NONE)
+//         return FALSE;
+    
+//     /* Clear the move slot */
+//     noMove = MOVE_NONE;
+//     SetMonData(sPokemon, MON_DATA_MOVE1 + slotToForget, &noMove);
+    
+//     /* Update cache immediately */
+//     sSlotIndex[slotToForget] = MOVE_NONE;
+    
+//     /* Update data structure */
+//     for (i = 0; i < sNumLearnableMoves; i++)
+//     {
+//         if (sLearnableMoves[i].moveId == moveToForget && sLearnableMoves[i].equipSlot == slotToForget)
+//         {
+//             sLearnableMoves[i].isEquipped = FALSE;
+//             sLearnableMoves[i].equipSlot = 255;
+//             break;
+//         }
+//     }
+    
+//     SortMoves();
+    
+//     return TRUE;
+// }
+
+/* Update cached move slots */
+static void RefreshMoveSlots(void)
 {
-    u16 moveToForget;
-    u16 noMove;
-    u32 i;
+    u32 i, j;
     
-    if (slotToForget >= MAX_MON_MOVES)
-        return FALSE;
-    
-    moveToForget = GetMonData(sPokemon, MON_DATA_MOVE1 + slotToForget, NULL);
-    if (moveToForget == MOVE_NONE)
-        return FALSE;
-    
-    /* Clear the move slot */
-    noMove = MOVE_NONE;
-    SetMonData(sPokemon, MON_DATA_MOVE1 + slotToForget, &noMove);
-    
-    /* Update data structure */
-    for (i = 0; i < sNumLearnableMoves; i++)
+    for (i = 0; i < MAX_MON_MOVES; i++)
     {
-        if (sLearnableMoves[i].moveId == moveToForget && sLearnableMoves[i].equipSlot == slotToForget)
+        sSlotIndex[i] = EMTPY_SLOT;
+        for (j =0; j < sNumLearnableMoves; j++)
         {
-            sLearnableMoves[i].isEquipped = FALSE;
-            sLearnableMoves[i].equipSlot = 255;
-            break;
+            if (sLearnableMoves[j].equipSlot == i)
+            {
+                sSlotIndex[i] = j;
+                break;
+            }
         }
     }
-    
-    SortMoves();
-    
-    return TRUE;
-}
-
-/* Lightweight function to refresh equipped status without full rebuild */
-void MoveChanger_RefreshEquippedStatus(void)
-{
-    u32 i;
-    
-    for (i = 0; i < sNumLearnableMoves; i++)
-    {
-        sLearnableMoves[i].isEquipped = IsMoveEquipped(sLearnableMoves[i].moveId);
-        sLearnableMoves[i].equipSlot = sLearnableMoves[i].isEquipped ? 
-            GetEquippedSlot(sLearnableMoves[i].moveId) : 255;
-    }
-    
-    SortMoves();
+    sSlotsDirty = FALSE;
 }
