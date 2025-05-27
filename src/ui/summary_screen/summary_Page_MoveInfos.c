@@ -168,7 +168,7 @@ bool32 Page_SwapMoves(struct Pokemon * mon)
     // SetMonData(mon, MON_DATA_MOVE1 + 0, (u8 *)&move1);
     
     DebugPrintf("try swap moves -> %d %d", moveIndex, slotIndex);
-    b = MoveChanger_SwapMoves(moveIndex, slotIndex);
+    b = MoveChanger_SwapMoves(mon, moveIndex, slotIndex);
     if (b)
     {
         sCursorIndex = MIN(index, sCursorIndex);
