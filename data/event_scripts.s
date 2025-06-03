@@ -1360,3 +1360,6 @@ Text_TestMsg::
 	.include "data/text/save.inc"
 	.include "data/text/new_game_intro.inc"
 	.include "data/text/pokedude.inc"
+
+	.include "data/maps/RockGarden/scripts.inc"
+	.include "data/maps/RockGarden/text.inc"

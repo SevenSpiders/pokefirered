@@ -225,7 +225,7 @@ SummaryPage *Page_MoveInfos_Init(void)
 
 void Page_SetPokemon(struct Pokemon * pokemon) 
 {
-    maxScroll = MoveChanger_SetPokemon(pokemon) - 3;
+    maxScroll = MoveChanger_SetPokemon(pokemon) - 4;
     DebugPrintf("set pokemon -> moves %d", maxScroll);
 }
 

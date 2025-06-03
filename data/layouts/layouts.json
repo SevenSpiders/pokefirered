@@ -4380,6 +4380,18 @@
       "secondary_tileset": "gTileset_MtEmber",
       "border_filepath": "data/layouts/OneIsland_KindleRoad_EmberSpa/border.bin",
       "blockdata_filepath": "data/layouts/OneIsland_KindleRoad_EmberSpa/map.bin"
+    },
+    {
+      "id": "LAYOUT_ROCK_GARDEN",
+      "name": "RockGarden_Layout",
+      "width": 70,
+      "height": 40,
+      "border_width": 2,
+      "border_height": 2,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_DiglettsCave",
+      "border_filepath": "data/layouts/RockGarden/border.bin",
+      "blockdata_filepath": "data/layouts/RockGarden/map.bin"
     }
   ]
 }

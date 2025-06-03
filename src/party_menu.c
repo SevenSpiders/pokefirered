@@ -2963,6 +2963,15 @@ static void SetPartyMonSelectionActions(struct Pokemon *mons, u8 slotId, u8 acti
     }
 }
 
+static void AppendFieldMove(struct Pokemon *mons, u16 slotId, u16 tm, u16 fieldMove)
+{
+    if (sPartyMenuInternal->numActions < 5 && CanMonLearnTMHM(&mons[slotId], tm - ITEM_TM01))
+        AppendToList(
+            sPartyMenuInternal->actions, 
+            &sPartyMenuInternal->numActions, 
+            fieldMove + CURSOR_OPTION_FIELD_MOVES); // Move
+}
+
 static void SetPartyMonFieldSelectionActions(struct Pokemon *mons, u8 slotId)
 {
     u8 i, j;
@@ -2981,14 +2990,34 @@ static void SetPartyMonFieldSelectionActions(struct Pokemon *mons, u8 slotId)
             }
         }
     }
-    if (sPartyMenuInternal->numActions < 5)//GetNumberOfRelearnableMoves(&mons[slotId]) != 0)
-        AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, CURSOR_OPTION_CHANGE_MOVES);
-    if (sPartyMenuInternal->numActions < 5 && CanMonLearnTMHM(&mons[slotId], ITEM_HM02_FLY - ITEM_TM01))
-        AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, 2+CURSOR_OPTION_FIELD_MOVES); // FLY
-    if (sPartyMenuInternal->numActions < 5 && CanMonLearnTMHM(&mons[slotId], ITEM_HM01_CUT - ITEM_TM01))
-        AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, 1+CURSOR_OPTION_FIELD_MOVES); // Cut
-    if (sPartyMenuInternal->numActions < 5 && CanMonLearnTMHM(&mons[slotId], ITEM_HM03_SURF - ITEM_TM01)) 
-        AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, 4+CURSOR_OPTION_FIELD_MOVES); // surf
+    // if (sPartyMenuInternal->numActions < 5)//GetNumberOfRelearnableMoves(&mons[slotId]) != 0)
+    //     AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, CURSOR_OPTION_CHANGE_MOVES);
+    AppendFieldMove(mons, slotId, ITEM_HM01_CUT, FIELD_MOVE_CUT);
+    AppendFieldMove(mons, slotId, ITEM_HM02_FLY, FIELD_MOVE_FLY);
+    AppendFieldMove(mons, slotId, ITEM_HM03_SURF, FIELD_MOVE_SURF);
+    AppendFieldMove(mons, slotId, ITEM_HM04_STRENGTH, FIELD_MOVE_STRENGTH);
+    AppendFieldMove(mons, slotId, ITEM_HM05_FLASH, FIELD_MOVE_FLASH);
+    AppendFieldMove(mons, slotId, ITEM_HM06_ROCK_SMASH, FIELD_MOVE_ROCK_SMASH);
+    // AppendFieldMove(mons, slotId, ITEM_HM07_WATERFALL, FIELD_MOVE_WATERFALL);
+    AppendFieldMove(mons, slotId, ITEM_TM28_DIG, FIELD_MOVE_DIG);
+
+
+    // if (sPartyMenuInternal->numActions < 5 && CanMonLearnTMHM(&mons[slotId], ITEM_HM02_FLY - ITEM_TM01))
+    //     AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, FIELD_MOVE_FLY+CURSOR_OPTION_FIELD_MOVES); // FLY
+    // if (sPartyMenuInternal->numActions < 5 && CanMonLearnTMHM(&mons[slotId], ITEM_HM01_CUT - ITEM_TM01))
+    //     AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, FIELD_MOVE_CUT+CURSOR_OPTION_FIELD_MOVES); // Cut
+    // if (sPartyMenuInternal->numActions < 5 && CanMonLearnTMHM(&mons[slotId], ITEM_HM03_SURF - ITEM_TM01)) 
+    //     AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, FIELD_MOVE_SURF+CURSOR_OPTION_FIELD_MOVES); // surf
+    // if (sPartyMenuInternal->numActions < 5 && CanMonLearnTMHM(&mons[slotId], ITEM_HM04_STRENGTH - ITEM_TM01)) 
+    //     AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, FIELD_MOVE_STRENGTH+CURSOR_OPTION_FIELD_MOVES); // surf
+    // if (sPartyMenuInternal->numActions < 5 && CanMonLearnTMHM(&mons[slotId], ITEM_HM05_FLASH - ITEM_TM01)) 
+    //     AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, FIELD_MOVE_FLASH+CURSOR_OPTION_FIELD_MOVES); // Flash
+    // if (sPartyMenuInternal->numActions < 5 && CanMonLearnTMHM(&mons[slotId], ITEM_HM06_ROCK_SMASH - ITEM_TM01)) 
+    //     AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, FIELD_MOVE_ROCK_SMASH+CURSOR_OPTION_FIELD_MOVES); // surf
+    // if (sPartyMenuInternal->numActions < 5 && CanMonLearnTMHM(&mons[slotId], ITEM_HM07_WATERFALL - ITEM_TM01)) 
+    //     AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, FIELD_MOVE_WATERFALL+CURSOR_OPTION_FIELD_MOVES); // surf
+    // if (sPartyMenuInternal->numActions < 5 && CanMonLearnTMHM(&mons[slotId], ITEM_HM06_ROCK_SMASH - ITEM_TM01)) 
+    //     AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, FIELD_MOVE_ROCK_SMASH+CURSOR_OPTION_FIELD_MOVES); // surf
     if (GetMonData(&mons[1], MON_DATA_SPECIES) != SPECIES_NONE)
         AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, CURSOR_OPTION_SWITCH);
     if (ItemIsMail(GetMonData(&mons[slotId], MON_DATA_HELD_ITEM)))

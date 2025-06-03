@@ -731,14 +731,14 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .bodyColor = BODY_COLOR_PURPLE,
         .noFlip = FALSE,
     },
-    [SPECIES_PIKACHU] =
+    [SPECIES_PIKACHU] = // change to partner pokemon
     {
-        .baseHP = 35,
-        .baseAttack = 55,
-        .baseDefense = 30,
-        .baseSpeed = 90,
-        .baseSpAttack = 50,
-        .baseSpDefense = 40,
+        .baseHP = 45,
+        .baseAttack = 80,
+        .baseDefense = 50,
+        .baseSpeed = 120,
+        .baseSpAttack = 75,
+        .baseSpDefense = 60,
         .types = {TYPE_ELECTRIC, TYPE_ELECTRIC},
         .catchRate = 190,
         .expYield = 82,
