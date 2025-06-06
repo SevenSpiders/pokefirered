@@ -3,7 +3,7 @@
 
 #include "global.h"
 
-void Healthbar_UpdateInfo(bool8 showInfo);
+void Healthbox_UpdateInfo(bool8 showInfo);
 
 
 

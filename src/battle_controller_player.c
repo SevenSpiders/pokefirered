@@ -306,9 +306,9 @@ static void HandleInputChooseAction(void)
             PlayerBufferExecCompleted();
         }
     }
-    else if (JOY_NEW(START_BUTTON))
+    else 
     {
-        SwapHpBarsWithHpText();
+        Healthbox_UpdateInfo(JOY_HELD(SELECT_BUTTON));
     }
 }
 
@@ -581,10 +581,10 @@ void HandleInputChooseMove(void)
     // }
     else //if (JOY_NEW(SELECT_BUTTON))
     {
-        Healthbar_UpdateInfo(JOY_HELD(SELECT_BUTTON));
+        Healthbox_UpdateInfo(JOY_HELD(SELECT_BUTTON));
         // if (JOY_HELD(SELECT_BUTTON))
         // else
-        //     Healthbar_UpdateInfo(FALSE);
+        //     Healthbox_UpdateInfo(FALSE);
     }
 }
 

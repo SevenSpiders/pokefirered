@@ -5,20 +5,20 @@ static bool8 sIsShowingInfo;
 
 static void ShowInfo(void)
 {
-    Healthbox_ShowInfo(gHealthboxSpriteIds[1]);
+    Healthbox_Blank(gHealthboxSpriteIds[1]);
+    // show info window
     DebugPrintf("Show info");
-    // sIsShowingInfo = TRUE;
 }
 
 static void ResetHealthBar(void)
 {
     Healthbox_HideInfo(gHealthboxSpriteIds[1]);
-    UpdateHealthboxAttribute(gHealthboxSpriteIds[gActiveBattler], &gEnemyParty[gBattlerPartyIndexes[gActiveBattler]], HEALTHBOX_ALL);
+    UpdateHealthboxAttribute(gHealthboxSpriteIds[1], &gEnemyParty[gBattlerPartyIndexes[0]], HEALTHBOX_ALL);
     DebugPrintf("Hide info");
 }
 
 
-void Healthbar_UpdateInfo(bool8 showInfo)
+void Healthbox_UpdateInfo(bool8 showInfo)
 {
     if (showInfo == sIsShowingInfo)
         return;
