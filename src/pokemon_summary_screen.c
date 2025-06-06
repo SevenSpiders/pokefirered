@@ -2425,16 +2425,52 @@ static void PrintInfoPage(void)
     }
 }
 
+static void PrintIVStars(u8 x, u8 y)
+{
+    u8 bg = sMonSummaryScreen->skillsPageBgNum;
+    u8 tile_star = 0x6f;
+    u8 pal = 0;
+    FillBgTilemapBufferRect(sMonSummaryScreen->skillsPageBgNum, tile_star, x, y, 1, 1, pal);
+}
+
 static void PrintSkillsPage(void)
 {
-    AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_RIGHT_PANE], FONT_NORMAL, 14 + sMonSkillsPrinterXpos->curHpStr, 4, sLevelNickTextColors[0], TEXT_SKIP_DRAW, sMonSummaryScreen->summary.curHpStrBuf);
-    AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_RIGHT_PANE], FONT_NORMAL, 50 + sMonSkillsPrinterXpos->atkStr, 22, sLevelNickTextColors[0], TEXT_SKIP_DRAW, sMonSummaryScreen->summary.statValueStrBufs[PSS_STAT_ATK]);
-    AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_RIGHT_PANE], FONT_NORMAL, 50 + sMonSkillsPrinterXpos->defStr, 35, sLevelNickTextColors[0], TEXT_SKIP_DRAW, sMonSummaryScreen->summary.statValueStrBufs[PSS_STAT_DEF]);
-    AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_RIGHT_PANE], FONT_NORMAL, 50 + sMonSkillsPrinterXpos->spAStr, 48, sLevelNickTextColors[0], TEXT_SKIP_DRAW, sMonSummaryScreen->summary.statValueStrBufs[PSS_STAT_SPA]);
-    AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_RIGHT_PANE], FONT_NORMAL, 50 + sMonSkillsPrinterXpos->spDStr, 61, sLevelNickTextColors[0], TEXT_SKIP_DRAW, sMonSummaryScreen->summary.statValueStrBufs[PSS_STAT_SPD]);
-    AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_RIGHT_PANE], FONT_NORMAL, 50 + sMonSkillsPrinterXpos->speStr, 74, sLevelNickTextColors[0], TEXT_SKIP_DRAW, sMonSummaryScreen->summary.statValueStrBufs[PSS_STAT_SPE]);
-    AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_RIGHT_PANE], FONT_NORMAL, 15 + sMonSkillsPrinterXpos->expStr, 87, sLevelNickTextColors[0], TEXT_SKIP_DRAW, sMonSummaryScreen->summary.expPointsStrBuf);
-    AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_RIGHT_PANE], FONT_NORMAL, 15 + sMonSkillsPrinterXpos->toNextLevel, 100, sLevelNickTextColors[0], TEXT_SKIP_DRAW, sMonSummaryScreen->summary.expToNextLevelStrBuf);
+    u8 x,y;
+
+    u8 windowId = sMonSummaryScreen->windowIds[POKESUM_WIN_RIGHT_PANE];
+
+    x = 14 + sMonSkillsPrinterXpos->curHpStr;
+    y = 4;
+    AddTextPrinterParameterized3(windowId, FONT_NORMAL, x, y, sLevelNickTextColors[0], TEXT_SKIP_DRAW, sMonSummaryScreen->summary.curHpStrBuf);
+    // PrintIVStars(x, y);
+
+    x = 50 + sMonSkillsPrinterXpos->atkStr;
+    y = 22;
+    AddTextPrinterParameterized3(windowId, FONT_NORMAL, x, y, sLevelNickTextColors[0], TEXT_SKIP_DRAW, sMonSummaryScreen->summary.statValueStrBufs[PSS_STAT_ATK]);
+    
+    x = 50 + sMonSkillsPrinterXpos->defStr;
+    y = 35;
+    AddTextPrinterParameterized3(windowId, FONT_NORMAL, x, y, sLevelNickTextColors[0], TEXT_SKIP_DRAW, sMonSummaryScreen->summary.statValueStrBufs[PSS_STAT_DEF]);
+    
+    x = 50 + sMonSkillsPrinterXpos->spAStr;
+    y = 48;
+    AddTextPrinterParameterized3(windowId, FONT_NORMAL, x, y, sLevelNickTextColors[0], TEXT_SKIP_DRAW, sMonSummaryScreen->summary.statValueStrBufs[PSS_STAT_SPA]);
+    
+    x = 50 + sMonSkillsPrinterXpos->spDStr;
+    y = 61;
+    AddTextPrinterParameterized3(windowId, FONT_NORMAL, x, y, sLevelNickTextColors[0], TEXT_SKIP_DRAW, sMonSummaryScreen->summary.statValueStrBufs[PSS_STAT_SPD]);
+    
+    x = 50 + sMonSkillsPrinterXpos->speStr;
+    y = 74;
+    AddTextPrinterParameterized3(windowId, FONT_NORMAL, x, y, sLevelNickTextColors[0], TEXT_SKIP_DRAW, sMonSummaryScreen->summary.statValueStrBufs[PSS_STAT_SPE]);
+    
+    x = 15 + sMonSkillsPrinterXpos->expStr;
+    y = 87;
+    AddTextPrinterParameterized3(windowId, FONT_NORMAL, x, y, sLevelNickTextColors[0], TEXT_SKIP_DRAW, sMonSummaryScreen->summary.expPointsStrBuf);
+    
+    x = 15 + sMonSkillsPrinterXpos->toNextLevel;
+    y = 100;
+    AddTextPrinterParameterized3(windowId, FONT_NORMAL, x, y, sLevelNickTextColors[0], TEXT_SKIP_DRAW, sMonSummaryScreen->summary.expToNextLevelStrBuf);
 }
 
 #define GetMoveNamePrinterYpos(x) ((x) * 28 + 5)

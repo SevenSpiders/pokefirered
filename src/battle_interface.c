@@ -65,6 +65,13 @@ struct TestingBar
 #define B_INTERFACE_GFX_BOTTOM_RIGHT_CORNER_HP_AS_BAR  117 // healthbox in double battles
 
 
+#define B_HEALTHBAR_NUM_PIXELS 48
+#define B_HEALTHBAR_NUM_TILES  (B_HEALTHBAR_NUM_PIXELS / 8)
+#define B_EXPBAR_NUM_PIXELS    64
+#define B_EXPBAR_NUM_TILES     (B_EXPBAR_NUM_PIXELS / 8)
+
+static bool32 sIsShowingInfo;
+
 static void SpriteCB_HealthBoxOther(struct Sprite *sprite);
 static void SpriteCB_HealthBar(struct Sprite *sprite);
 static const u8 *GetBattleInterfaceGfxPtr(u8 which);
@@ -1833,10 +1840,74 @@ void UpdateHealthboxAttribute(u8 healthboxSpriteId, struct Pokemon *mon, u8 elem
     }
 }
 
-#define B_HEALTHBAR_NUM_PIXELS 48
-#define B_HEALTHBAR_NUM_TILES  (B_HEALTHBAR_NUM_PIXELS / 8)
-#define B_EXPBAR_NUM_PIXELS    64
-#define B_EXPBAR_NUM_TILES     (B_EXPBAR_NUM_PIXELS / 8)
+void Healthbox_HideInfo(u8 healthboxSpriteId)
+{
+    u8 i, battlerId, healthBarSpriteId;
+
+    battlerId = gSprites[healthboxSpriteId].sBattlerId;
+    healthBarSpriteId = gSprites[healthboxSpriteId].sHealthBarSpriteId;
+
+    TryAddPokeballIconToHealthbox(healthboxSpriteId, TRUE);
+
+    if (!gBattleSpritesDataPtr->battlerData[battlerId].hpNumbersNoBars)
+        CpuCopy32(GetBattleInterfaceGfxPtr(B_INTERFACE_GFX_HP_BAR_HP_TEXT),
+            (void *)(OBJ_VRAM0 + gSprites[healthBarSpriteId].oam.tileNum * TILE_SIZE_4BPP),
+            2 * TILE_SIZE_4BPP);
+
+
+    sIsShowingInfo = FALSE;
+}
+
+#define TILE_VRAM_ADDRESS(tile_offset) ((void *)(OBJ_VRAM0 + (tile_offset) * TILE_SIZE_4BPP))
+
+void Healthbox_ShowInfo(u8 healthboxSpriteId)
+{
+    // healthbox elements: 40 x 3 tiles -> 120 tiles
+    const u8 *blankGfxPtr = GetBattleInterfaceGfxPtr(B_INTERFACE_GFX_STATUS_NONE);
+    s16 tileNumAdder = 17; // healthbox: 16 x 4 tiles -> 64 tiles
+    u8 i, battlerId, healthBarSpriteId;
+    u16 tileNum;
+    // u32 status, pltAdder;
+    // u8 statusPalId;
+    // FillWindowPixelBuffer(1, PIXEL_FILL(2));
+    
+    battlerId = gSprites[healthboxSpriteId].sBattlerId;
+    healthBarSpriteId = gSprites[healthboxSpriteId].sHealthBarSpriteId;
+    tileNum = gSprites[healthboxSpriteId].oam.tileNum;
+    DebugPrintf("tile num %d", tileNum);
+
+    // CpuCopy32(blankGfxPtr,
+    //     (void *)(OBJ_VRAM0 + (tileNum + tileNumAdder + 5) * TILE_SIZE_4BPP),
+    //     1 * TILE_SIZE_4BPP);
+    
+
+    // for (i = 0; i < 7; i++)
+    //     CpuCopy32(blankGfxPtr,
+    //         (void *)(OBJ_VRAM0 + (tileNum + tileNumAdder + i) * TILE_SIZE_4BPP),
+    //         1 * TILE_SIZE_4BPP);
+
+    for (i = 0; i < B_HEALTHBAR_NUM_TILES; i++)
+    {
+        // u8 healthbarSpriteId = gSprites[gBattleSpritesDataPtr->battleBars[battlerId].healthboxSpriteId].sHealthBarSpriteId;
+        if (i < 2) // first 2 tiles are on left healthbar sprite
+            CpuCopy32(blankGfxPtr,
+                        (void *)(OBJ_VRAM0 + (tileNum + 2 + i) * TILE_SIZE_4BPP), // + 2 here is due to B_INTERFACE_GFX_HP_BAR_HP_TEXT
+                        1 * TILE_SIZE_4BPP);
+        else // remaining 4 tiles are on right healthbar sprite
+            CpuCopy32(blankGfxPtr,
+                        (void *)(OBJ_VRAM0 + 64 + (tileNum + i) * TILE_SIZE_4BPP),
+                        1 * TILE_SIZE_4BPP);
+    }
+
+    // if (!gBattleSpritesDataPtr->battlerData[battlerId].hpNumbersNoBars)
+        // CpuCopy32(blankGfxPtr,
+        //             (void *)(OBJ_VRAM0 + gSprites[healthBarSpriteId].oam.tileNum * TILE_SIZE_4BPP),
+        //             2 * TILE_SIZE_4BPP);
+
+    // TryAddPokeballIconToHealthbox(healthboxSpriteId, FALSE);
+    sIsShowingInfo = TRUE;
+}
+
 
 s32 MoveBattleBar(u8 battlerId, u8 healthboxSpriteId, u8 whichBar, u8 unused)
 {

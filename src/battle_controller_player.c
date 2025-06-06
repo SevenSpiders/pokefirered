@@ -25,6 +25,7 @@
 #include "constants/sound.h"
 #include "battle_controller/move_info_display.h"
 #include "battle_controller/healthbar_icons_display.h"
+#include "ui/battle/heathbar_info.h"
 
 static void PlayerHandleGetMonData(void);
 static void PlayerHandleSetMonData(void);
@@ -223,7 +224,7 @@ static void HandleInputChooseAction(void)
 
     DoBounceEffect(gActiveBattler, BOUNCE_HEALTHBOX, 7, 1);
     DoBounceEffect(gActiveBattler, BOUNCE_MON, 7, 1);
-    HealthbarUpdateStatus(0);
+    // HealthbarUpdateStatus(0);
     if (JOY_NEW(A_BUTTON))
     {
         PlaySE(SE_SELECT);
@@ -512,8 +513,6 @@ void HandleInputChooseMove(void)
     }
     else if (JOY_NEW(DPAD_LEFT))
     {
-        // DebugPrintf("pressed left");
-        MgbaPrintf((1), "pressed left");
         if (gMoveSelectionCursor[gActiveBattler] & 1)
         {
             MoveSelectionDestroyCursorAt(gMoveSelectionCursor[gActiveBattler]);
@@ -566,19 +565,26 @@ void HandleInputChooseMove(void)
             BeginNormalPaletteFade(0xF0000, 0, 0, 0, RGB_WHITE);
         }
     }
-    else if (JOY_NEW(SELECT_BUTTON))
+    // else if (JOY_NEW(SELECT_BUTTON))
+    // {
+        // if (gNumberOfMovesToChoose > 1 && !(gBattleTypeFlags & BATTLE_TYPE_LINK))
+        // {
+        //     MoveSelectionCreateCursorAt(gMoveSelectionCursor[gActiveBattler], 29);
+        //     if (gMoveSelectionCursor[gActiveBattler] != 0)
+        //         gMultiUsePlayerCursor = 0;
+        //     else
+        //         gMultiUsePlayerCursor = gMoveSelectionCursor[gActiveBattler] + 1;
+        //     MoveSelectionCreateCursorAt(gMultiUsePlayerCursor, 27);
+        //     BattlePutTextOnWindow(gText_BattleSwitchWhich, B_WIN_SWITCH_PROMPT);
+        //     gBattlerControllerFuncs[gActiveBattler] = HandleMoveSwitching;
+        // }
+    // }
+    else //if (JOY_NEW(SELECT_BUTTON))
     {
-        if (gNumberOfMovesToChoose > 1 && !(gBattleTypeFlags & BATTLE_TYPE_LINK))
-        {
-            MoveSelectionCreateCursorAt(gMoveSelectionCursor[gActiveBattler], 29);
-            if (gMoveSelectionCursor[gActiveBattler] != 0)
-                gMultiUsePlayerCursor = 0;
-            else
-                gMultiUsePlayerCursor = gMoveSelectionCursor[gActiveBattler] + 1;
-            MoveSelectionCreateCursorAt(gMultiUsePlayerCursor, 27);
-            BattlePutTextOnWindow(gText_BattleSwitchWhich, B_WIN_SWITCH_PROMPT);
-            gBattlerControllerFuncs[gActiveBattler] = HandleMoveSwitching;
-        }
+        Healthbar_UpdateInfo(JOY_HELD(SELECT_BUTTON));
+        // if (JOY_HELD(SELECT_BUTTON))
+        // else
+        //     Healthbar_UpdateInfo(FALSE);
     }
 }
 

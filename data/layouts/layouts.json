@@ -4389,7 +4389,7 @@
       "border_width": 2,
       "border_height": 2,
       "primary_tileset": "gTileset_General",
-      "secondary_tileset": "gTileset_DiglettsCave",
+      "secondary_tileset": "gTileset_CeladonGym",
       "border_filepath": "data/layouts/RockGarden/border.bin",
       "blockdata_filepath": "data/layouts/RockGarden/map.bin"
     }
