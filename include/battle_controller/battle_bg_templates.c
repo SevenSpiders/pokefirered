@@ -120,7 +120,7 @@ static const struct WindowTemplate sStandardBattleWindowTemplates[] = {
         .paletteNum = 5,
         .baseBlock = 260
     },
-    [B_WIN_HB_STATUS_0] = { // enemy
+    [B_WIN_ICONS_OPPONENT1] = { // enemy
         .bg = 0,
         .tilemapLeft = 2,
         .tilemapTop = 5,
@@ -129,7 +129,7 @@ static const struct WindowTemplate sStandardBattleWindowTemplates[] = {
         .paletteNum = 10,
         .baseBlock = 266 // 266
     },
-    [B_WIN_HB_STATUS_1] = { // player
+    [B_WIN_ICONS_PLAYER1] = { // player
         .bg = 0,
         .tilemapLeft = 17,
         .tilemapTop = 12,
