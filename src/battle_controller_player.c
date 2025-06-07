@@ -108,6 +108,7 @@ static void Task_GiveExpWithExpBar(u8 taskId);
 static void Task_CreateLevelUpVerticalStripes(u8 taskId);
 static void StartSendOutAnim(u8 battlerId, bool8 dontClearSubstituteBit);
 static void EndDrawPartyStatusSummary(void);
+static void SetBG0_Offset(u16 x, u16 y);
 
 static void (*const sPlayerBufferCommands[CONTROLLER_CMDS_COUNT])(void) =
 {
@@ -174,6 +175,13 @@ static const u8 sTargetIdentities[] = { B_POSITION_PLAYER_LEFT, B_POSITION_PLAYE
 
 // unknown unused data
 static const u8 sUnused[] = { 0x48, 0x48, 0x20, 0x5a, 0x50, 0x50, 0x50, 0x58 };
+
+static void SetBG0_Offset(u16 x, u16 y)
+{
+    gBattle_BG0_X = x;
+    gBattle_BG0_Y = y;
+    StatusIcons_SetOffset(x, y);
+}
 
 void BattleControllerDummy(void)
 {
@@ -601,8 +609,9 @@ static u32 HandleMoveInputUnused(void)
     if (JOY_NEW(B_BUTTON))
     {
         PlaySE(SE_SELECT);
-        gBattle_BG0_X = 0;
-        gBattle_BG0_Y = 0x140;
+        SetBG0_Offset(0, 320);
+        // gBattle_BG0_X = 0;
+        // gBattle_BG0_Y = 0x140;
         var = 0xFF;
     }
     if (JOY_NEW(DPAD_LEFT) && gMoveSelectionCursor[gActiveBattler] & 1)
@@ -1452,8 +1461,9 @@ static void PrintLinkStandbyMsg(void)
 {
     if (gBattleTypeFlags & BATTLE_TYPE_LINK)
     {
-        gBattle_BG0_X = 0;
-        gBattle_BG0_Y = 0;
+        // gBattle_BG0_X = 0;
+        // gBattle_BG0_Y = 0;
+        SetBG0_Offset(0, 0);
         BattlePutTextOnWindow(gText_LinkStandby, B_WIN_MSG);
     }
 }
@@ -2347,8 +2357,9 @@ static void PlayerHandlePrintString(void)
 {
     u16 *stringId;
 
-    gBattle_BG0_X = 0;
-    gBattle_BG0_Y = 0;
+    // gBattle_BG0_X = 0;
+    // gBattle_BG0_Y = 0;
+    SetBG0_Offset(0, 0);
     stringId = (u16 *)(&gBattleBufferA[gActiveBattler][2]);
     BufferStringBattle(*stringId);
     if (BattleStringShouldBeColored(*stringId))
@@ -2370,8 +2381,9 @@ static void HandleChooseActionAfterDma3(void)
 {
     if (!IsDma3ManagerBusyWithBgCopy())
     {
-        gBattle_BG0_X = 0;
-        gBattle_BG0_Y = 160;
+        // gBattle_BG0_X = 0;
+        // gBattle_BG0_Y = 160;
+        SetBG0_Offset(0, 160);
         gBattlerControllerFuncs[gActiveBattler] = HandleInputChooseAction;
     }
 }
@@ -2388,6 +2400,7 @@ static void PlayerHandleChooseAction(void)
     ActionSelectionCreateCursorAt(gActionSelectionCursor[gActiveBattler], 0);
     BattleStringExpandPlaceholdersToDisplayedString(gText_WhatWillPkmnDo);
     BattlePutTextOnWindow(gDisplayedStringBattle, B_WIN_ACTION_PROMPT);
+    // HealthbarUpdateStatus(0);
 }
 
 static void PlayerHandleUnknownYesNoBox(void)
@@ -2398,8 +2411,9 @@ static void HandleChooseMoveAfterDma3(void)
 {
     if (!IsDma3ManagerBusyWithBgCopy())
     {
-        gBattle_BG0_X = 0;
-        gBattle_BG0_Y = 320;
+        // gBattle_BG0_X = 0;
+        // gBattle_BG0_Y = 320;
+        SetBG0_Offset(0, 320);
         gBattlerControllerFuncs[gActiveBattler] = HandleInputChooseMove;
     }
 }

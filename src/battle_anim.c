@@ -202,7 +202,7 @@ void LaunchBattleAnimation(const u8 *const animsTable[], u16 tableId, bool8 isMo
     s32 i;
 
     InitPrioritiesForVisibleBattlers();
-    UpdateOamPriorityInAllHealthboxes(0);
+    // UpdateOamPriorityInAllHealthboxes(0);
     for (i = 0; i < MAX_BATTLERS_COUNT; i++)
     {
         if (GetBattlerSide(i) != B_SIDE_PLAYER)

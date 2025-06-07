@@ -120,23 +120,23 @@ static const struct WindowTemplate sStandardBattleWindowTemplates[] = {
         .paletteNum = 5,
         .baseBlock = 260
     },
-    [B_WIN_HB_STATUS_0] = {
+    [B_WIN_HB_STATUS_0] = { // enemy
         .bg = 0,
-        .tilemapLeft = 17,
-        .tilemapTop = 52,
-        .width = 12, // 12
+        .tilemapLeft = 2,
+        .tilemapTop = 5,
+        .width = 13, // 12
         .height = 2, // 2
         .paletteNum = 10,
         .baseBlock = 266 // 266
     },
-    [B_WIN_HB_STATUS_1] = {
+    [B_WIN_HB_STATUS_1] = { // player
         .bg = 0,
         .tilemapLeft = 17,
-        .tilemapTop = 45,
-        .width = 12, // 12
+        .tilemapTop = 12,
+        .width = 13, // 12
         .height = 2, // 2
         .paletteNum = 10,
-        .baseBlock = 290 // 266
+        .baseBlock = 292 // 266
     },
     [B_WIN_MOVE_CATEGORY] = {
         .bg = 0,
