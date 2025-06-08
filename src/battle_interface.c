@@ -111,6 +111,21 @@ static const struct OamData sOamData_Healthbox = {
     .priority = 1
 };
 
+typedef struct
+{
+    bool32 isHPTextVisible;
+    bool32 isExpBarVisible;
+    bool32 isShowingInfo;
+    u32 HPvalue_current;
+    u32 HPvalue_max;
+    u32 HPvalue_old;
+    u32 spriteId_box;
+    u32 spriteId_healthbar;
+    u32 spriteId_expbar;
+} Healthbox_Data;
+
+static Healthbox_Data sHealthboxes[4];
+
 static const struct SpriteTemplate sHealthboxPlayerSpriteTemplates[] = {
     [B_POSITION_PLAYER_LEFT / 2] = {
         .tileTag = TAG_HEALTHBOX_PLAYER1_TILE,
@@ -806,10 +821,36 @@ static void UpdateLvlInHealthbox(u8 healthboxSpriteId, u8 lvl)
     RemoveWindowOnHealthbox(windowId);
 }
 
+void Healthbox_ShowHPText(u8 healthboxId, bool32 showText)
+{
+    if (sHealthboxes[healthboxId].isHPTextVisible == showText)
+        return;
+
+    DebugPrintf("Healthbox_ShowHPText: healthboxId %d, showText %d\n", healthboxId, showText);
+
+    sHealthboxes[healthboxId].isHPTextVisible = showText;
+
+    if (showText)
+        UpdateHpTextInHealthbox(healthboxId, 100, 100);//gBattleSpritesDataPtr->battlerData[gSprites[healthboxSpriteId].sBattlerId].hp, HP_CURRENT);
+    else
+    {
+        const u8 *blankGfxPtr = GetBattleInterfaceGfxPtr(B_INTERFACE_GFX_STATUS_NONE);
+        u32 tileNum_box = gSprites[healthboxId].oam.tileNum;
+        u32 i;
+        for (i=0; i< 4; i++)
+        {
+            CpuCopy32(blankGfxPtr, TILE_VRAM_ADDRESS(tileNum_box + 88 + i), TILE_SIZE_4BPP);
+        }
+    }
+}
+
 void UpdateHpTextInHealthbox(u8 healthboxSpriteId, s16 value, u8 maxOrCurrent)
 {
     u32 windowId, spriteTileNum;
     u8 *windowTileData;
+
+    if (sHealthboxes[healthboxSpriteId].isHPTextVisible == FALSE)
+        return;
 
     if (GetBattlerSide(gSprites[healthboxSpriteId].sBattlerId) == B_SIDE_PLAYER && !IsDoubleBattle())
     {
