@@ -1121,49 +1121,49 @@ static void Cmd_attackstring(void)
 
 static void Cmd_ppreduce(void)
 {
-    s32 ppToDeduct = 1;
+    // s32 ppToDeduct = 1;
 
-    if (gBattleControllerExecFlags)
-        return;
+    // if (gBattleControllerExecFlags)
+    //     return;
 
-    if (!gSpecialStatuses[gBattlerAttacker].ppNotAffectedByPressure)
-    {
-        switch (gBattleMoves[gCurrentMove].target)
-        {
-        case MOVE_TARGET_FOES_AND_ALLY:
-            ppToDeduct += AbilityBattleEffects(ABILITYEFFECT_COUNT_ON_FIELD, gBattlerAttacker, ABILITY_PRESSURE, 0, 0);
-            break;
-        case MOVE_TARGET_BOTH:
-        case MOVE_TARGET_OPPONENTS_FIELD:
-            ppToDeduct += AbilityBattleEffects(ABILITYEFFECT_COUNT_OTHER_SIDE, gBattlerAttacker, ABILITY_PRESSURE, 0, 0);
-            break;
-        default:
-            if (gBattlerAttacker != gBattlerTarget && gBattleMons[gBattlerTarget].ability == ABILITY_PRESSURE)
-                ppToDeduct++;
-            break;
-        }
-    }
+    // if (!gSpecialStatuses[gBattlerAttacker].ppNotAffectedByPressure)
+    // {
+    //     switch (gBattleMoves[gCurrentMove].target)
+    //     {
+    //     case MOVE_TARGET_FOES_AND_ALLY:
+    //         ppToDeduct += AbilityBattleEffects(ABILITYEFFECT_COUNT_ON_FIELD, gBattlerAttacker, ABILITY_PRESSURE, 0, 0);
+    //         break;
+    //     case MOVE_TARGET_BOTH:
+    //     case MOVE_TARGET_OPPONENTS_FIELD:
+    //         ppToDeduct += AbilityBattleEffects(ABILITYEFFECT_COUNT_OTHER_SIDE, gBattlerAttacker, ABILITY_PRESSURE, 0, 0);
+    //         break;
+    //     default:
+    //         if (gBattlerAttacker != gBattlerTarget && gBattleMons[gBattlerTarget].ability == ABILITY_PRESSURE)
+    //             ppToDeduct++;
+    //         break;
+    //     }
+    // }
 
-    if (!(gHitMarker & (HITMARKER_NO_PPDEDUCT | HITMARKER_NO_ATTACKSTRING)) && gBattleMons[gBattlerAttacker].pp[gCurrMovePos])
-    {
-        gProtectStructs[gBattlerAttacker].notFirstStrike = 1;
+    // if (!(gHitMarker & (HITMARKER_NO_PPDEDUCT | HITMARKER_NO_ATTACKSTRING)) && gBattleMons[gBattlerAttacker].pp[gCurrMovePos])
+    // {
+    //     gProtectStructs[gBattlerAttacker].notFirstStrike = 1;
 
-        if (gBattleMons[gBattlerAttacker].pp[gCurrMovePos] > ppToDeduct)
-            gBattleMons[gBattlerAttacker].pp[gCurrMovePos] -= ppToDeduct;
-        else
-            gBattleMons[gBattlerAttacker].pp[gCurrMovePos] = 0;
+    //     if (gBattleMons[gBattlerAttacker].pp[gCurrMovePos] > ppToDeduct)
+    //         gBattleMons[gBattlerAttacker].pp[gCurrMovePos] -= ppToDeduct;
+    //     else
+    //         gBattleMons[gBattlerAttacker].pp[gCurrMovePos] = 0;
 
-        if (MOVE_IS_PERMANENT(gBattlerAttacker, gCurrMovePos))
-        {
-            gActiveBattler = gBattlerAttacker;
-            BtlController_EmitSetMonData(BUFFER_A, REQUEST_PPMOVE1_BATTLE + gCurrMovePos, 0,
-                                         sizeof(gBattleMons[gBattlerAttacker].pp[gCurrMovePos]),
-                                         &gBattleMons[gBattlerAttacker].pp[gCurrMovePos]);
-            MarkBattlerForControllerExec(gBattlerAttacker);
-        }
-    }
+    //     if (MOVE_IS_PERMANENT(gBattlerAttacker, gCurrMovePos))
+    //     {
+    //         gActiveBattler = gBattlerAttacker;
+    //         BtlController_EmitSetMonData(BUFFER_A, REQUEST_PPMOVE1_BATTLE + gCurrMovePos, 0,
+    //                                      sizeof(gBattleMons[gBattlerAttacker].pp[gCurrMovePos]),
+    //                                      &gBattleMons[gBattlerAttacker].pp[gCurrMovePos]);
+    //         MarkBattlerForControllerExec(gBattlerAttacker);
+    //     }
+    // }
 
-    gHitMarker &= ~HITMARKER_NO_PPDEDUCT;
+    // gHitMarker &= ~HITMARKER_NO_PPDEDUCT;
     gBattlescriptCurrInstr++;
 }
 

@@ -4392,6 +4392,18 @@
       "secondary_tileset": "gTileset_CeladonGym",
       "border_filepath": "data/layouts/RockGarden/border.bin",
       "blockdata_filepath": "data/layouts/RockGarden/map.bin"
+    },
+    {
+      "id": "LAYOUT_ROUTE20_NORTH",
+      "name": "Route20_North_Layout",
+      "width": 20,
+      "height": 20,
+      "border_width": 2,
+      "border_height": 2,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_CinnabarIsland",
+      "border_filepath": "data/layouts/Route20_North/border.bin",
+      "blockdata_filepath": "data/layouts/Route20_North/map.bin"
     }
   ]
 }

@@ -13,7 +13,11 @@
 #define B_INTERFACE_GFX_STATUS_PSN_BATTLER0 21
 #define PAL_STATUS_PSN 0
 #define MULTIPLIER_ICON_INDEX 25 // Offset for multiplier icons in sSplitIcons_Gfx
-
+#define TRAY_PLAYER1 0
+#define TRAY_OPPONENT1 1
+// #define TRAY_PLAYER2 2 
+// #define TRAY_OPPONENT2 3
+#define TRAY_ZONE 2
 
 typedef struct {
     u32 windowId;
@@ -32,6 +36,7 @@ struct MoveMenuInfoIcon
 static void BlitMenuInfoIcon(u8 windowId, const u8 *gfx, struct MoveMenuInfoIcon icon, u16 x, u16 y);
 static void Init();
 static void ClearIconTray(u32 trayIndex);
+static void AddIcon(IconTray *iconTray, u32 iconIndex);
 static void UpdateIconTray(u32 trayIndex);
 static void SetStatusIcon(u32 monIndex);
 static void SetStatus2Icon(u32 monIndex);
@@ -96,24 +101,55 @@ static const struct MoveMenuInfoIcon status_icons[] = {
     [MULTIPLIER_ICON_INDEX + 6] = {11,8, 0x13a}, // x6 multiplier
 };
 
+static const struct MoveMenuInfoIcon zone_icons[] = {
+    [0] = { 19, 10, 4}, // Green Background
+    [1] = { 19, 10, 7}, // Red Background
+    [2] = { 16, 8,  0xc0}, // Spikes x1
+    [3] = { 16, 8,  0xc2}, // Spikes x2
+    [4] = { 16, 8,  0xc4}, // Spikes x3
+    [5] = { 16, 8,  0xd0}, // Light Screen
+    [6] = { 16, 8,  0xd2}, // Reflect
+    [7] = { 16, 8,  0xd4}, // Safeguard
+    [8] = { 16, 8,  0xe0}, // Mist
+};
+
 static void Init()
 {
     LoadPalette(sSplitIcons_Pal, 10 * 0x10, sizeof(sSplitIcons_Pal));
     sInitialized = TRUE;
 
-    sIconTrays[0].windowId = B_WIN_ICONS_PLAYER1; // player
-    sIconTrays[0].tilemapTop = 12; // y offset for player icons
-    sIconTrays[0].offsetY = 3; // 3 pixel from top
+    sIconTrays[TRAY_PLAYER1].windowId = B_WIN_ICONS_PLAYER1; // player
+    sIconTrays[TRAY_PLAYER1].tilemapTop = 12; // y offset for player icons
+    sIconTrays[TRAY_PLAYER1].offsetY = 3; // 3 pixel from top
 
-    sIconTrays[1].windowId = B_WIN_ICONS_OPPONENT1; // enemy
-    sIconTrays[1].tilemapTop = 5; // y offset for enemy icons
-    sIconTrays[1].offsetY = 0;
+    sIconTrays[TRAY_OPPONENT1].windowId = B_WIN_ICONS_OPPONENT1; // enemy
+    sIconTrays[TRAY_OPPONENT1].tilemapTop = 5; // y offset for enemy icons
+    sIconTrays[TRAY_OPPONENT1].offsetY = 0;
+
+    sIconTrays[TRAY_ZONE].windowId = B_WIN_ICONS_ZONE; // player
+    sIconTrays[TRAY_ZONE].tilemapTop = 0; // y offset for player icons
+    sIconTrays[TRAY_ZONE].offsetY = 2; // 3 pixel from top
 }
 
 static void ClearIconTray(u32 trayIndex)
 {
     FillWindowPixelBuffer(sIconTrays[trayIndex].windowId, PIXEL_FILL(0));
     sIconTrays[trayIndex].offsetX = 0;
+}
+
+static void AddIcon(IconTray *iconTray, u32 iconIndex)
+{
+    BlitMenuInfoIcon(iconTray->windowId, sSplitIcons_Gfx, status_icons[iconIndex], iconTray->offsetX + 2, iconTray->offsetY);
+    iconTray->offsetX += status_icons[iconIndex].width;
+}
+
+static void AddZoneIcon(u32 iconIndex, bool32 side)
+{
+    u32 width = status_icons[iconIndex].width;
+    u32 offsetX = 104 - width - sIconTrays[TRAY_ZONE].offsetX - 4;
+    BlitMenuInfoIcon(sIconTrays[TRAY_ZONE].windowId, sSplitIcons_Gfx, zone_icons[side], offsetX, sIconTrays[TRAY_ZONE].offsetY);
+    BlitMenuInfoIcon(sIconTrays[TRAY_ZONE].windowId, sSplitIcons_Gfx, zone_icons[iconIndex], offsetX+1, sIconTrays[TRAY_ZONE].offsetY+1);
+    sIconTrays[TRAY_ZONE].offsetX += width + 3;
 }
 
 static void UpdateIconTray(u32 trayIndex)
@@ -124,12 +160,14 @@ static void UpdateIconTray(u32 trayIndex)
     ClearIconTray(trayIndex);
     SetStatusIcon(trayIndex);
     SetStatus2Icon(trayIndex);
+    if (sIconTrays[trayIndex].offsetX > 5)
+        sIconTrays[trayIndex].offsetX += 2;
 
     for (i=1; i< NUM_BATTLE_STATS; i++)
     {
         SetStatIcon(trayIndex, i); // STAT_ATK, STAT_DEF, STAT_SPEED, STAT_SPATK, STAT_SPDEF, STAT_ACC, STAT_EVASION
     }
-    // if trayIndex == 0 -> check if offset covers HP numbers -> hide or show them
+
     if (trayIndex == 0)
         Healthbox_ShowHPText(0, sIconTrays[trayIndex].offsetX < 50);
 
@@ -139,7 +177,18 @@ static void UpdateIconTray(u32 trayIndex)
 
 static void UpdateZoneIconTray()
 {
+    u32 i;
+    u32 tilemapTop =  sBGOffsetY / 8 + sIconTrays[TRAY_ZONE].tilemapTop;
     // for zone effects like weather, spikes, light screen etc.
+    // u32 side = 0;
+    // gSideStatuses[side] & SIDE_STATUS_REFLECT
+    SetWindowAttribute(sIconTrays[TRAY_ZONE].windowId, WINDOW_TILEMAP_TOP, tilemapTop);
+    for (i=0; i < 6; i++)
+    {
+        AddZoneIcon(i+2, i%2);
+    }
+    PutWindowTilemap(sIconTrays[TRAY_ZONE].windowId);
+    CopyWindowToVram(sIconTrays[TRAY_ZONE].windowId, COPYWIN_FULL);
 }
 
 static void SetStatusIcon(u32 monIndex)
@@ -155,20 +204,17 @@ static void SetStatusIcon(u32 monIndex)
         return;
 
     if (status & STATUS1_PSN_ANY)
-        iconIndex = 20; // Poison
+        AddIcon(iconTray, 20);
     else if (status & STATUS1_PARALYSIS)
-        iconIndex = 21; // Paralysis
+        AddIcon(iconTray, 21);
     else if (status & STATUS1_SLEEP)
-        iconIndex = 22; // Sleep
+        AddIcon(iconTray, 22);
     else if (status & STATUS1_FREEZE)
-        iconIndex = 23; // Freeze
+        AddIcon(iconTray, 23);
     else if (status & STATUS1_BURN)
-        iconIndex = 24; // Burn
+        AddIcon(iconTray, 24);
     else
-        return; // No icon for this status
-
-    BlitMenuInfoIcon(iconTray->windowId, sSplitIcons_Gfx, status_icons[iconIndex], iconTray->offsetX + 2, iconTray->offsetY);
-    iconTray->offsetX += status_icons[iconIndex].width + 2;
+        DebugPrintf("unknown status1 %d", status);
 }
 
 static void SetStatus2Icon(u32 monIndex)
@@ -176,30 +222,23 @@ static void SetStatus2Icon(u32 monIndex)
     IconTray *iconTray = &sIconTrays[monIndex];
     struct BattlePokemon *battleMon = &gBattleMons[monIndex];
     u32 status2 = battleMon->status2;
-    u32 iconIndex = 0;
 
-    // DebugPrintf("SetStatus2Icon: mon%d, status2=0x%08x", monIndex, status2);
 
     if (status2 == 0)
         return;
 
     if (status2 & STATUS2_CONFUSION)
-        iconIndex = 17; // Confusion
-    else if (status2 & STATUS2_WRAPPED)
-        iconIndex = 19; // Wrapped
-    else if (status2 & STATUS2_FLINCHED)
-        iconIndex = 16; // Flinched
-    else if (status2 & STATUS2_INFATUATION)
-        iconIndex = 18; // Infatuation
-    else if (status2 & STATUS2_BIDE)
-        iconIndex = 15; // Bide
-    else if (status2 & STATUS2_FOCUS_ENERGY)
-        iconIndex = 0; // Focus Energy (no icon, but placeholder for consistency)
-    else
-        return; // No icon for this status
-
-    BlitMenuInfoIcon(iconTray->windowId, sSplitIcons_Gfx, status_icons[iconIndex], iconTray->offsetX + 2, iconTray->offsetY);
-    iconTray->offsetX += status_icons[iconIndex].width + 2;
+        AddIcon(iconTray, 17); // Confusion
+    if (status2 & STATUS2_WRAPPED)
+        AddIcon(iconTray, 19); // Wrapped
+    if (status2 & STATUS2_FLINCHED)
+        AddIcon(iconTray, 16); // Flinched
+    if (status2 & STATUS2_INFATUATION)
+        AddIcon(iconTray, 15); // Infatuation (Critical Hit icon)
+    if (status2 & STATUS2_BIDE)
+        AddIcon(iconTray, 0); // Bide (no icon, but placeholder for consistency)
+    if (status2 & STATUS2_FOCUS_ENERGY)
+        AddIcon(iconTray, 0); // Focus Energy (no icon, but placeholder for consistency)    
 }
 
 static void SetStatIcon(u32 monIndex, u8 stat)
@@ -216,7 +255,6 @@ static void SetStatIcon(u32 monIndex, u8 stat)
         return; // No icon for neutral stat stage
     
     statStage = abs(statStage);
-    
     BlitMenuInfoIcon(iconTray->windowId, sSplitIcons_Gfx, iconData, iconTray->offsetX + 2, iconTray->offsetY);
     iconTray->offsetX += iconData.width;
 
@@ -234,8 +272,8 @@ void HealthbarUpdateStatus(s16 _unused)
     if (!sInitialized)
         Init();
 
-    UpdateIconTray(0);
-    UpdateIconTray(1);
+    UpdateIconTray(TRAY_PLAYER1);
+    UpdateIconTray(TRAY_OPPONENT1);
     UpdateZoneIconTray();
 }
 

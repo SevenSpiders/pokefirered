@@ -1363,3 +1363,6 @@ Text_TestMsg::
 
 	.include "data/maps/RockGarden/scripts.inc"
 	.include "data/maps/RockGarden/text.inc"
+
+	.include "data/maps/Route20_North/scripts.inc"
+	.include "data/maps/Route20_North/text.inc"

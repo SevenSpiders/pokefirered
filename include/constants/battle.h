@@ -334,8 +334,9 @@
 #define B_WIN_MOVE_NAME_4         6 // Bottom right
 #define B_WIN_MOVE_PWR                  7
 #define B_WIN_MOVE_POWER           8
-#define B_WIN_ICONS_OPPONENT1        17 // 9
 #define B_WIN_ICONS_PLAYER1        25
+#define B_WIN_ICONS_ZONE        26
+#define B_WIN_ICONS_OPPONENT1        17 // 9
 #define B_WIN_MOVE_CATEGORY      10
 #define B_WIN_SWITCH_PROMPT      11 // "Switch which?"
 #define B_WIN_LEVEL_UP_BOX       12
@@ -351,6 +352,7 @@
 #define B_WIN_VS_OUTCOME_LEFT    22
 #define B_WIN_VS_OUTCOME_RIGHT   23
 #define B_WIN_OAK_OLD_MAN        24
+#define B_WIN_DUMMY              27 // NEEDS TO BE LAST   
 
 #define B_TEXT_FLAG_NPC_CONTEXT_FONT    (1 << 6)
 #define B_TEXT_FLAG_WINDOW_CLEAR        (1 << 7)
