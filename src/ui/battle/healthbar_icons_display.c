@@ -185,7 +185,7 @@ static void UpdateZoneIconTray()
     SetWindowAttribute(sIconTrays[TRAY_ZONE].windowId, WINDOW_TILEMAP_TOP, tilemapTop);
     for (i=0; i < 6; i++)
     {
-        AddZoneIcon(i+2, i%2);
+        // AddZoneIcon(i+2, i%2);
     }
     PutWindowTilemap(sIconTrays[TRAY_ZONE].windowId);
     CopyWindowToVram(sIconTrays[TRAY_ZONE].windowId, COPYWIN_FULL);
@@ -239,6 +239,21 @@ static void SetStatus2Icon(u32 monIndex)
         AddIcon(iconTray, 0); // Bide (no icon, but placeholder for consistency)
     if (status2 & STATUS2_FOCUS_ENERGY)
         AddIcon(iconTray, 0); // Focus Energy (no icon, but placeholder for consistency)    
+}
+
+static void SetStatus3Icons(u32 monIndex)
+{
+    // IconTray *iconTray = &sIconTrays[monIndex];
+    // struct BattlePokemon *battleMon = &gBattleMons[monIndex];
+    // u32 status3 = battleMon->status3;
+
+    // if (status3 == 0)
+    //     return;
+
+    // if (status3 & STATUS3_LEECH_SEED)
+    //     AddIcon(iconTray, 0); // Leech Seed (no icon, but placeholder for consistency)
+    // if (status3 & STATUS3_CURSE)
+    //     AddIcon(iconTray, 0); // Curse (no icon, but placeholder for consistency)
 }
 
 static void SetStatIcon(u32 monIndex, u8 stat)
