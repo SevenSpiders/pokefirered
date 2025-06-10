@@ -144,6 +144,24 @@ static const struct WindowTemplate sStandardBattleWindowTemplates[] = {
         .paletteNum = 10,
         .baseBlock = 292 // 266
     },
+    [B_WIN_HEALTHBOX_OPPONENT1] = { // player
+        .bg = 0,
+        .tilemapLeft = 2,
+        .tilemapTop = 2,
+        .width = 11, // 12
+        .height = 3, // 2
+        .paletteNum = 10,
+        .baseBlock = 512 // 266
+    },
+    [B_WIN_HEALTHBOX_PLAYER1] = { // player
+        .bg = 0,
+        .tilemapLeft = 17,
+        .tilemapTop = 12,
+        .width = 11, // 12
+        .height = 3, // 2
+        .paletteNum = 10,
+        .baseBlock = 512 + 33 // 266
+    },
     [B_WIN_ICONS_ZONE] = { // Zone
         .bg = 0,
         .tilemapLeft = 17,

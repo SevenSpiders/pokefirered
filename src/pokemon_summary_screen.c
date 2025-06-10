@@ -35,7 +35,7 @@
 #include "pokemon_storage_system.h"
 #include "constants/sound.h"
 
-#include "ui/summary_screen/summary_moveChanger.h"
+#include "ui/summary_screen/summary_MoveHandler.h"
 #include "ui/summary_screen/summary_screenData.h"
 #include "ui/summary_screen/summary_PageManager.h"
 #include "ui/summary_screen/summary_CursorObjs.h"
@@ -2384,6 +2384,7 @@ static void PokeSum_PrintRightPaneText(void)
         break;
     case PSS_PAGE_MOVES:
     case PSS_PAGE_MOVES_INFO:
+        // Page_DrawBoxes();
         Page_PrintMoveTexts(); // PrintMovesPage();
         break;
     }
@@ -2499,7 +2500,7 @@ static void PrintSkillsPage(void)
 // {
 //     Page_PrintMoveTexts(i);
     // u16 move = sMonSummaryScreen->moveIds[i];
-    // move = MoveChanger_GetMove(i);
+    // move = MoveHandler_GetMove(i);
 
     // // Title
     // AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_RIGHT_PANE], FONT_NORMAL, 
@@ -2529,7 +2530,7 @@ static void PokeSum_PrintBottomPaneText(void)
         PokeSum_PrintExpPoints_NextLv();
         break;
     case PSS_PAGE_MOVES_INFO:
-        // PokeSum_PrintSelectedMoveStats();
+        Page_DrawBoxes();
         Page_PrintMoveDescription();
         break;
     case PSS_PAGE_MOVES:
@@ -2803,7 +2804,7 @@ static void PokeSum_PrintExpPoints_NextLv(void)
     //     if (sMonSummaryScreen->mode != PSS_MODE_SELECT_MOVE && sMoveSelectionCursorPos == 4)
     //         return;
 
-    //     moveData = MoveChanger_GetMoveDataAtCursor();
+    //     moveData = MoveHandler_GetMoveDataAtCursor();
     //     // Power
     //     AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_DESCRIPTION], FONT_NORMAL,
     //                                  55, 1,
@@ -2819,7 +2820,7 @@ static void PokeSum_PrintExpPoints_NextLv(void)
     //                                  7, 17,
     //                                  0, 0,
     //                                  sLevelNickTextColors[0], TEXT_SKIP_DRAW,
-    //                                  MoveChanger_GetDescription());
+    //                                  MoveHandler_GetDescription());
     //                                 //  moveData->GetDescription(moveData));
     // }
 // }
@@ -2868,7 +2869,7 @@ static void PokeSum_DrawMoveTypeIcons(void)
 
     // for (i = 0; i < 4; i++)
     // {
-    //     moveData = MoveChanger_GetMoveData(i);
+    //     moveData = MoveHandler_GetMoveData(i);
     //     if (moveData->id == MOVE_NONE)
     //         continue;
         
@@ -3178,7 +3179,7 @@ static void PokeSum_AddWindows(u8 curPageIndex)
         case PSS_PAGE_MOVES_INFO:
             sMonSummaryScreen->windowIds[i + 3] = AddWindow(&sWindowTemplates_Moves[i]);
             sPages[PSS_PAGE_MOVES_INFO]->windowIds[i] = sMonSummaryScreen->windowIds[i + 3];
-            DebugPrintf("screen add window %d", sMonSummaryScreen->windowIds[i + 3]);
+            // DebugPrintf("screen add window %d", sMonSummaryScreen->windowIds[i + 3]);
             // Page_SetWindow(i, sMonSummaryScreen->windowIds[i + 3]);
             // 3: POKESUM_WIN_MOVES_TITLE
             // 4: POKESUM_WIN_MOVES_DESCRIPTION
@@ -3527,19 +3528,6 @@ static void Task_HandleInput_SelectMove(u8 taskId)
 
                 sMonSummaryScreen->selectMoveInputHandlerState = SELECT_STATE_REDRAW;
 
-                // if (sMonSummaryScreen->isSwappingMoves == TRUE)
-                // {
-                //     if (sMoveSelectionCursorPos == 3)
-                //     {
-                //         sMoveSelectionCursorPos = 0;
-                //         Page_SetCursor(0);
-                //         sMonSummaryScreen->selectMoveInputHandlerState = SELECT_STATE_REDRAW;
-                //         PlaySE(SE_SELECT);
-                //         return;
-                //     }
-                //     iMax--;
-                // }
-
                 for (i = sMoveSelectionCursorPos; i < iMax; i++)
                 {
                     if (sMonSummaryScreen->moveIds[i + 1] != 0)
@@ -3590,7 +3578,7 @@ static void Task_HandleInput_SelectMove(u8 taskId)
             //     sMoveSelectionCursorPos = 0;
             //     Page_SetCursor(0);
             //     Page_SetScrolling(FALSE);
-            //     // MoveChanger_DeselectMove();
+            //     // MoveHandler_DeselectMove();
             //     sMoveSwapCursorPos = 0;
             //     sMonSummaryScreen->isSwappingMoves = FALSE;
             //     Page_SetSwapping(FALSE);
@@ -3611,7 +3599,6 @@ static void Task_HandleInput_SelectMove(u8 taskId)
                     sMoveSwapCursorPos = sMoveSelectionCursorPos;
                     sMonSummaryScreen->isSwappingMoves = TRUE;
                     Page_SetSwapping(TRUE);
-                    // MoveChanger_SelectMove();
                 }
                 return;
             }
@@ -3685,13 +3672,13 @@ static void Task_HandleInput_SelectMove(u8 taskId)
         CopyWindowToVram(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_MINI], 2);
         CopyBgTilemapBufferToVram(0);
         CopyBgTilemapBufferToVram(3);
-        // CopyWindowToVram(2, COPYWIN_MAP); // boxes
-        Page_DrawBoxes();
+        CopyWindowToVram(2, COPYWIN_MAP); // boxes
+        // Page_DrawBoxes(); // already in PrintBottomPaneText
         sMonSummaryScreen->selectMoveInputHandlerState = SELECT_STATE_RENDER + 1;
         break;
 
     case SELECT_STATE_REDRAW + 2:
-        CopyWindowToVram(2, COPYWIN_MAP); // boxes
+        // CopyWindowToVram(2, COPYWIN_MAP); // boxes
         sMonSummaryScreen->selectMoveInputHandlerState = SELECT_STATE_INPUT;
         break;
 

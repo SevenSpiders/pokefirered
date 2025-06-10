@@ -1,6 +1,6 @@
 #include "main.h"
 #include "ui/summary_screen/summary_Page.h"
-#include "ui/summary_screen/summary_MoveChanger.h"
+#include "ui/summary_screen/summary_MoveHandler.h"
 #include "ui/summary_screen/drawMoveBox.h"
 #include "constants/moves.h" // MOVE_NONE
 #include "list_menu.h" // BlitMenuInfoIcon
@@ -118,6 +118,7 @@ void Page_ScrollUp(u8 i)
 
 void Page_SetScrolling(bool8 b)
 {
+    DebugPrintf("set scrolling %d", b);
     isScrolling = b;
     sScrollIndex = 0;
     UpdateBoxes();
@@ -168,7 +169,7 @@ bool32 Page_SwapMoves(struct Pokemon * mon)
     // SetMonData(mon, MON_DATA_MOVE1 + 0, (u8 *)&move1);
     
     DebugPrintf("try swap moves -> %d %d", moveIndex, slotIndex);
-    b = MoveChanger_SwapMoves(mon, moveIndex, slotIndex);
+    b = MoveHandler_SwapMoves(mon, moveIndex, slotIndex);
     if (b)
     {
         sCursorIndex = MIN(index, sCursorIndex);
@@ -186,12 +187,12 @@ void Page_PrintMoveDescription()
     if (sCursorIndex >= 5)
         return;
 
-    moveData = MoveChanger_GetMoveData(sCursorIndex + sScrollIndex);
+    moveData = MoveHandler_GetMoveData(sCursorIndex + sScrollIndex);
 
     if (moveData == NULL || moveData->moveId == 0)
         return;
 
-    // DebugPrintf("print description %d", moveData->id);
+    // DebugPrintf("print description %d @ cursor: %d + %d", moveData->moveId, sCursorIndex, sScrollIndex);
 
     // Power
     AddTextPrinterParameterized3(WindowId, FONT_NORMAL, 55, 1,
@@ -204,7 +205,7 @@ void Page_PrintMoveDescription()
     // Description
     AddTextPrinterParameterized4(WindowId, FONT_SMALL, 7, 17, 0, 0,
                                     sLevelNickTextColors[0], TEXT_SKIP_DRAW,
-                                    gMoveDescriptionPointers[moveData->moveId]);
+                                    gMoveDescriptionPointers[moveData->moveId - 1]);
 }
 
 
@@ -225,24 +226,16 @@ SummaryPage *Page_MoveInfos_Init(void)
 
 void Page_SetPokemon(struct Pokemon * pokemon) 
 {
-    maxScroll = MoveChanger_SetPokemon(pokemon) - 4;
-    DebugPrintf("set pokemon -> moves %d", maxScroll);
+    maxScroll = MoveHandler_SetPokemon(pokemon) - 4;
+    // DebugPrintf("set pokemon -> moves %d", maxScroll);
 }
 
 void Page_DrawBoxes() {
-    u32 i;
+    // u32 i;
+    // DebugPrintf("draw boxes");
     for (i=0; i< 5; i++)
     {
         Page_DrawBox(i, 0);
-    }
-}
-
-void Page_DrawTweens(u8 direction)
-{
-    u32 i;
-    for (i=0; i< 5; i++)
-    {
-        Page_DrawBox(i, direction);
     }
 }
 
@@ -251,7 +244,7 @@ static bool8 Page_DrawBox(u32 i, u32 direction)
     if (boxes[i].dirty == TRUE)
     {
         DrawBox(i, boxes[i].state, direction);
-        DebugPrintf("print box -> state %d", boxes[i].state);
+        // DebugPrintf("print box -> state %d", boxes[i].state);
         boxes[i].dirty = FALSE;
         return TRUE;
     }
@@ -269,7 +262,7 @@ static void PrintMoveText(u8 i)
     if (i == 4 && isScrolling == FALSE)
         return;
 
-    moveData = MoveChanger_GetMoveData(i + sScrollIndex);
+    moveData = MoveHandler_GetMoveData(i + sScrollIndex);
 
     if (moveData == NULL || moveData->moveId == 0)
     {
@@ -335,7 +328,7 @@ void Page_DrawMoveIcons(void)
     for (i = 0; i < iMax; i++)
     {
         // DebugPrintf("draw move icons in window %d", windowId);
-        moveData = MoveChanger_GetMoveData(i + sScrollIndex);
+        moveData = MoveHandler_GetMoveData(i + sScrollIndex);
         if (moveData == NULL)
             continue;
         if (moveData->moveId == MOVE_NONE)

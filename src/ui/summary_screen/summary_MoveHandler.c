@@ -1,5 +1,5 @@
 #include "main.h"
-#include "ui/summary_screen/summary_MoveChanger.h"
+#include "ui/summary_screen/summary_MoveHandler.h"
 #include "string_util.h"
 #include "strings.h"
 #include "characters.h"
@@ -184,7 +184,7 @@ static void PopulateLevelUpMoves(u16 species, u8 level)
 }
 
 /* Public API functions */
-u32 MoveChanger_SetPokemon(struct Pokemon *pokemon)
+u32 MoveHandler_SetPokemon(struct Pokemon *pokemon)
 {
     u16 species;
     u8 level;
@@ -208,7 +208,7 @@ u32 MoveChanger_SetPokemon(struct Pokemon *pokemon)
     return sNumLearnableMoves;
 }
 
-LearnableMoveData *MoveChanger_GetMoveData(u8 index)
+LearnableMoveData *MoveHandler_GetMoveData(u8 index)
 {
     if (index >= sNumLearnableMoves)
         return NULL;
@@ -216,7 +216,7 @@ LearnableMoveData *MoveChanger_GetMoveData(u8 index)
     return &sLearnableMoves[index];
 }
 
-u32 MoveChanger_SwapMoves(struct Pokemon * mon, u8 indexA, u8 indexB)
+u32 MoveHandler_SwapMoves(struct Pokemon * mon, u8 indexA, u8 indexB)
 {
     LearnableMoveData *moveToTeach;
     LearnableMoveData temp;
@@ -245,12 +245,12 @@ u32 MoveChanger_SwapMoves(struct Pokemon * mon, u8 indexA, u8 indexB)
     return TRUE;
 }
 
-u8 MoveChanger_GetNumMoves(void)
+u8 MoveHandler_GetNumMoves(void)
 {
     return sNumLearnableMoves;
 }
 
-// u32 MoveChanger_ForgetMove(u8 slotToForget)
+// u32 MoveHandler_ForgetMove(u8 slotToForget)
 // {
 //     u16 moveToForget;
 //     u16 noMove;
@@ -259,7 +259,7 @@ u8 MoveChanger_GetNumMoves(void)
 //     if (slotToForget >= MAX_MON_MOVES)
 //         return FALSE;
     
-//     moveToForget = MoveChanger_GetSlot(slotToForget);
+//     moveToForget = MoveHandler_GetSlot(slotToForget);
 //     if (moveToForget == MOVE_NONE)
 //         return FALSE;
     
