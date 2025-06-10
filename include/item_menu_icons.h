@@ -19,7 +19,7 @@ extern const struct CompressedSpritePalette gBagSwapSpritePalette;
 void ResetItemMenuIconState(void);
 void CreateSwapLine(void);
 void DestroyItemMenuIcon(bool8 a0);
-void CreateItemMenuIcon(u16 itemId, bool8 a0);
+u8 CreateItemMenuIcon(u16 itemId, bool8 a0);
 void CopyItemIconPicTo4x4Buffer(const void *src, void *dest);
 u8 AddItemIconObject(u16 tilesTag, u16 paletteTag, u16 itemId);
 u8 AddItemIconObjectWithCustomObjectTemplate(const struct SpriteTemplate * origTemplate, u16 tilesTag, u16 paletteTag, u16 itemId);

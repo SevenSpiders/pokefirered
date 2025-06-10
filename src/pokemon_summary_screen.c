@@ -34,6 +34,7 @@
 #include "mon_markings.h"
 #include "pokemon_storage_system.h"
 #include "constants/sound.h"
+#include "item_menu_icons.h"
 
 #include "ui/summary_screen/summary_MoveHandler.h"
 #include "ui/summary_screen/summary_screenData.h"
@@ -608,6 +609,8 @@ static const struct BgTemplate sBgTempaltes[] =
 #define POKESUM_WIN_MOVES_DESCRIPTION 4
 #define POKESUM_WIN_MOVES_TYPE       5
 #define POKESUM_WIN_MOVES_MINI   6
+
+#define ITEM_SPRITE 0
 
 static const struct WindowTemplate sWindowTemplates_Permanent_Bg1[] =
 {
@@ -2053,7 +2056,7 @@ static void BufferMonInfo(void)
     ConvertInternationalString(sMonSummaryScreen->summary.otNameStrBuf, GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_LANGUAGE));
 
     otId = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_OT_ID) & 0xffff;
-    ConvertIntToDecimalStringN(sMonSummaryScreen->summary.unk306C, otId, STR_CONV_MODE_LEADING_ZEROS, 5);
+    ConvertIntToDecimalStringN(sMonSummaryScreen->summary.otId, otId, STR_CONV_MODE_LEADING_ZEROS, 5);
 
     ConvertIntToDecimalStringN(tempStr, GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_LEVEL), STR_CONV_MODE_LEFT_ALIGN, 3);
     StringCopy(sMonSummaryScreen->summary.levelStrBuf, gText_Lv);
@@ -2064,7 +2067,19 @@ static void BufferMonInfo(void)
     if (heldItem == ITEM_NONE)
         StringCopy(sMonSummaryScreen->summary.itemNameStrBuf, gText_PokeSum_Item_None);
     else
+    {
+        u8 spriteId;
         CopyItemName(heldItem, sMonSummaryScreen->summary.itemNameStrBuf);
+        spriteId = CreateItemMenuIcon(heldItem, ITEM_SPRITE);
+        if (spriteId != MAX_SPRITES)
+        {
+            gSprites[spriteId].x2 = 148; // 148
+            gSprites[spriteId].y2 = 106;
+            DebugPrintf("item icon spriteId %d", spriteId);
+        }
+        else
+            DebugPrintf("did not find item icon");
+    }
 }
 
 #define GetNumberRightAlign63(x) (63 - StringLength((x)) * 6)
@@ -2392,16 +2407,24 @@ static void PokeSum_PrintRightPaneText(void)
     PutWindowTilemap(sMonSummaryScreen->windowIds[POKESUM_WIN_RIGHT_PANE]);
 }
 
+#define INFO_FIELD_0_YPOS 4
+#define INFO_FIELD_1_YPOS 20
+#define INFO_FIELD_2_YPOS 34
+#define INFO_FIELD_3_YPOS 49
+#define INFO_FIELD_4_YPOS 64
+#define INFO_FIELD_5_YPOS 79
+
 static void PrintInfoPage(void)
 {
-    AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_RIGHT_PANE], FONT_NORMAL, 47, 19, sLevelNickTextColors[0], TEXT_SKIP_DRAW, sMonSummaryScreen->summary.speciesNameStrBuf);
+    AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_RIGHT_PANE], FONT_NORMAL, 47, INFO_FIELD_0_YPOS, sLevelNickTextColors[0], TEXT_SKIP_DRAW, sMonSummaryScreen->summary.speciesNameStrBuf);
 
     if (!sMonSummaryScreen->isEgg)
     {
-        AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_RIGHT_PANE], FONT_NORMAL, 47 + sMonSkillsPrinterXpos->unk00, 5, sLevelNickTextColors[0], TEXT_SKIP_DRAW, sMonSummaryScreen->summary.dexNumStrBuf);
-        AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_RIGHT_PANE], FONT_NORMAL, 47, 49, sLevelNickTextColors[0], TEXT_SKIP_DRAW, sMonSummaryScreen->summary.otNameStrBuf);
-        AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_RIGHT_PANE], FONT_NORMAL, 47, 64, sLevelNickTextColors[0], TEXT_SKIP_DRAW, sMonSummaryScreen->summary.unk306C);
-        AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_RIGHT_PANE], FONT_NORMAL, 47, 79, sLevelNickTextColors[0], TEXT_SKIP_DRAW, sMonSummaryScreen->summary.itemNameStrBuf);
+        // AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_RIGHT_PANE], FONT_NORMAL, 47 + sMonSkillsPrinterXpos->unk00, 5, sLevelNickTextColors[0], TEXT_SKIP_DRAW, sMonSummaryScreen->summary.dexNumStrBuf);
+        AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_RIGHT_PANE], FONT_NORMAL, 47, INFO_FIELD_2_YPOS, sLevelNickTextColors[0], TEXT_SKIP_DRAW, sMonSummaryScreen->summary.otNameStrBuf);
+        AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_RIGHT_PANE], FONT_NORMAL, 47, INFO_FIELD_3_YPOS, sLevelNickTextColors[0], TEXT_SKIP_DRAW, sMonSummaryScreen->summary.expPointsStrBuf);
+        AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_RIGHT_PANE], FONT_NORMAL, 47, INFO_FIELD_4_YPOS, sLevelNickTextColors[0], TEXT_SKIP_DRAW, sMonSummaryScreen->summary.expToNextLevelStrBuf);
+        AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_RIGHT_PANE], FONT_NORMAL, 47, INFO_FIELD_5_YPOS, sLevelNickTextColors[0], TEXT_SKIP_DRAW, sMonSummaryScreen->summary.itemNameStrBuf);
     }
     else
     {
@@ -2936,6 +2959,7 @@ static void Task_DestroyResourcesOnExit(u8 taskId)
 {
     PokeSum_DestroySprites();
     FreeAllSpritePalettes();
+    DestroyItemMenuIcon(ITEM_SPRITE);
 
     if (IsCryPlayingOrClearCrySongs() == TRUE)
         StopCryAndClearCrySongs();
@@ -3337,10 +3361,10 @@ static void PokeSum_PrintMonTypeIcons(void)
     case PSS_PAGE_INFO:
         if (!sMonSummaryScreen->isEgg)
         {
-            BlitMenuInfoIcon(sMonSummaryScreen->windowIds[POKESUM_WIN_RIGHT_PANE], sMonSummaryScreen->monTypes[0] + 1, 47, 35);
+            BlitMenuInfoIcon(sMonSummaryScreen->windowIds[POKESUM_WIN_RIGHT_PANE], sMonSummaryScreen->monTypes[0] + 1, 47, INFO_FIELD_1_YPOS);
 
             if (sMonSummaryScreen->monTypes[0] != sMonSummaryScreen->monTypes[1])
-                BlitMenuInfoIcon(sMonSummaryScreen->windowIds[POKESUM_WIN_RIGHT_PANE], sMonSummaryScreen->monTypes[1] + 1, 83, 35);
+                BlitMenuInfoIcon(sMonSummaryScreen->windowIds[POKESUM_WIN_RIGHT_PANE], sMonSummaryScreen->monTypes[1] + 1, 83, INFO_FIELD_1_YPOS);
         }
         break;
     case PSS_PAGE_SKILLS:

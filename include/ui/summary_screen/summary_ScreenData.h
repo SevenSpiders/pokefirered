@@ -31,7 +31,7 @@ struct SummaryScreenData
         u8 ALIGNED(4) otNameStrBufs[2][12];
 
         u8 ALIGNED(4) dexNumStrBuf[5];
-        u8 ALIGNED(4) unk306C[7];
+        u8 ALIGNED(4) otId[7];
         u8 ALIGNED(4) itemNameStrBuf[ITEM_NAME_LENGTH + 1];
 
         u8 ALIGNED(4) genderSymbolStrBuf[3];

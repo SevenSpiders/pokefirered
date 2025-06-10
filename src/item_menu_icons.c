@@ -378,8 +378,8 @@ u8 AddItemIconObjectWithCustomObjectTemplate(const struct SpriteTemplate * origT
     Free(sItemIconTilesBufferPadded);
     return spriteId;
 }
-
-void CreateItemMenuIcon(u16 itemId, u8 idx)
+// returns spriteId or MAX_SPRITES if it failed to create the sprite
+u8 CreateItemMenuIcon(u16 itemId, u8 idx)
 {
     u8 * spriteIds = &sItemMenuIconSpriteIds[SPR_ITEM_ICON];
     u8 spriteId;
@@ -395,8 +395,10 @@ void CreateItemMenuIcon(u16 itemId, u8 idx)
             spriteIds[idx] = spriteId;
             gSprites[spriteId].x2 = 24;
             gSprites[spriteId].y2 = 140;
+            return spriteId;
         }
     }
+    return spriteIds[idx];
 }
 
 void DestroyItemMenuIcon(u8 idx)
