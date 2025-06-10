@@ -118,7 +118,7 @@ static void Task_SellYes(u8 taskId);
 static void Task_SellBerries_PlaySfxAndRemoveBerries(u8 taskId);
 static void Task_SellBerries_WaitButton(u8 taskId);
 static void BerryPouchInitWindows(void);
-static void BerryPouchPrint(u8 windowId, u8 fontId, const u8 * str, u8 x, u8 y, u8 letterSpacing, u8 lineSpacing, u8 speed, u8 colorIdx);
+static void BerryPouchPrint(u8 windowId, u8 fontId, const u8 * str, u8 x, u8 y, u8 letterSpacing, s8 lineSpacing, u8 speed, u8 colorIdx);
 static u8 GetOrCreateVariableWindow(u8 winIdx);
 static void DestroyVariableWindow(u8 winIdx);
 static void TryDestroyVariableWindow(u8 winIdx);
@@ -1427,7 +1427,7 @@ static void BerryPouchInitWindows(void)
         sVariableWindowIds[i] = 0xFF;
 }
 
-static void BerryPouchPrint(u8 windowId, u8 fontId, const u8 * str, u8 x, u8 y, u8 letterSpacing, u8 lineSpacing, u8 speed, u8 colorIdx)
+static void BerryPouchPrint(u8 windowId, u8 fontId, const u8 * str, u8 x, u8 y, u8 letterSpacing, s8 lineSpacing, u8 speed, u8 colorIdx)
 {
     AddTextPrinterParameterized4(windowId, fontId, x, y, letterSpacing, lineSpacing, sTextColors[colorIdx], speed, str);
 }

@@ -602,8 +602,8 @@ static const struct BgTemplate sBgTempaltes[] =
 
 #define POKESUM_WIN_SKILLS_3         3
 #define POKESUM_WIN_SKILLS_4         4
-#define POKESUM_WIN_SKILLS_5         5
-#define POKESUM_WIN_SKILLS_6         6
+#define POKESUM_WIN_SKILLS_ABILITY         5
+#define POKESUM_WIN_SKILLS_DUMMY         6
 
 #define POKESUM_WIN_MOVES_TITLE      3
 #define POKESUM_WIN_MOVES_DESCRIPTION 4
@@ -734,16 +734,16 @@ static const struct WindowTemplate sWindowTemplates_Skills[] =
         .paletteNum = 6,
         .baseBlock = 0x008d
     },
-    [POKESUM_WIN_SKILLS_5 - 3] = {
+    [POKESUM_WIN_SKILLS_ABILITY - 3] = {
         .bg = 0,
-        .tilemapLeft = 1,
-        .tilemapTop = 16,
-        .width = 29,
-        .height = 4,
+        .tilemapLeft = 0,
+        .tilemapTop = 13,
+        .width = 15,
+        .height = 7,
         .paletteNum = 6,
-        .baseBlock = 0x00c5
+        .baseBlock = 197
     },
-    [POKESUM_WIN_SKILLS_6 - 3] = {
+    [POKESUM_WIN_SKILLS_DUMMY - 3] = {
         .bg = 0,
         .tilemapLeft = 0,
         .tilemapTop = 0,
@@ -2073,7 +2073,7 @@ static void BufferMonInfo(void)
         spriteId = CreateItemMenuIcon(heldItem, ITEM_SPRITE);
         if (spriteId != MAX_SPRITES)
         {
-            gSprites[spriteId].x2 = 148; // 148
+            gSprites[spriteId].x2 = 144; // 148
             gSprites[spriteId].y2 = 106;
             DebugPrintf("item icon spriteId %d", spriteId);
         }
@@ -2266,10 +2266,10 @@ static u8 PokeSum_HandleCreateSprites(void)
         CreateMonStatusIconObj(TAG_PSS_UNK_6E, TAG_PSS_UNK_6E);
         break;
     case 5:
-        CreateHpBarObjs(TAG_PSS_UNK_78, TAG_PSS_UNK_78);
+        // CreateHpBarObjs(TAG_PSS_UNK_78, TAG_PSS_UNK_78);
         break;
     case 6:
-        CreateExpBarObjs(TAG_PSS_UNK_82, TAG_PSS_UNK_82);
+        // CreateExpBarObjs(TAG_PSS_UNK_82, TAG_PSS_UNK_82);
         break;
     case 7:
         CreateBallIconObj();
@@ -2421,10 +2421,10 @@ static void PrintInfoPage(void)
     if (!sMonSummaryScreen->isEgg)
     {
         // AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_RIGHT_PANE], FONT_NORMAL, 47 + sMonSkillsPrinterXpos->unk00, 5, sLevelNickTextColors[0], TEXT_SKIP_DRAW, sMonSummaryScreen->summary.dexNumStrBuf);
-        AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_RIGHT_PANE], FONT_NORMAL, 47, INFO_FIELD_2_YPOS, sLevelNickTextColors[0], TEXT_SKIP_DRAW, sMonSummaryScreen->summary.otNameStrBuf);
-        AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_RIGHT_PANE], FONT_NORMAL, 47, INFO_FIELD_3_YPOS, sLevelNickTextColors[0], TEXT_SKIP_DRAW, sMonSummaryScreen->summary.expPointsStrBuf);
-        AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_RIGHT_PANE], FONT_NORMAL, 47, INFO_FIELD_4_YPOS, sLevelNickTextColors[0], TEXT_SKIP_DRAW, sMonSummaryScreen->summary.expToNextLevelStrBuf);
-        AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_RIGHT_PANE], FONT_NORMAL, 47, INFO_FIELD_5_YPOS, sLevelNickTextColors[0], TEXT_SKIP_DRAW, sMonSummaryScreen->summary.itemNameStrBuf);
+        AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_RIGHT_PANE], FONT_NORMAL, 51, INFO_FIELD_2_YPOS, sLevelNickTextColors[0], TEXT_SKIP_DRAW, sMonSummaryScreen->summary.otNameStrBuf);
+        AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_RIGHT_PANE], FONT_NORMAL, 51, INFO_FIELD_3_YPOS, sLevelNickTextColors[0], TEXT_SKIP_DRAW, sMonSummaryScreen->summary.expPointsStrBuf);
+        AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_RIGHT_PANE], FONT_NORMAL, 51, INFO_FIELD_4_YPOS, sLevelNickTextColors[0], TEXT_SKIP_DRAW, sMonSummaryScreen->summary.expToNextLevelStrBuf);
+        AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_RIGHT_PANE], FONT_NORMAL, 39, INFO_FIELD_5_YPOS, sLevelNickTextColors[0], TEXT_SKIP_DRAW, sMonSummaryScreen->summary.itemNameStrBuf);
     }
     else
     {
@@ -2488,13 +2488,13 @@ static void PrintSkillsPage(void)
     y = 74;
     AddTextPrinterParameterized3(windowId, FONT_NORMAL, x, y, sLevelNickTextColors[0], TEXT_SKIP_DRAW, sMonSummaryScreen->summary.statValueStrBufs[PSS_STAT_SPE]);
     
-    x = 15 + sMonSkillsPrinterXpos->expStr;
-    y = 87;
-    AddTextPrinterParameterized3(windowId, FONT_NORMAL, x, y, sLevelNickTextColors[0], TEXT_SKIP_DRAW, sMonSummaryScreen->summary.expPointsStrBuf);
+    // x = 15 + sMonSkillsPrinterXpos->expStr;
+    // y = 87;
+    // AddTextPrinterParameterized3(windowId, FONT_NORMAL, x, y, sLevelNickTextColors[0], TEXT_SKIP_DRAW, sMonSummaryScreen->summary.expPointsStrBuf);
     
-    x = 15 + sMonSkillsPrinterXpos->toNextLevel;
-    y = 100;
-    AddTextPrinterParameterized3(windowId, FONT_NORMAL, x, y, sLevelNickTextColors[0], TEXT_SKIP_DRAW, sMonSummaryScreen->summary.expToNextLevelStrBuf);
+    // x = 15 + sMonSkillsPrinterXpos->toNextLevel;
+    // y = 100;
+    // AddTextPrinterParameterized3(windowId, FONT_NORMAL, x, y, sLevelNickTextColors[0], TEXT_SKIP_DRAW, sMonSummaryScreen->summary.expToNextLevelStrBuf);
 }
 
 #define GetMoveNamePrinterYpos(x) ((x) * 28 + 5)
@@ -2550,7 +2550,7 @@ static void PokeSum_PrintBottomPaneText(void)
         PokeSum_PrintTrainerMemo();
         break;
     case PSS_PAGE_SKILLS:
-        PokeSum_PrintExpPoints_NextLv();
+        // PokeSum_PrintExpPoints_NextLv();
         break;
     case PSS_PAGE_MOVES_INFO:
         Page_DrawBoxes();
@@ -2805,15 +2805,15 @@ static void PokeSum_PrintTrainerMemo_Egg(void)
 
 static void PokeSum_PrintExpPoints_NextLv(void)
 {
-    AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_TRAINER_MEMO], FONT_NORMAL,
-                                 26, 7,
-                                 sLevelNickTextColors[0], TEXT_SKIP_DRAW,
-                                 gText_PokeSum_ExpPoints);
+    // AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_TRAINER_MEMO], FONT_NORMAL,
+    //                              26, 7,
+    //                              sLevelNickTextColors[0], TEXT_SKIP_DRAW,
+    //                              gText_PokeSum_ExpPoints);
 
-    AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_TRAINER_MEMO], FONT_NORMAL,
-                                 26, 20,
-                                 sLevelNickTextColors[0], TEXT_SKIP_DRAW,
-                                 gText_PokeSum_NextLv);
+    // AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_TRAINER_MEMO], FONT_NORMAL,
+    //                              26, 20,
+    //                              sLevelNickTextColors[0], TEXT_SKIP_DRAW,
+    //                              gText_PokeSum_NextLv);
 }
 
 // static void PokeSum_PrintSelectedMoveStats(void)
@@ -2871,11 +2871,11 @@ static void PokeSum_PrintAbilityNameAndDesc(void)
 {
     FillWindowPixelBuffer(sMonSummaryScreen->windowIds[5], 0);
 
-    AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[5], FONT_NORMAL,
-                                 66, 1, sLevelNickTextColors[0], TEXT_SKIP_DRAW, sMonSummaryScreen->summary.abilityNameStrBuf);
+    AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_SKILLS_ABILITY], FONT_NORMAL,
+                                 12, 0, sLevelNickTextColors[0], TEXT_SKIP_DRAW, sMonSummaryScreen->summary.abilityNameStrBuf);
 
-    AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[5], FONT_NORMAL,
-                                 2, 15, sLevelNickTextColors[0], TEXT_SKIP_DRAW,
+    AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_SKILLS_ABILITY], FONT_SMALL,
+                                 7, 15, sLevelNickTextColors[0], TEXT_SKIP_DRAW,
                                  sMonSummaryScreen->summary.abilityDescStrBuf);
 
 }
@@ -2959,7 +2959,6 @@ static void Task_DestroyResourcesOnExit(u8 taskId)
 {
     PokeSum_DestroySprites();
     FreeAllSpritePalettes();
-    DestroyItemMenuIcon(ITEM_SPRITE);
 
     if (IsCryPlayingOrClearCrySongs() == TRUE)
         StopCryAndClearCrySongs();
@@ -4435,143 +4434,143 @@ static void ShowOrHideStatusIcon(u8 invisible)
 
 static void CreateHpBarObjs(u16 tileTag, u16 palTag)
 {
-    u8 i;
-    u8 spriteId;
-    void *gfxBufferPtr;
-    u32 curHp;
-    u32 maxHp;
-    u8 hpBarPalTagOffset = 0;
+    // u8 i;
+    // u8 spriteId;
+    // void *gfxBufferPtr;
+    // u32 curHp;
+    // u32 maxHp;
+    // u8 hpBarPalTagOffset = 0;
 
-    sHpBarObjs = AllocZeroed(sizeof(struct HpBarObjs));
-    gfxBufferPtr = AllocZeroed(0x20 * 12);
-    LZ77UnCompWram(gSummaryScreen_HpBar_Gfx, gfxBufferPtr);
+    // sHpBarObjs = AllocZeroed(sizeof(struct HpBarObjs));
+    // gfxBufferPtr = AllocZeroed(0x20 * 12);
+    // LZ77UnCompWram(gSummaryScreen_HpBar_Gfx, gfxBufferPtr);
 
-    curHp = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_HP);
-    maxHp = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_MAX_HP);
+    // curHp = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_HP);
+    // maxHp = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_MAX_HP);
 
-    if (maxHp / 4 > curHp)
-        hpBarPalTagOffset = 2;
-    else if (maxHp / 2 > curHp)
-        hpBarPalTagOffset = 1;
+    // if (maxHp / 4 > curHp)
+    //     hpBarPalTagOffset = 2;
+    // else if (maxHp / 2 > curHp)
+    //     hpBarPalTagOffset = 1;
 
-    if (gfxBufferPtr != NULL)
-    {
-        struct SpriteSheet sheet = {
-            .data = gfxBufferPtr,
-            .size = 0x20 * 12,
-            .tag = tileTag
-        };
+    // if (gfxBufferPtr != NULL)
+    // {
+    //     struct SpriteSheet sheet = {
+    //         .data = gfxBufferPtr,
+    //         .size = 0x20 * 12,
+    //         .tag = tileTag
+    //     };
 
-        struct SpritePalette palette1 = {.data = sHpBarPals[0], .tag = palTag};
-        struct SpritePalette palette2 = {.data = sHpBarPals[1], .tag = palTag + 1};
-        struct SpritePalette palette3 = {.data = sHpBarPals[2], .tag = palTag + 2};
+    //     struct SpritePalette palette1 = {.data = sHpBarPals[0], .tag = palTag};
+    //     struct SpritePalette palette2 = {.data = sHpBarPals[1], .tag = palTag + 1};
+    //     struct SpritePalette palette3 = {.data = sHpBarPals[2], .tag = palTag + 2};
 
-        LoadSpriteSheet(&sheet);
-        LoadSpritePalette(&palette1);
-        LoadSpritePalette(&palette2);
-        LoadSpritePalette(&palette3);
-    }
+    //     LoadSpriteSheet(&sheet);
+    //     LoadSpritePalette(&palette1);
+    //     LoadSpritePalette(&palette2);
+    //     LoadSpritePalette(&palette3);
+    // }
 
-    for (i = 0; i < 9; i++)
-    {
-        struct SpriteTemplate template = {
-            .tileTag = tileTag,
-            .paletteTag = palTag + hpBarPalTagOffset,
-            .oam = &sHpOrExpBarOamData,
-            .anims = sHpOrExpBarAnimTable,
-            .images = NULL,
-            .affineAnims = gDummySpriteAffineAnimTable,
-            .callback = SpriteCallbackDummy,
-        };
+    // for (i = 0; i < 9; i++)
+    // {
+    //     struct SpriteTemplate template = {
+    //         .tileTag = tileTag,
+    //         .paletteTag = palTag + hpBarPalTagOffset,
+    //         .oam = &sHpOrExpBarOamData,
+    //         .anims = sHpOrExpBarAnimTable,
+    //         .images = NULL,
+    //         .affineAnims = gDummySpriteAffineAnimTable,
+    //         .callback = SpriteCallbackDummy,
+    //     };
 
-        sHpBarObjs->xpos[i] = i * 8 + 172;
-        spriteId = CreateSprite(&template, sHpBarObjs->xpos[i], 36, 0);
-        sHpBarObjs->sprites[i] = &gSprites[spriteId];
-        sHpBarObjs->sprites[i]->invisible = FALSE;
-        sHpBarObjs->sprites[i]->oam.priority = 2;
-        sHpBarObjs->tileTag = tileTag;
-        sHpBarObjs->palTag = palTag;
-        StartSpriteAnim(sHpBarObjs->sprites[i], 8);
-    }
+    //     sHpBarObjs->xpos[i] = i * 8 + 172;
+    //     spriteId = CreateSprite(&template, sHpBarObjs->xpos[i], 36, 0);
+    //     sHpBarObjs->sprites[i] = &gSprites[spriteId];
+    //     sHpBarObjs->sprites[i]->invisible = FALSE;
+    //     sHpBarObjs->sprites[i]->oam.priority = 2;
+    //     sHpBarObjs->tileTag = tileTag;
+    //     sHpBarObjs->palTag = palTag;
+    //     StartSpriteAnim(sHpBarObjs->sprites[i], 8);
+    // }
 
-    UpdateHpBarObjs();
-    ShowOrHideHpBarObjs(TRUE);
+    // UpdateHpBarObjs();
+    // ShowOrHideHpBarObjs(TRUE);
 
-    FREE_AND_SET_NULL_IF_SET(gfxBufferPtr);
+    // FREE_AND_SET_NULL_IF_SET(gfxBufferPtr);
 }
 
 static void UpdateHpBarObjs(void)
 {
-    u8 numWholeHpBarTiles = 0;
-    u8 i;
-    u8 animNum;
-    u8 two = 2;
-    u8 hpBarPalOffset = 0;
-    u32 curHp;
-    u32 maxHp;
-    s64 pointsPerTile;
-    s64 totalPoints;
+    // u8 numWholeHpBarTiles = 0;
+    // u8 i;
+    // u8 animNum;
+    // u8 two = 2;
+    // u8 hpBarPalOffset = 0;
+    // u32 curHp;
+    // u32 maxHp;
+    // s64 pointsPerTile;
+    // s64 totalPoints;
 
-    if (sMonSummaryScreen->isEgg)
-        return;
+    // if (sMonSummaryScreen->isEgg)
+    //     return;
 
-    curHp = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_HP);
-    maxHp = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_MAX_HP);
+    // curHp = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_HP);
+    // maxHp = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_MAX_HP);
 
-    if (maxHp / 5 >= curHp)
-        hpBarPalOffset = 2;
-    else if (maxHp / 2 >= curHp)
-        hpBarPalOffset = 1;
+    // if (maxHp / 5 >= curHp)
+    //     hpBarPalOffset = 2;
+    // else if (maxHp / 2 >= curHp)
+    //     hpBarPalOffset = 1;
 
-    switch (GetHPBarLevel(curHp, maxHp))
-    {
-    case 3:
-    default:
-        hpBarPalOffset = 0;
-        break;
-    case 2:
-        hpBarPalOffset = 1;
-        break;
-    case 1:
-        hpBarPalOffset = 2;
-        break;
-    }
+    // switch (GetHPBarLevel(curHp, maxHp))
+    // {
+    // case 3:
+    // default:
+    //     hpBarPalOffset = 0;
+    //     break;
+    // case 2:
+    //     hpBarPalOffset = 1;
+    //     break;
+    // case 1:
+    //     hpBarPalOffset = 2;
+    //     break;
+    // }
 
-    for (i = 0; i < 9; i++)
-        sHpBarObjs->sprites[i]->oam.paletteNum = IndexOfSpritePaletteTag(TAG_PSS_UNK_78) + hpBarPalOffset;
+    // for (i = 0; i < 9; i++)
+    //     sHpBarObjs->sprites[i]->oam.paletteNum = IndexOfSpritePaletteTag(TAG_PSS_UNK_78) + hpBarPalOffset;
 
-    if (curHp == maxHp)
-        for (i = two; i < 8; i++)
-            StartSpriteAnim(sHpBarObjs->sprites[i], 8);
+    // if (curHp == maxHp)
+    //     for (i = two; i < 8; i++)
+    //         StartSpriteAnim(sHpBarObjs->sprites[i], 8);
 
-    else
-    {
-        pointsPerTile = (maxHp << 2) / 6;
-        totalPoints = (curHp << 2);
+    // else
+    // {
+    //     pointsPerTile = (maxHp << 2) / 6;
+    //     totalPoints = (curHp << 2);
 
-        while (TRUE)
-        {
-            if (totalPoints <= pointsPerTile)
-                break;
-            totalPoints -= pointsPerTile;
-            numWholeHpBarTiles++;
-        }
+    //     while (TRUE)
+    //     {
+    //         if (totalPoints <= pointsPerTile)
+    //             break;
+    //         totalPoints -= pointsPerTile;
+    //         numWholeHpBarTiles++;
+    //     }
 
-        numWholeHpBarTiles += two;
+    //     numWholeHpBarTiles += two;
 
-        for (i = two; i < numWholeHpBarTiles; i++)
-            StartSpriteAnim(sHpBarObjs->sprites[i], 8);
+    //     for (i = two; i < numWholeHpBarTiles; i++)
+    //         StartSpriteAnim(sHpBarObjs->sprites[i], 8);
 
-        animNum = (totalPoints * 6) / pointsPerTile;
-        StartSpriteAnim(sHpBarObjs->sprites[numWholeHpBarTiles], animNum);
+    //     animNum = (totalPoints * 6) / pointsPerTile;
+    //     StartSpriteAnim(sHpBarObjs->sprites[numWholeHpBarTiles], animNum);
 
-        for (i = numWholeHpBarTiles + 1; i < 8; i++)
-            StartSpriteAnim(sHpBarObjs->sprites[i], 0);
-    }
+    //     for (i = numWholeHpBarTiles + 1; i < 8; i++)
+    //         StartSpriteAnim(sHpBarObjs->sprites[i], 0);
+    // }
 
-    StartSpriteAnim(sHpBarObjs->sprites[0], 9);
-    StartSpriteAnim(sHpBarObjs->sprites[1], 10);
-    StartSpriteAnim(sHpBarObjs->sprites[8], 11);
+    // StartSpriteAnim(sHpBarObjs->sprites[0], 9);
+    // StartSpriteAnim(sHpBarObjs->sprites[1], 10);
+    // StartSpriteAnim(sHpBarObjs->sprites[8], 11);
 }
 
 static void DestroyHpBarObjs(void)
@@ -4595,115 +4594,115 @@ static void ShowOrHideHpBarObjs(u8 invisible)
 
 static void CreateExpBarObjs(u16 tileTag, u16 palTag)
 {
-    u8 i;
-    u8 spriteId;
-    void *gfxBufferPtr;
+    // u8 i;
+    // u8 spriteId;
+    // void *gfxBufferPtr;
 
-    sExpBarObjs = AllocZeroed(sizeof(struct ExpBarObjs));
-    gfxBufferPtr = AllocZeroed(0x20 * 12);
+    // sExpBarObjs = AllocZeroed(sizeof(struct ExpBarObjs));
+    // gfxBufferPtr = AllocZeroed(0x20 * 12);
 
-    LZ77UnCompWram(gSummaryScreen_ExpBar_Gfx, gfxBufferPtr);
-    if (gfxBufferPtr != NULL)
-    {
-        struct SpriteSheet sheet = {
-            .data = gfxBufferPtr,
-            .size = 0x20 * 12,
-            .tag = tileTag
-        };
+    // LZ77UnCompWram(gSummaryScreen_ExpBar_Gfx, gfxBufferPtr);
+    // if (gfxBufferPtr != NULL)
+    // {
+    //     struct SpriteSheet sheet = {
+    //         .data = gfxBufferPtr,
+    //         .size = 0x20 * 12,
+    //         .tag = tileTag
+    //     };
 
-        struct SpritePalette palette = {.data = gSummaryScreen_HpExpBar_Pal, .tag = palTag};
-        LoadSpriteSheet(&sheet);
-        LoadSpritePalette(&palette);
-    }
+    //     struct SpritePalette palette = {.data = gSummaryScreen_HpExpBar_Pal, .tag = palTag};
+    //     LoadSpriteSheet(&sheet);
+    //     LoadSpritePalette(&palette);
+    // }
 
-    for (i = 0; i < 11; i++)
-    {
-        struct SpriteTemplate template = {
-            .tileTag = tileTag,
-            .paletteTag = palTag,
-            .oam = &sHpOrExpBarOamData,
-            .anims = sHpOrExpBarAnimTable,
-            .images = NULL,
-            .affineAnims = gDummySpriteAffineAnimTable,
-            .callback = SpriteCallbackDummy,
-        };
+    // for (i = 0; i < 11; i++)
+    // {
+    //     struct SpriteTemplate template = {
+    //         .tileTag = tileTag,
+    //         .paletteTag = palTag,
+    //         .oam = &sHpOrExpBarOamData,
+    //         .anims = sHpOrExpBarAnimTable,
+    //         .images = NULL,
+    //         .affineAnims = gDummySpriteAffineAnimTable,
+    //         .callback = SpriteCallbackDummy,
+    //     };
 
-        sExpBarObjs->xpos[i] = i * 8 + 156;
-        spriteId = CreateSprite(&template, sExpBarObjs->xpos[i], 132, 0);
-        sExpBarObjs->sprites[i] = &gSprites[spriteId];
-        sExpBarObjs->sprites[i]->oam.priority = 2;
-        sExpBarObjs->tileTag = tileTag;
-        sExpBarObjs->palTag = palTag;
-    }
+    //     sExpBarObjs->xpos[i] = i * 8 + 156;
+    //     spriteId = CreateSprite(&template, sExpBarObjs->xpos[i], 132, 0);
+    //     sExpBarObjs->sprites[i] = &gSprites[spriteId];
+    //     sExpBarObjs->sprites[i]->oam.priority = 2;
+    //     sExpBarObjs->tileTag = tileTag;
+    //     sExpBarObjs->palTag = palTag;
+    // }
 
-    UpdateExpBarObjs();
-    ShowOrHideExpBarObjs(TRUE);
+    // UpdateExpBarObjs();
+    // ShowOrHideExpBarObjs(TRUE);
 
-    FREE_AND_SET_NULL_IF_SET(gfxBufferPtr);
+    // FREE_AND_SET_NULL_IF_SET(gfxBufferPtr);
 }
 
 static void UpdateExpBarObjs(void)
 {
-    u8 numWholeExpBarTiles = 0;
-    u8 i;
-    u8 level;
-    u32 exp;
-    u32 totalExpToNextLevel;
-    u32 curExpToNextLevel;
-    u16 species;
-    s64 pointsPerTile;
-    s64 totalPoints;
-    u8 animNum;
-    u8 two = 2;
+    // u8 numWholeExpBarTiles = 0;
+    // u8 i;
+    // u8 level;
+    // u32 exp;
+    // u32 totalExpToNextLevel;
+    // u32 curExpToNextLevel;
+    // u16 species;
+    // s64 pointsPerTile;
+    // s64 totalPoints;
+    // u8 animNum;
+    // u8 two = 2;
 
-    if (sMonSummaryScreen->isEgg)
-        return;
+    // if (sMonSummaryScreen->isEgg)
+    //     return;
 
-    exp = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_EXP);
-    level = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_LEVEL);
-    species = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_SPECIES);
+    // exp = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_EXP);
+    // level = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_LEVEL);
+    // species = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_SPECIES);
 
-    if (level < 100)
-    {
-        totalExpToNextLevel = gExperienceTables[gSpeciesInfo[species].growthRate][level + 1] - gExperienceTables[gSpeciesInfo[species].growthRate][level];
-        curExpToNextLevel = exp - gExperienceTables[gSpeciesInfo[species].growthRate][level];
-        pointsPerTile = ((totalExpToNextLevel << 2) / 8);
-        totalPoints = (curExpToNextLevel << 2);
+    // if (level < 100)
+    // {
+    //     totalExpToNextLevel = gExperienceTables[gSpeciesInfo[species].growthRate][level + 1] - gExperienceTables[gSpeciesInfo[species].growthRate][level];
+    //     curExpToNextLevel = exp - gExperienceTables[gSpeciesInfo[species].growthRate][level];
+    //     pointsPerTile = ((totalExpToNextLevel << 2) / 8);
+    //     totalPoints = (curExpToNextLevel << 2);
 
-        while (TRUE)
-        {
-            if (totalPoints <= pointsPerTile)
-                break;
-            totalPoints -= pointsPerTile;
-            numWholeExpBarTiles++;
-        }
+    //     while (TRUE)
+    //     {
+    //         if (totalPoints <= pointsPerTile)
+    //             break;
+    //         totalPoints -= pointsPerTile;
+    //         numWholeExpBarTiles++;
+    //     }
 
-        numWholeExpBarTiles += two;
+    //     numWholeExpBarTiles += two;
 
-        for (i = two; i < numWholeExpBarTiles; i++)
-            StartSpriteAnim(sExpBarObjs->sprites[i], 8);
+    //     for (i = two; i < numWholeExpBarTiles; i++)
+    //         StartSpriteAnim(sExpBarObjs->sprites[i], 8);
 
-        if (numWholeExpBarTiles >= 10)
-        {
-            if (totalExpToNextLevel == curExpToNextLevel)
-                return;
-            else
-                StartSpriteAnim(sExpBarObjs->sprites[9], 7);
-        }
+    //     if (numWholeExpBarTiles >= 10)
+    //     {
+    //         if (totalExpToNextLevel == curExpToNextLevel)
+    //             return;
+    //         else
+    //             StartSpriteAnim(sExpBarObjs->sprites[9], 7);
+    //     }
 
-        animNum = (totalPoints * 8) / pointsPerTile;
-        StartSpriteAnim(sExpBarObjs->sprites[numWholeExpBarTiles], animNum);
+    //     animNum = (totalPoints * 8) / pointsPerTile;
+    //     StartSpriteAnim(sExpBarObjs->sprites[numWholeExpBarTiles], animNum);
 
-        for (i = numWholeExpBarTiles + 1; i < 10; i++)
-            StartSpriteAnim(sExpBarObjs->sprites[i], 0);
-    }
-    else
-        for (i = two; i < 10; i++)
-            StartSpriteAnim(sExpBarObjs->sprites[i], 0);
+    //     for (i = numWholeExpBarTiles + 1; i < 10; i++)
+    //         StartSpriteAnim(sExpBarObjs->sprites[i], 0);
+    // }
+    // else
+    //     for (i = two; i < 10; i++)
+    //         StartSpriteAnim(sExpBarObjs->sprites[i], 0);
 
-    StartSpriteAnim(sExpBarObjs->sprites[0], 9);
-    StartSpriteAnim(sExpBarObjs->sprites[1], 10);
-    StartSpriteAnim(sExpBarObjs->sprites[10], 11);
+    // StartSpriteAnim(sExpBarObjs->sprites[0], 9);
+    // StartSpriteAnim(sExpBarObjs->sprites[1], 10);
+    // StartSpriteAnim(sExpBarObjs->sprites[10], 11);
 }
 
 static void DestroyExpBarObjs(void)
@@ -4892,8 +4891,8 @@ static void ShowShinyStarObjIfMonShiny(void)
 static void PokeSum_DestroySprites(void)
 {
     DestroyMoveSelectionCursorObjs();
-    DestroyHpBarObjs();
-    DestroyExpBarObjs();
+    // DestroyHpBarObjs();
+    // DestroyExpBarObjs();
     PokeSum_DestroyMonPicSprite();
     PokeSum_DestroyMonIconSprite();
     DestroyBallIconObj();
@@ -4902,6 +4901,7 @@ static void PokeSum_DestroySprites(void)
     DestroyPokerusIconObj();
     DestroyShinyStarObj();
     ResetSpriteData();
+    DestroyItemMenuIcon(ITEM_SPRITE);
 }
 
 static void PokeSum_CreateSprites(void)
@@ -4911,8 +4911,8 @@ static void PokeSum_CreateSprites(void)
     // PokeSum_CreateMonIconSprite();
     PokeSum_CreateMonPicSprite();
     PokeSum_ShowOrHideMonPicSprite(FALSE);
-    UpdateHpBarObjs();
-    UpdateExpBarObjs();
+    // UpdateHpBarObjs();
+    // UpdateExpBarObjs();
     PokeSum_UpdateMonMarkingsAnim();
     UpdateMonStatusIconObj();
     ShowPokerusIconObjIfHasOrHadPokerus();

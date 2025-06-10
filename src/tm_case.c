@@ -162,7 +162,7 @@ static void Task_AfterSale_ReturnToList(u8 taskId);
 static void Task_Pokedude_Start(u8 taskId);
 static void Task_Pokedude_Run(u8 taskId);
 static void InitWindowTemplatesAndPals(void);
-static void TMCase_Print(u8 windowId, u8 fontId, const u8 * str, u8 x, u8 y, u8 letterSpacing, u8 lineSpacing, u8 speed, u8 colorIdx);
+static void TMCase_Print(u8 windowId, u8 fontId, const u8 * str, u8 x, u8 y, u8 letterSpacing, s8 lineSpacing, u8 speed, u8 colorIdx);
 static void TMCase_SetWindowBorder1(u8 windowId);
 static void TMCase_SetWindowBorder2(u8 windowId);
 static void PrintMessageWithFollowupTask(u8 taskId, u8 fontId, const u8 * str, TaskFunc func);
@@ -1501,7 +1501,7 @@ static void InitWindowTemplatesAndPals(void)
     ScheduleBgCopyTilemapToVram(0);
 }
 
-static void TMCase_Print(u8 windowId, u8 fontId, const u8 * str, u8 x, u8 y, u8 letterSpacing, u8 lineSpacing, u8 speed, u8 colorIdx)
+static void TMCase_Print(u8 windowId, u8 fontId, const u8 * str, u8 x, u8 y, u8 letterSpacing, s8 lineSpacing, u8 speed, u8 colorIdx)
 {
     AddTextPrinterParameterized4(windowId, fontId, x, y, letterSpacing, lineSpacing, sTextColors[colorIdx], speed, str);
 }

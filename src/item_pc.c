@@ -94,7 +94,7 @@ static void ItemPc_CB2_ReturnFromPartyMenu(void);
 static void gTask_ItemPcWaitButtonAndExitSubmenu(u8 taskId);
 static void Task_ItemPcCancel(u8 taskId);
 static void ItemPc_InitWindows(void);
-static void ItemPc_AddTextPrinterParameterized(u8 windowId, u8 fontId, const u8 * str, u8 x, u8 y, u8 letterSpacing, u8 lineSpacing, u8 speed, u8 colorIdx);
+static void ItemPc_AddTextPrinterParameterized(u8 windowId, u8 fontId, const u8 * str, u8 x, u8 y, u8 letterSpacing, s8 lineSpacing, u8 speed, u8 colorIdx);
 static void ItemPc_SetBorderStyleOnWindow(u8 windowId);
 static u8 ItemPc_GetOrCreateSubwindow(u8 idx);
 static void ItemPc_DestroySubwindow(u8 idx);
@@ -1084,7 +1084,7 @@ static void ItemPc_InitWindows(void)
         sSubmenuWindowIds[i] = 0xFF;
 }
 
-static void unused_ItemPc_AddTextPrinterParameterized(u8 windowId, const u8 * string, u8 x, u8 y, u8 letterSpacing, u8 lineSpacing, u8 speed)
+static void unused_ItemPc_AddTextPrinterParameterized(u8 windowId, const u8 * string, u8 x, u8 y, u8 letterSpacing, s8 lineSpacing, u8 speed)
 {
     struct TextPrinterTemplate template;
 
@@ -1104,7 +1104,7 @@ static void unused_ItemPc_AddTextPrinterParameterized(u8 windowId, const u8 * st
     AddTextPrinter(&template, speed, NULL);
 }
 
-static void ItemPc_AddTextPrinterParameterized(u8 windowId, u8 fontId, const u8 * str, u8 x, u8 y, u8 letterSpacing, u8 lineSpacing, u8 speed, u8 colorIdx)
+static void ItemPc_AddTextPrinterParameterized(u8 windowId, u8 fontId, const u8 * str, u8 x, u8 y, u8 letterSpacing, s8 lineSpacing, u8 speed, u8 colorIdx)
 {
     AddTextPrinterParameterized4(windowId, fontId, x, y, letterSpacing, lineSpacing, sTextColors[colorIdx], speed, str);
 }

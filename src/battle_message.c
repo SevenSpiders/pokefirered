@@ -28,7 +28,7 @@ struct BattleWindowText
     u8 x;
     u8 y;
     u8 letterSpacing;
-    u8 lineSpacing;
+    s8 lineSpacing;
     u8 speed;
     u8 fgColor;
     u8 bgColor;

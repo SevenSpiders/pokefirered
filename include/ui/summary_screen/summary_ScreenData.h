@@ -49,7 +49,7 @@ struct SummaryScreenData
         u8 ALIGNED(4) expToNextLevelStrBuf[9];
 
         u8 ALIGNED(4) abilityNameStrBuf[13];
-        u8 ALIGNED(4) abilityDescStrBuf[52];
+        u8 ALIGNED(4) abilityDescStrBuf[84]; // 52
     } summary;
 
     u8 ALIGNED(4) isEgg; /* 0x3200 */

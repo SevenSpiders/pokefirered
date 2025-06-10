@@ -84,7 +84,7 @@ struct TextPrinterTemplate // TODO: Better name
     u8 currentX;        // 0x8
     u8 currentY;
     u8 letterSpacing;
-    u8 lineSpacing;
+    s8 lineSpacing;
     u8 unk:4;   // 0xC
     u8 fgColor:4;
     u8 bgColor:4;
@@ -114,7 +114,7 @@ struct FontInfo
     u8 maxLetterWidth;
     u8 maxLetterHeight;
     u8 letterSpacing;
-    u8 lineSpacing;
+    s8 lineSpacing;
     u8 unk:4;
     u8 fgColor:4;
     u8 bgColor:4;
