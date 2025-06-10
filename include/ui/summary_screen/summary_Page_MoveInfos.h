@@ -6,8 +6,8 @@
 SummaryPage *Page_MoveInfos_Init(void);
 void Page_DrawMoveIcons(void);
 void Page_PrintMoveTexts();
-void Page_ScrollDown(u32 amount);
-void Page_ScrollUp(u32 amount);
+bool32 Page_ScrollDown(u32 amount);
+bool32 Page_ScrollUp(u32 amount);
 void Page_SetPokemon(struct Pokemon * pokemon);
 void Page_DrawBoxes(void);
 void Page_DrawTweens(u8 direction); // 1 = up, 2 = down

@@ -97,23 +97,35 @@ static void UpdateBoxes()
     SetBoxState( 4, state_i);
 }
 
-void Page_ScrollDown(u8 i)
+bool32 Page_ScrollDown(u8 i)
 {
-    sScrollIndex += 1;
-    if (sScrollIndex > maxScroll)
+    bool32 didScroll = FALSE;
+    
+    if (sScrollIndex < maxScroll)
+    {
+        didScroll = TRUE;
+        sScrollIndex += 1;
+    }
+    else
         sScrollIndex = maxScroll;
     
     UpdateBoxes();
+    return didScroll;
 }
 
-void Page_ScrollUp(u8 i)
+bool32 Page_ScrollUp(u8 i)
 {
+    bool32 didScroll = FALSE;
     if (sScrollIndex > 1)
+    {
+        didScroll = TRUE;
         sScrollIndex -= 1;
+    }
     else
         sScrollIndex = 0;
     
     UpdateBoxes();
+    return didScroll;
 }
 
 void Page_SetScrolling(bool8 b)
@@ -231,7 +243,7 @@ void Page_SetPokemon(struct Pokemon * pokemon)
 }
 
 void Page_DrawBoxes() {
-    // u32 i;
+    u32 i;
     // DebugPrintf("draw boxes");
     for (i=0; i< 5; i++)
     {

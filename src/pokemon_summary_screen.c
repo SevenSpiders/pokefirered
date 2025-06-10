@@ -3505,9 +3505,11 @@ static void Task_HandleInput_SelectMove(u8 taskId)
             else // is at top most move
             {
                 // sMoveSelectionCursorPos = 4;
-                Page_ScrollUp(1);
+                if(Page_ScrollUp(1))
+                    PlaySE(SE_SELECT);
+                else
+                    PlaySE(SE_WALL_HIT);
                 sMonSummaryScreen->selectMoveInputHandlerState = SELECT_STATE_REDRAW;
-                PlaySE(SE_SELECT);
 
                 if (sMonSummaryScreen->isSwappingMoves == TRUE)
                     for (i = sMoveSelectionCursorPos; i > 0; i--)
@@ -3556,16 +3558,17 @@ static void Task_HandleInput_SelectMove(u8 taskId)
             }
             else if (sMoveSelectionCursorPos == 3)
             {
-                PlaySE(SE_SELECT);
-                Page_ScrollDown(1);
-                sMonSummaryScreen->selectMoveInputHandlerState = 2;
+                if (Page_ScrollDown(1))
+                    PlaySE(SE_SELECT);
+                else
+                    PlaySE(SE_WALL_HIT);
+                sMonSummaryScreen->selectMoveInputHandlerState = SELECT_STATE_REDRAW;
             }
             else if (sMoveSelectionCursorPos == 4)
             {
                 // sMoveSelectionCursorPos = 0;
                 Page_SetCursor(0);
-                sMonSummaryScreen->selectMoveInputHandlerState = 2;
-                // Page_ScrollDown(1);
+                sMonSummaryScreen->selectMoveInputHandlerState = SELECT_STATE_REDRAW;
                 PlaySE(SE_SELECT);
                 return;
             }
