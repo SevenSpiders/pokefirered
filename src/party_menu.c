@@ -1140,6 +1140,10 @@ void Task_HandleChooseMonInput(u8 taskId)
                 MoveCursorToConfirm();
             }
             break;
+        case SELECT_BUTTON:
+            if (gPartyMenu.action != PARTY_ACTION_SWITCH)
+                CursorCB_Switch(taskId);
+            break;
         }
     }
 }
@@ -1339,6 +1343,8 @@ static u16 PartyMenuButtonHandler(s8 *slotPtr)
     }
     if (JOY_NEW(A_BUTTON) && *slotPtr == SLOT_CANCEL)
         return B_BUTTON;
+    if (JOY_NEW(SELECT_BUTTON))
+        return SELECT_BUTTON;
     return JOY_NEW(A_BUTTON | B_BUTTON);
 }
 
