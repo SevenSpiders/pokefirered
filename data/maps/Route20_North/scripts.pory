@@ -1,0 +1,4 @@
+raw `
+Route20_North_MapScripts::
+	.byte 0
+`
