@@ -131,7 +131,12 @@ CinnabarIsland_Gym_EventScript_BlaineFujiPhoto::
 	lockall
 	famechecker FAMECHECKER_BLAINE, 4
 	famechecker FAMECHECKER_MRFUJI, 4
+	setvar VAR_0x8004, SPECIES_MAGMAR
+	setvar VAR_0x8005, 10
+	setvar VAR_0x8006, 3
+	special OpenMuseumFossilPic
 	msgbox CinnabarIsland_Gym_Text_PhotoOfBlaineAndFuji
+	special CloseMuseumFossilPic
 	releaseall
 	end
 

@@ -726,12 +726,20 @@ const u8 gExeggutorPokedexText[] = _(
 
 const u8 gExeggutorPokedexTextUnused[] = _("");
 
-const u8 gCubonePokedexText[] = _(
+const u8 gCubonePokedexTextUnused[] = _(
     "It wears the skull of its dead mother on\n"
     "its head. When it becomes lonesome, it is\n"
     "said to cry loudly.");
 
-const u8 gCubonePokedexTextUnused[] = _("");
+const u8 gCubonePokedexText[] = _(
+    "It wears a found skull on its head,\n"
+    "mimicking a grown armored Marowak\n"
+    "until it's own head hardens.");
+
+/*
+    Cubone wear scavenged skulls to protect 
+    their soft heads until it hardens
+*/
 
 const u8 gMarowakPokedexText[] = _(
     "It is small and was originally very weak.\n"

@@ -173,8 +173,8 @@ PewterCity_Museum_1F_EventScript_OldAmber::
 PewterCity_Museum_1F_EventScript_AerodactylFossil::
 	lockall
 	setvar VAR_0x8004, SPECIES_AERODACTYL
-	setvar VAR_0x8005, 10
-	setvar VAR_0x8006, 3
+	setvar VAR_0x8005, 10 // x position
+	setvar VAR_0x8006, 3 // y position
 	special OpenMuseumFossilPic
 	msgbox PewterCity_Museum_1F_Text_AerodactylFossil
 	special CloseMuseumFossilPic

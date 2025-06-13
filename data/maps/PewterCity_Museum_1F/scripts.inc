@@ -349,9 +349,9 @@ PewterCity_Museum_1F_EventScript_AerodactylFossil::
 # 175 "data/maps/PewterCity_Museum_1F/scripts.pory"
 	setvar VAR_0x8004, SPECIES_AERODACTYL
 # 176 "data/maps/PewterCity_Museum_1F/scripts.pory"
-	setvar VAR_0x8005, 10
+	setvar VAR_0x8005, 10 // x position
 # 177 "data/maps/PewterCity_Museum_1F/scripts.pory"
-	setvar VAR_0x8006, 3
+	setvar VAR_0x8006, 3 // y position
 # 178 "data/maps/PewterCity_Museum_1F/scripts.pory"
 	special OpenMuseumFossilPic
 # 179 "data/maps/PewterCity_Museum_1F/scripts.pory"

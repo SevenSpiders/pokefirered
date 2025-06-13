@@ -1141,7 +1141,7 @@ void Task_HandleChooseMonInput(u8 taskId)
             }
             break;
         case SELECT_BUTTON:
-            if (gPartyMenu.action != PARTY_ACTION_SWITCH)
+            if (gPartyMenu.action != PARTY_ACTION_SWITCH && gPartyMenu.menuType == PARTY_MENU_TYPE_FIELD)
                 CursorCB_Switch(taskId);
             break;
         }
