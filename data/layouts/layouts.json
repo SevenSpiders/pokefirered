@@ -4404,6 +4404,30 @@
       "secondary_tileset": "gTileset_CinnabarIsland",
       "border_filepath": "data/layouts/Route20_North/border.bin",
       "blockdata_filepath": "data/layouts/Route20_North/map.bin"
+    },
+    {
+      "id": "LAYOUT_DIGITAL_MAINFRAME",
+      "name": "DigitalMainframe_Layout",
+      "width": 13,
+      "height": 8,
+      "border_width": 2,
+      "border_height": 2,
+      "primary_tileset": "gTileset_Building",
+      "secondary_tileset": "gTileset_SilphCo",
+      "border_filepath": "data/layouts/DigitalMainframe/border.bin",
+      "blockdata_filepath": "data/layouts/DigitalMainframe/map.bin"
+    },
+    {
+      "id": "LAYOUT_CELADON_CITY_GAME_CORNER_B1F",
+      "name": "CeladonCity_GameCorner_B1F_Layout",
+      "width": 13,
+      "height": 8,
+      "border_width": 2,
+      "border_height": 2,
+      "primary_tileset": "gTileset_Building",
+      "secondary_tileset": "gTileset_SilphCo",
+      "border_filepath": "data/layouts/CeladonCity_GameCorner_B1F/border.bin",
+      "blockdata_filepath": "data/layouts/CeladonCity_GameCorner_B1F/map.bin"
     }
   ]
 }

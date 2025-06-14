@@ -1366,3 +1366,9 @@ Text_TestMsg::
 
 	.include "data/maps/Route20_North/scripts.inc"
 	.include "data/maps/Route20_North/text.inc"
+
+	.include "data/maps/DigitalMainframe/scripts.inc"
+	.include "data/maps/DigitalMainframe/text.inc"
+
+	.include "data/maps/CeladonCity_GameCorner_B1F/scripts.inc"
+	.include "data/maps/CeladonCity_GameCorner_B1F/text.inc"

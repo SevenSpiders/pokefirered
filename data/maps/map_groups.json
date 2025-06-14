@@ -49,7 +49,8 @@
     "TradeCenter",
     "RecordCorner",
     "BattleColosseum_4P",
-    "UnionRoom"
+    "UnionRoom",
+    "DigitalMainframe"
   ],
   "gMapGroup_Dungeons": [
     "ViridianForest",
@@ -382,7 +383,8 @@
     "CeladonCity_Gym",
     "CeladonCity_Restaurant",
     "CeladonCity_House1",
-    "CeladonCity_Hotel"
+    "CeladonCity_Hotel",
+    "CeladonCity_GameCorner_B1F"
   ],
   "gMapGroup_IndoorFuchsia": [
     "FuchsiaCity_SafariZone_Entrance",
