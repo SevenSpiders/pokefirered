@@ -69,6 +69,7 @@
 #include "constants/songs.h"
 #include "constants/sound.h"
 #include "learn_move.h"
+#include "slot_machine.h"
 
 #define PARTY_PAL_SELECTED     (1 << 0)
 #define PARTY_PAL_FAINTED      (1 << 1)
@@ -1138,6 +1139,12 @@ void Task_HandleChooseMonInput(u8 taskId)
             {
                 PlaySE(SE_SELECT);
                 MoveCursorToConfirm();
+            }
+            else
+            {
+                // CursorCB_Summary(taskId);
+                PlaySlotMachine(0, CB2_ReturnToFieldContinueScriptPlayMapMusic);
+
             }
             break;
         case SELECT_BUTTON:

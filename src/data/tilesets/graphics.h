@@ -1407,3 +1407,22 @@ const u16 gTilesetPalettes_HallOfFame[][16] =
 	INCBIN_U16("data/tilesets/secondary/hall_of_fame/palettes/14.gbapal"),
 	INCBIN_U16("data/tilesets/secondary/hall_of_fame/palettes/15.gbapal"),
 };
+
+const u16 gTilesetPalettes_GameBoy[][16] =
+{
+    INCBIN_U16("data/tilesets/primary/game_boy/palettes/00.gbapal"),
+    INCBIN_U16("data/tilesets/primary/game_boy/palettes/01.gbapal"),
+    INCBIN_U16("data/tilesets/primary/game_boy/palettes/02.gbapal"),
+    INCBIN_U16("data/tilesets/primary/game_boy/palettes/03.gbapal"),
+    INCBIN_U16("data/tilesets/primary/game_boy/palettes/04.gbapal"),
+    INCBIN_U16("data/tilesets/primary/game_boy/palettes/05.gbapal"),
+    INCBIN_U16("data/tilesets/primary/game_boy/palettes/06.gbapal"),
+    INCBIN_U16("data/tilesets/primary/game_boy/palettes/07.gbapal"),
+    INCBIN_U16("data/tilesets/primary/game_boy/palettes/08.gbapal"),
+    INCBIN_U16("data/tilesets/primary/game_boy/palettes/09.gbapal"),
+    INCBIN_U16("data/tilesets/primary/game_boy/palettes/10.gbapal"),
+    INCBIN_U16("data/tilesets/primary/game_boy/palettes/11.gbapal"),
+    INCBIN_U16("data/tilesets/primary/game_boy/palettes/12.gbapal"),
+};
+
+const u32 gTilesetTiles_GameBoy[] = INCBIN_U32("data/tilesets/primary/game_boy/tiles.4bpp.lz");

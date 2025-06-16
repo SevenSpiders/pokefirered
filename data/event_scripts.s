@@ -1372,3 +1372,6 @@ Text_TestMsg::
 
 	.include "data/maps/CeladonCity_GameCorner_B1F/scripts.inc"
 	.include "data/maps/CeladonCity_GameCorner_B1F/text.inc"
+
+	.include "data/maps/PikachuIsland/scripts.inc"
+	.include "data/maps/PikachuIsland/text.inc"

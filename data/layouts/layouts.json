@@ -4412,7 +4412,7 @@
       "height": 8,
       "border_width": 2,
       "border_height": 2,
-      "primary_tileset": "gTileset_Building",
+      "primary_tileset": "gTileset_GameBoy",
       "secondary_tileset": "gTileset_SilphCo",
       "border_filepath": "data/layouts/DigitalMainframe/border.bin",
       "blockdata_filepath": "data/layouts/DigitalMainframe/map.bin"
@@ -4428,6 +4428,18 @@
       "secondary_tileset": "gTileset_SilphCo",
       "border_filepath": "data/layouts/CeladonCity_GameCorner_B1F/border.bin",
       "blockdata_filepath": "data/layouts/CeladonCity_GameCorner_B1F/map.bin"
+    },
+    {
+      "id": "LAYOUT_PIKACHU_ISLAND",
+      "name": "PikachuIsland_Layout",
+      "width": 20,
+      "height": 20,
+      "border_width": 2,
+      "border_height": 2,
+      "primary_tileset": "gTileset_GameBoy",
+      "secondary_tileset": "gTileset_PalletTown",
+      "border_filepath": "data/layouts/PikachuIsland/border.bin",
+      "blockdata_filepath": "data/layouts/PikachuIsland/map.bin"
     }
   ]
 }
