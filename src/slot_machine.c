@@ -1942,7 +1942,7 @@ static bool32 CreateSlotMachine(void)
 
     struct SlotMachineSetupTaskData * ptr = Alloc(sizeof(struct SlotMachineSetupTaskData));
     if (ptr == NULL)
-        return FALSE;
+        return TRUE; // bug
     for (i = 0; i < (int)ARRAY_COUNT(ptr->tasks); i++)
         ptr->tasks[i].active = 0;
     ptr->yesNoMenuActive = FALSE;
