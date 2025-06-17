@@ -5,7 +5,7 @@
 #include "trig.h"
 #include "constants/songs.h"
 
-static void Task_MinigameCountdown(u8 taskId);
+static void Task_SurfMinigameCountdown(u8 taskId);
 static bool32 RunMinigameCountdownDigitsAnim(u8 spriteId);
 static void StartStartGraphic(u8 spriteId1, u8 spriteId2, u8 spriteId3);
 static bool32 IsStartGraphicAnimRunning(u8 spriteId);
@@ -26,7 +26,7 @@ static void CreateStartSprite(u16 tilesTag, u16 palTag, s16 x, s16 y, u8 subprio
 
 void StartMinigameCountdown(u16 tilesTag, u16 palTag, s16 x, s16 y, u8 subpriority)
 {
-    u8 taskId = CreateTask(Task_MinigameCountdown, 80);
+    u8 taskId = CreateTask(Task_SurfMinigameCountdown, 80);
     gTasks[taskId].tTilesTag = tilesTag;
     gTasks[taskId].tPalTag = palTag;
     gTasks[taskId].tX = x;
@@ -36,10 +36,10 @@ void StartMinigameCountdown(u16 tilesTag, u16 palTag, s16 x, s16 y, u8 subpriori
 
 bool32 IsMinigameCountdownRunning(void)
 {
-    return FuncIsActiveTask(Task_MinigameCountdown);
+    return FuncIsActiveTask(Task_SurfMinigameCountdown);
 }
 
-static void Task_MinigameCountdown(u8 taskId)
+static void Task_SurfMinigameCountdown(u8 taskId)
 {
     s16 * data = gTasks[taskId].data;
 
