@@ -60,12 +60,12 @@ static void CB2_InitMinigame(void)
         }
         else
         {
-            SetSurfMinigameSetupTask( SMGTASK_GFX_INIT, 0);
+            SetSurfMinigameSetupTask(MG0TASK_GFX_INIT, 0);
             gMain.state++;
         }
         break;
     case 1:
-        if (!IsSurfMinigameSetupTaskActive(0))
+        if (IsSurfMinigameSetupTaskActive(0) == FALSE)
         {
             sSurfMinigameState->taskId = CreateTask(MainTask_SurfMinigameLoop, 0);
             SetMainCallback2(CB2_RunMinigame);
@@ -77,14 +77,17 @@ static void CB2_InitMinigame(void)
 static bool32 TryCreateMinigame(void)
 {
     s32 i;
+    u8 taskId;
 
-    struct SurfMinigameSetupTaskData * ptr = Alloc(sizeof(struct SurfMinigameSetupTaskData));
-    if (ptr == NULL)
+    struct SurfMinigameSetupTaskData * ptr_taskData = Alloc(sizeof(struct SurfMinigameSetupTaskData));
+    if (ptr_taskData == NULL)
         return FALSE;
-    for (i = 0; i < (int)ARRAY_COUNT(ptr->tasks); i++)
-        ptr->tasks[i].active = 0;
-    ptr->yesNoMenuActive = TRUE;
-    SetWordTaskArg(CreateTask(Task_SurfMinigame, 2), 0, (uintptr_t)ptr); // pointers are 32 bit -> need two s16 data slots -> "word"
+    for (i = 0; i < (int)ARRAY_COUNT(ptr_taskData->subtasks); i++)
+        ptr_taskData->subtasks[i].active = 0;
+    ptr_taskData->yesNoMenuActive = TRUE;
+    taskId = CreateTask(Task_SurfMinigame, 2);
+    // sets task data[0] and data[1] to taskData 
+    SetWordTaskArg(taskId, 0, (uintptr_t)ptr_taskData); // pointers are 32 bit -> need two s16 data slots -> "word"
     return TRUE;
 }
 

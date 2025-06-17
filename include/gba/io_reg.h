@@ -347,50 +347,95 @@
 
 // I/O registers
 
+// Display control register
 #define REG_DISPCNT     (*(vu16 *)REG_ADDR_DISPCNT)
+// Display status register
 #define REG_DISPSTAT    (*(vu16 *)REG_ADDR_DISPSTAT)
+// Vertical counter register
 #define REG_VCOUNT      (*(vu16 *)REG_ADDR_VCOUNT)
+// Background 0 control register
 #define REG_BG0CNT      (*(vu16 *)REG_ADDR_BG0CNT)
+// Background 1 control register
 #define REG_BG1CNT      (*(vu16 *)REG_ADDR_BG1CNT)
+// Background 2 control register
 #define REG_BG2CNT      (*(vu16 *)REG_ADDR_BG2CNT)
+// Background 3 control register
 #define REG_BG3CNT      (*(vu16 *)REG_ADDR_BG3CNT)
+// Background 0 horizontal offset
 #define REG_BG0HOFS     (*(vu16 *)REG_ADDR_BG0HOFS)
+// Background 0 vertical offset
 #define REG_BG0VOFS     (*(vu16 *)REG_ADDR_BG0VOFS)
+// Background 1 horizontal offset
 #define REG_BG1HOFS     (*(vu16 *)REG_ADDR_BG1HOFS)
+// Background 1 vertical offset
 #define REG_BG1VOFS     (*(vu16 *)REG_ADDR_BG1VOFS)
+// Background 2 horizontal offset
 #define REG_BG2HOFS     (*(vu16 *)REG_ADDR_BG2HOFS)
+// Background 2 vertical offset
 #define REG_BG2VOFS     (*(vu16 *)REG_ADDR_BG2VOFS)
+// Background 3 horizontal offset
 #define REG_BG3HOFS     (*(vu16 *)REG_ADDR_BG3HOFS)
+// Background 3 vertical offset
 #define REG_BG3VOFS     (*(vu16 *)REG_ADDR_BG3VOFS)
+// Background 2 affine parameter A
 #define REG_BG2PA       (*(vu16 *)REG_ADDR_BG2PA)
+// Background 2 affine parameter B
 #define REG_BG2PB       (*(vu16 *)REG_ADDR_BG2PB)
+// Background 2 affine parameter C
 #define REG_BG2PC       (*(vu16 *)REG_ADDR_BG2PC)
+// Background 2 affine parameter D
 #define REG_BG2PD       (*(vu16 *)REG_ADDR_BG2PD)
+// Background 2 X reference point
 #define REG_BG2X        (*(vu32 *)REG_ADDR_BG2X)
+// Background 2 X reference point (low)
 #define REG_BG2X_L      (*(vu16 *)REG_ADDR_BG2X_L)
+// Background 2 X reference point (high)
 #define REG_BG2X_H      (*(vu16 *)REG_ADDR_BG2X_H)
+// Background 2 Y reference point
 #define REG_BG2Y        (*(vu32 *)REG_ADDR_BG2Y)
+// Background 2 Y reference point (low)
 #define REG_BG2Y_L      (*(vu16 *)REG_ADDR_BG2Y_L)
+// Background 2 Y reference point (high)
 #define REG_BG2Y_H      (*(vu16 *)REG_ADDR_BG2Y_H)
+// Background 3 affine parameter A
 #define REG_BG3PA       (*(vu16 *)REG_ADDR_BG3PA)
+// Background 3 affine parameter B
 #define REG_BG3PB       (*(vu16 *)REG_ADDR_BG3PB)
+// Background 3 affine parameter C
 #define REG_BG3PC       (*(vu16 *)REG_ADDR_BG3PC)
+// Background 3 affine parameter D
 #define REG_BG3PD       (*(vu16 *)REG_ADDR_BG3PD)
+// Background 3 X reference point
 #define REG_BG3X        (*(vu32 *)REG_ADDR_BG3X)
+// Background 3 X reference point (low)
 #define REG_BG3X_L      (*(vu16 *)REG_ADDR_BG3X_L)
+// Background 3 X reference point (high)
 #define REG_BG3X_H      (*(vu16 *)REG_ADDR_BG3X_H)
+// Background 3 Y reference point
 #define REG_BG3Y        (*(vu32 *)REG_ADDR_BG3Y)
+// Background 3 Y reference point (low)
 #define REG_BG3Y_L      (*(vu16 *)REG_ADDR_BG3Y_L)
+// Background 3 Y reference point (high)
 #define REG_BG3Y_H      (*(vu16 *)REG_ADDR_BG3Y_H)
+// Window 0 horizontal dimensions
 #define REG_WIN0H       (*(vu16 *)REG_ADDR_WIN0H)
+// Window 1 horizontal dimensions
 #define REG_WIN1H       (*(vu16 *)REG_ADDR_WIN1H)
+// Window 0 vertical dimensions
 #define REG_WIN0V       (*(vu16 *)REG_ADDR_WIN0V)
+// Window 1 vertical dimensions
 #define REG_WIN1V       (*(vu16 *)REG_ADDR_WIN1V)
+// Inside window control
 #define REG_WININ       (*(vu16 *)REG_ADDR_WININ)
+// Outside window control
 #define REG_WINOUT      (*(vu16 *)REG_ADDR_WINOUT)
+// Mosaic size register
 #define REG_MOSAIC      (*(vu16 *)REG_ADDR_MOSAIC)
+// Blend control register
 #define REG_BLDCNT      (*(vu16 *)REG_ADDR_BLDCNT)
+// Blend alpha register
 #define REG_BLDALPHA    (*(vu16 *)REG_ADDR_BLDALPHA)
+// Blend Y (Brightness) register
 #define REG_BLDY        (*(vu16 *)REG_ADDR_BLDY)
 
 #define REG_SOUND1CNT_L (*(vu16 *)REG_ADDR_SOUND1CNT_L)

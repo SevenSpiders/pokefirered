@@ -70,6 +70,7 @@
 #include "constants/sound.h"
 #include "learn_move.h"
 #include "slot_machine.h"
+#include "minigames/pikachu_beach.h"
 
 #define PARTY_PAL_SELECTED     (1 << 0)
 #define PARTY_PAL_FAINTED      (1 << 1)
@@ -1143,7 +1144,8 @@ void Task_HandleChooseMonInput(u8 taskId)
             else
             {
                 // CursorCB_Summary(taskId);
-                PlaySlotMachine(0, CB2_ReturnToFieldContinueScriptPlayMapMusic);
+                // PlaySlotMachine(0, CB2_ReturnToFieldContinueScriptPlayMapMusic);
+                PlaySurfMinigame(CB2_ReturnToFieldContinueScriptPlayMapMusic);
 
             }
             break;
