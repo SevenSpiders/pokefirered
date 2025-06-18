@@ -27,6 +27,7 @@ static void CB2_RunMinigame(void);
 
 void  PlaySurfMinigame(MainCallback savedCallback)
 {
+    DebugPrintf("Play Surf minigame");
     ResetTasks();
     sSurfMinigameState = Alloc(sizeof(*sSurfMinigameState));
     if (sSurfMinigameState == NULL)
@@ -46,6 +47,7 @@ static void InitSurfMinigameState(struct SurfMinigameState * state)
 
 static void CB2_InitMinigame(void)
 {
+    DebugPrintf("cb2 init mini game");
     RunTasks();
     AnimateSprites();
     BuildOamBuffer();

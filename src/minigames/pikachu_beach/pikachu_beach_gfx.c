@@ -8,7 +8,7 @@
 #include "new_menu_helpers.h" // ResetBgPositions, ResetTempDataBuffers, Decompr...
 #include "text_window.h" // LoadUserWindowGfx2
 #include "minigames/pikachu_beach_internal.h"
-
+#include "sprite_pikachu_surf.c"
 
 enum {
     PALSLOT_LINE_NORMAL = 4, // Loaded as part of sBg_Pal
@@ -16,51 +16,38 @@ enum {
     PALSLOT_LINE_MATCH,
 };
 
-enum {
-    GFXTAG_REEL_ICONS,
-    GFXTAG_CLEFAIRY,
-    GFXTAG_DIGITS,
-};
+static void CreatePikachuIntroSprite(void);
 
 
 static EWRAM_DATA struct SurfMinigameGfxManager * sSurfMinigameGfxManager = NULL;
-static const u16 sBg_Pal[][16]             = INCBIN_U16("graphics/slot_machine/firered/bg.gbapal");
-static const u32 sBg_Tiles[]               = INCBIN_U32("graphics/slot_machine/firered/bg.4bpp.lz");
-static const u32 sBg_Tilemap[]             = INCBIN_U32("graphics/slot_machine/firered/bg.bin.lz");
+// static const u16 sBg_Pal[][16]             = INCBIN_U16("graphics/slot_machine/firered/bg.gbapal");
+// static const u32 sBg_Tiles[]               = INCBIN_U32("graphics/slot_machine/firered/bg.4bpp.lz");
+// static const u32 sBg_Tilemap[]             = INCBIN_U32("graphics/slot_machine/firered/bg.bin.lz");
+static const u16 sBg_Pal[][16]             = INCBIN_U16("graphics/pikachu_beach/surfing_pikachu_intro.gbapal");
+static const u32 sBg_Tiles[]               = INCBIN_U32("graphics/pikachu_beach/surfing_pikachu_intro.4bpp.lz");
+static const u32 sBg_Tilemap[]             = INCBIN_U32("graphics/pikachu_beach/surfing_pikachu_intro.bin.lz");
 static const u16 sBgPal_MatchLines[]       = INCBIN_U16("graphics/slot_machine/firered/match_lines.gbapal");
 static const u16 sBgPal_PayoutLight[][16]  = INCBIN_U16("graphics/slot_machine/firered/payout_lights.gbapal");
 static const u32 sButtonPressed_Tiles[]    = INCBIN_U32("graphics/slot_machine/firered/button_pressed.4bpp.lz");
 static const u16 sCombosWindow_Pal[]       = INCBIN_U16("graphics/slot_machine/firered/combos_window.gbapal");
 static const u32 sCombosWindow_Tiles[]     = INCBIN_U32("graphics/slot_machine/firered/combos_window.4bpp.lz");
 static const u32 sCombosWindow_Tilemap[]   = INCBIN_U32("graphics/slot_machine/firered/combos_window.bin.lz");
+// static const u16 SPikachuSurf_Pal[]      = INCBIN_U16("graphics/slot_machine/firered/clefairy.gbapal");
+// static const u32 sPikachuSurfTiles[]    = INCBIN_U32("graphics/slot_machine/firered/clefairy.4bpp.lz");
+static const u16 SPikachuSurf_Pal[]      = INCBIN_U16("graphics/pikachu_beach/spritesheet_pikachu.gbapal");
+static const u32 sPikachuSurfTiles[]    = INCBIN_U32("graphics/pikachu_beach/spritesheet_pikachu.4bpp.lz");
 
 
 static const struct CompressedSpriteSheet sSpriteSheets[] = {
-    // {.data = sReelIcons_Tiles, .size = 0xe00, .tag = GFXTAG_REEL_ICONS},
-    // {.data = sClefairy_Tiles,  .size = 0xc00, .tag = GFXTAG_CLEFAIRY},
-    // {.data = sDigits_Tiles,    .size = 0x280, .tag = GFXTAG_DIGITS},
+    {.data = sPikachuSurfTiles,  .size = 512 * 18, .tag = GFXTAG_PIKACHU_SURF},
 };
 
 static const struct SpritePalette sSpritePalettes[] = {
-    // {.data = sReelIcons_Pal[0], .tag = PALTAG_REEL_ICONS_0},
-    // {.data = sReelIcons_Pal[1], .tag = PALTAG_REEL_ICONS_1},
-    // {.data = sReelIcons_Pal[2], .tag = PALTAG_REEL_ICONS_2},
-    // {.data = sReelIcons_Pal[3], .tag = PALTAG_REEL_ICONS_3},
-    // {.data = sReelIcons_Pal[4], .tag = PALTAG_REEL_ICONS_4},
-    // {.data = sClefairy_Pal,     .tag = PALTAG_CLEFAIRY},
-    // {.data = sDigits_Pal,       .tag = PALTAG_DIGITS},
-    // {}
+    {.data = SPikachuSurf_Pal,     .tag = PALTAG_PIKACHU_SURF},
+    {}
 };
 
-static const u16 sReelIconPaletteTags[] = {
-    // [ICON_7]         = PALTAG_REEL_ICONS_2,
-    // [ICON_ROCKET]    = PALTAG_REEL_ICONS_2,
-    // [ICON_PIKACHU]   = PALTAG_REEL_ICONS_0,
-    // [ICON_PSYDUCK]   = PALTAG_REEL_ICONS_0,
-    // [ICON_CHERRIES]  = PALTAG_REEL_ICONS_2,
-    // [ICON_MAGNEMITE] = PALTAG_REEL_ICONS_4,
-    // [ICON_SHELLDER]  = PALTAG_REEL_ICONS_3,
-};
+
 
 
 
@@ -70,7 +57,7 @@ static void HBlankCB_SlotMachine(void);
 static inline void SetBackdropColor(u16 color, u16 *pal);
 static bool32 LoadSpriteGraphicsAndAllocateManager(void);
 static void InitGfxManager(struct SurfMinigameGfxManager * manager);
-
+static void CreateSprite_Pikachu_Surf(void);
 
 // templates
 static const struct BgTemplate sBgTemplates[] = {
@@ -111,6 +98,10 @@ static const struct BgTemplate sBgTemplates[] = {
         .baseTile = 0x000
     }
 };
+
+#define WIN_MG0_0 0
+#define WIN_MG0_1 1
+#define WIN_MG0_2 2
 
 static const struct WindowTemplate sWindowTemplates[] = {
     [0] = {
@@ -153,6 +144,7 @@ bool8  MG0Task_InitGraphics(u8 * state, SurfMinigameSetupTaskData * ptr)
     u16 pal[2];
     u8 textColor[3];
     u32 x;
+    s32 spriteId;
 
     switch (*state)
     {
@@ -206,15 +198,17 @@ bool8  MG0Task_InitGraphics(u8 * state, SurfMinigameSetupTaskData * ptr)
         textColor[2] = TEXT_COLOR_DARK_GRAY;
         AddTextPrinterParameterized3(1, FONT_SMALL, x, 0, textColor, 0, gString_SlotMachineControls);
         CopyBgTilemapBufferToVram(0);
+        DebugPrintf("init graphics 1.8");
 
         SetGpuRegBits(REG_OFFSET_DISPCNT, DISPCNT_MODE_0 | 0x20 | DISPCNT_OBJ_1D_MAP | DISPCNT_OBJ_ON);
         SetGpuReg(REG_OFFSET_BLDCNT, BLDCNT_TGT1_BG3 | BLDCNT_TGT1_OBJ | BLDCNT_TGT1_BD | BLDCNT_EFFECT_DARKEN);
         LoadSpriteGraphicsAndAllocateManager();
-        // CreateReelIconSprites();
-        // CreateScoreDigitSprites();
-        // CreateClefairySprites();
-        // UpdateCoinsDisplay();
+        // CreatePikachuIntroSprite();
+        // CreateSprite_Pikachu_Surf();
+        spriteId = CreateSpriteId_Pikachu_Surf();
+        sSurfMinigameGfxManager->pikachuSprite = &gSprites[spriteId];
         BlendPalettes(PALETTES_ALL, 0x10, RGB_BLACK);
+        DebugPrintf("init graphics 1.9");
         SetVBlankCallback(VBlankCB_SlotMachine);
         SetHBlankCallback(HBlankCB_SlotMachine);
         (*state)++;
@@ -267,21 +261,105 @@ static void HBlankCB_SlotMachine(void)
     // }
 }
 
-// static void InitReelButtonTileMem(void)
-// {
-    // s32 i, j;
-    // struct SlotMachineSetupTaskData * data = GetSurfMinigameSetupTaskDataPtr();
-    // u16 * buffer = GetBgTilemapBuffer(2);
 
-    // for (i = 0; i < 3; i++)
-    // {
-    //     for (j = 0; j < 4; j++)
-    //     {
-    //         u16 idx = 0x0229;
-    //         data->buttonReleasedTiles[i][j] = buffer[idx];
-    //         data->buttonPressedTiles[i][j] = j + 0xC0;
-    //     }
-    // }
+// // Pikachu
+// // ------------------------------------------------------------------------------------------------
+// #define t_idle 10
+
+// static const union AnimCmd sAnimCmd_Pikachu_idle[] = {
+//     ANIMCMD_FRAME(0x20, t_idle),
+//     ANIMCMD_FRAME(0x30, t_idle),
+//     ANIMCMD_FRAME(0x40, t_idle),
+//     ANIMCMD_FRAME(0x30, t_idle),
+//     ANIMCMD_JUMP(0)
+// };
+
+// static const union AnimCmd sAnimCmd_Pikachu_1[] = {
+//     ANIMCMD_FRAME(0, 10),
+//     ANIMCMD_END
+// };
+
+
+// static const union AnimCmd *const sAnimTable_Pikachu[] = {
+//     sAnimCmd_Pikachu_idle,
+//     sAnimCmd_Pikachu_1,
+
+// };
+
+// static const struct OamData sOamData_Pikachu = {
+//     .y = 0,
+//     .affineMode = ST_OAM_AFFINE_OFF,
+//     .objMode = ST_OAM_OBJ_NORMAL,
+//     .mosaic = FALSE,
+//     .bpp = ST_OAM_4BPP,
+//     .shape = ST_OAM_SQUARE,
+//     .x = 0,
+//     .matrixNum = 0,
+//     .size = ST_OAM_SIZE_2,
+//     .tileNum = 0,
+//     .priority = 1,
+//     .paletteNum = 0,
+//     .affineParam = 0
+// };
+
+// static const struct SpriteTemplate sSpriteTemplate_Pikachu_Surfing = {
+//     .tileTag = GFXTAG_PIKACHU_SURF,
+//     .paletteTag = PALTAG_PIKACHU_SURF,
+//     .oam = &sOamData_Pikachu,
+//     .anims = sAnimTable_Pikachu,
+//     .images = NULL,
+//     .affineAnims = gDummySpriteAffineAnimTable,
+//     .callback = SpriteCallbackDummy
+// };
+
+static void CreateSprite_Pikachu_Surf(void)
+{
+    // s32 spriteId = CreateSprite(&sSpriteTemplate_Pikachu_Surfing, 16, 136, 1);
+    // StartSpriteAnim(&gSprites[spriteId], 0);
+    // DebugPrintf("Pika?");
+    s32 spriteId = CreateSpriteId_Pikachu_Surf();
+    sSurfMinigameGfxManager->pikachuSprite = &gSprites[spriteId];
+}
+
+void MovePikachu(s32 dx, s32 dy)
+{
+    if (sSurfMinigameGfxManager->pikachuSprite == NULL)
+        return;
+    
+    sSurfMinigameGfxManager->pikachuSprite->x += dx;
+    sSurfMinigameGfxManager->pikachuSprite->y += dy;
+}
+
+ // Pikachu Intro
+ // ---------------------------------------------------------------------------------------
+// static const struct SpriteTemplate sSpriteTemplate_PikachuIntro = {
+//     .tileTag = GFXTAG_PIKACHU_INTRO,
+//     .paletteTag = PALTAG_PIKACHU_INTRO,
+//     .oam = &sOamData_Pikachu,
+//     .anims = sAnimTable_Pikachu,
+//     .images = NULL,
+//     .affineAnims = gDummySpriteAffineAnimTable,
+//     .callback = SpriteCallbackDummy
+// };
+
+// static void CreatePikachuIntroSprite(void)
+// {
+//     s32 spriteId = CreateSprite(&sSpriteTemplate_PikachuIntro, 80, 44, 2);
+//     s32 animId =  0;
+//     struct Sprite *sprite = &gSprites[spriteId];
+//     sprite->callback = SpriteCallbackDummy;
+//     sprite->oam.priority = 0;
+//     sprite->invisible = TRUE;
+
+//     // StartSpriteAnim(sprite, animId);
+//     // sprite->oam.paletteNum = IndexOfSpritePaletteTag(sReelIconPaletteTags[animId]);
+//     // sprite->data[0] = 0;
+//     // sprite->data[1] = 0;
+//     // sprite->data[2] = 0;
+//     // sprite->data[3] = 0;
+//     // sprite->oam.matrixNum = 0;
+//     // sSurfMinigameGfxManager->pikachuIntroSprite = sprite;
+//     // sSurfMinigameGfxManager->pikachuAffineParamPtr = (vu16 *)(OAM + 0 * sizeof(struct OamData) + offsetof(struct OamData, affineParam));
 // }
 
 static bool32 LoadSpriteGraphicsAndAllocateManager(void)

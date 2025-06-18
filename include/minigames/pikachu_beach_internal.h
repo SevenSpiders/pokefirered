@@ -54,12 +54,13 @@ typedef struct SurfMinigameSetupTaskData
 
 struct SurfMinigameGfxManager
 {
-    // struct Sprite *reelIconSprites[NUM_REELS][REEL_LOAD_LENGTH];
-    // struct Sprite *creditDigitSprites[NUM_DIGIT_SPRITES];
-    // struct Sprite *payoutDigitSprites[NUM_DIGIT_SPRITES];
-    // struct Sprite *clefairySprites[2];
-    // vu16 * reelIconAffineParamPtr;
+     vu16 * pikachuAffineParamPtr;
+     struct Sprite *pikachuIntroSprite;
+     struct Sprite *pikachuSprite;
+     
 };
+
+// MAIN
 
 // TASKS
 void SetSurfMinigameSetupTask(u16 funcno, u8 taskId); // From tasks.c, but needed here.
@@ -70,6 +71,22 @@ void Task_SurfMinigame(u8 taskId); // From tasks.c, but needed here.
 bool8  MG0Task_InitGraphics(u8 * state, SurfMinigameSetupTaskData * ptr);
 
 // GFX
-void DestroyGfxManager(void); // From gfx.c, but needed here.
+
+enum {
+    GFXTAG_PIKACHU_INTRO = 0,
+    GFXTAG_PIKACHU_SURF = 1,
+};
+
+enum {
+    PALTAG_PIKACHU_INTRO = 0,
+    PALTAG_PIKACHU_SURF = 1
+};
+
+void DestroyGfxManager(void);
+void MovePikachu(s32 dx, s32 dy);
+
+// Sprites
+// void CreateSprite_Pikachu_Surf(void);
+
 
 #endif // GUARD_PIKACHU_BEACH_H

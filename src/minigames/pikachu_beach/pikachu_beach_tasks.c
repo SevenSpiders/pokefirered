@@ -5,6 +5,18 @@
 #include "menu.h"
 #include "minigames/pikachu_beach_internal.h" // Include the new header
 
+static void MainTask_ConfirmExitGame(u8 taskId);
+static void MainTask_ExitMinigame(u8 taskId);
+
+extern EWRAM_DATA struct SurfMinigameState * sSurfMinigameState;
+
+static void SetMainTask(TaskFunc taskFunc)
+{
+    gTasks[sSurfMinigameState->taskId].func = taskFunc;
+    gTasks[sSurfMinigameState->taskId].data[0] = 0;
+}
+
+
 // Array of minigame setup subtasks (commented out in original, but structure implies task functions)
 static bool8 (*const  sSurfMinigameSetupTasks[])(u8 *, struct SurfMinigameSetupTaskData *) = {
     [MG0TASK_GFX_INIT] =  MG0Task_InitGraphics, // implemented in pikachu_beach_graphics
@@ -37,9 +49,41 @@ void SetSurfMinigameSetupTask(u16 funcno, u8 taskId)
     data->subtasks[taskId].active =  sSurfMinigameSetupTasks[funcno](&data->subtasks[taskId].state, data);
 }
 
+#define pikachu_speed 1
+
 void MainTask_SurfMinigameLoop(u8 taskId)
 {
-    // s16 * data = gTasks[taskId].data;
+    s16 * data = gTasks[taskId].data;
+
+    switch (data[0])
+    {
+    case 0:
+        if (JOY_NEW(START_BUTTON))
+        {
+            SetMainTask(MainTask_ConfirmExitGame);
+        }
+        else if (JOY_NEW(DPAD_UP) || JOY_HELD(DPAD_UP))
+        {
+            MovePikachu(0, -pikachu_speed);
+        }
+        else if (JOY_NEW(DPAD_DOWN) || JOY_HELD(DPAD_DOWN))
+        {
+            MovePikachu(0, pikachu_speed);
+        }
+        else if (JOY_NEW(DPAD_RIGHT) || JOY_HELD(DPAD_RIGHT))
+        {
+            MovePikachu(pikachu_speed, 0);
+        }
+        else if (JOY_NEW(DPAD_LEFT) || JOY_HELD(DPAD_LEFT))
+        {
+            MovePikachu(-pikachu_speed,0);
+        }
+        else 
+        break;
+    
+    default:
+        break;
+    }
 
     // switch (data[0])
     // {
@@ -139,6 +183,69 @@ void MainTask_SurfMinigameLoop(u8 taskId)
     //         }
     //         else
     //             data[0] = 3;
+    //     }
+    //     break;
+    // }
+}
+
+static void MainTask_ConfirmExitGame(u8 taskId)
+{
+    SetMainTask(MainTask_ExitMinigame);
+    // s16 * data = gTasks[taskId].data;
+
+    // switch (data[0])
+    // {
+    // case 0:
+    //     SetSlotMachineSetupTask(SLOTTASK_ASK_QUIT, 0);
+    //     data[0]++;
+    //     break;
+    // case 1:
+    //     if (!IsSlotMachineSetupTaskActive(0))
+    //         data[0]++;
+    //     break;
+    // case 2:
+    //     switch (Menu_ProcessInputNoWrapClearOnChoose())
+    //     {
+    //     case 0:
+    //         AddCoins(sSlotMachineState->bet);
+    //         SetSlotMachineSetupTask(SLOTTASK_SHOW_AMOUNTS, 0);
+    //         data[0] = 3;
+    //         break;
+    //     case 1:
+    //     case -1:
+    //         SetSlotMachineSetupTask(SLOTTASK_DESTROY_YESNO, 0);
+    //         data[0] = 4;
+    //         break;
+    //     }
+    //     break;
+    // case 3:
+    //     if (!IsSlotMachineSetupTaskActive(0))
+    //         SetMainTask(MainTask_ExitMinigame);
+    //     break;
+    // case 4:
+    //     if (!IsSlotMachineSetupTaskActive(0))
+    //         SetMainTask(MainTask_SlotsGameLoop);
+    //     break;
+    // }
+}
+
+static void MainTask_ExitMinigame(u8 taskId)
+{
+    SetMainCallback2(sSurfMinigameState->savedCallback);
+
+    // s16 * data = gTasks[taskId].data;
+
+    // switch (data[0])
+    // {
+    // case 0:
+    //     SetSlotMachineSetupTask(SLOTTASK_FADEOUT_EXIT, 0);
+    //     data[0]++;
+    //     break;
+    // case 1:
+    //     if (!IsSlotMachineSetupTaskActive(0))
+    //     {
+    //         SetMainCallback2(sSlotMachineState->savedCallback);
+    //         CleanSupSlotMachineState();
     //     }
     //     break;
     // }
