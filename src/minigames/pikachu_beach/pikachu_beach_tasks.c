@@ -5,12 +5,11 @@
 #include "menu.h"
 #include "minigames/pikachu_beach_internal.h" // Include the new header
 
-static void MainTask_ConfirmExitGame(u8 taskId);
 static void MainTask_ExitMinigame(u8 taskId);
 
 extern EWRAM_DATA struct SurfMinigameState * sSurfMinigameState;
 
-static void SetMainTask(TaskFunc taskFunc)
+void SetMainTask(TaskFunc taskFunc)
 {
     gTasks[sSurfMinigameState->taskId].func = taskFunc;
     gTasks[sSurfMinigameState->taskId].data[0] = 0;
@@ -49,36 +48,32 @@ void SetSurfMinigameSetupTask(u16 funcno, u8 taskId)
     data->subtasks[taskId].active =  sSurfMinigameSetupTasks[funcno](&data->subtasks[taskId].state, data);
 }
 
-#define pikachu_speed 1
+void SurfMinigame_ScrollBG()
+{
+    DebugPrintf("scroll");
+    ChangeBgX(2, 16, BG_COORD_ADD);
+}
 
+enum
+{
+    STATE_INTRO = 0,
+    STATE_PLAYING = 1,
+    STATE_OUTRO = 2,
+};
+
+/*
 void MainTask_SurfMinigameLoop(u8 taskId)
 {
     s16 * data = gTasks[taskId].data;
+    
 
     switch (data[0])
     {
-    case 0:
-        if (JOY_NEW(START_BUTTON))
-        {
-            SetMainTask(MainTask_ConfirmExitGame);
-        }
-        else if (JOY_NEW(DPAD_UP) || JOY_HELD(DPAD_UP))
-        {
-            MovePikachu(0, -pikachu_speed);
-        }
-        else if (JOY_NEW(DPAD_DOWN) || JOY_HELD(DPAD_DOWN))
-        {
-            MovePikachu(0, pikachu_speed);
-        }
-        else if (JOY_NEW(DPAD_RIGHT) || JOY_HELD(DPAD_RIGHT))
-        {
-            MovePikachu(pikachu_speed, 0);
-        }
-        else if (JOY_NEW(DPAD_LEFT) || JOY_HELD(DPAD_LEFT))
-        {
-            MovePikachu(-pikachu_speed,0);
-        }
-        else 
+    case STATE_INTRO:
+        HandleInput();
+        break;
+    case STATE_PLAYING:
+        ScrollBG();
         break;
     
     default:
@@ -188,7 +183,9 @@ void MainTask_SurfMinigameLoop(u8 taskId)
     // }
 }
 
-static void MainTask_ConfirmExitGame(u8 taskId)
+*/
+
+void MainTask_ConfirmExitGame(u8 taskId)
 {
     SetMainTask(MainTask_ExitMinigame);
     // s16 * data = gTasks[taskId].data;

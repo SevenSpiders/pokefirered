@@ -4,6 +4,7 @@
 
 #include "global.h"
 #include "gflib.h"
+#include "task.h"
 
 // Type definitions
 typedef struct SurfMinigameState
@@ -63,30 +64,33 @@ struct SurfMinigameGfxManager
 // MAIN
 
 // TASKS
+void SetMainTask(TaskFunc taskFunc);
 void SetSurfMinigameSetupTask(u16 funcno, u8 taskId); // From tasks.c, but needed here.
 bool32 IsSurfMinigameSetupTaskActive(u8 taskId); // From tasks.c, but needed here.
 struct SurfMinigameSetupTaskData * GetSurfMinigameSetupTaskDataPtr(void); // From tasks.c, but needed here.
 void MainTask_SurfMinigameLoop(u8 taskId); // From tasks.c, but needed here.
 void Task_SurfMinigame(u8 taskId); // From tasks.c, but needed here.
 bool8  MG0Task_InitGraphics(u8 * state, SurfMinigameSetupTaskData * ptr);
+void MainTask_ConfirmExitGame(u8 taskId);
+
+// INPUT
+void SurfMinigame_HandleInput(void);
 
 // GFX
+void SurfMinigame_ScrollBG();
 
 enum {
-    GFXTAG_PIKACHU_INTRO = 0,
+    GFXTAG_PIKACHU_PADDLE = 0,
     GFXTAG_PIKACHU_SURF = 1,
 };
 
 enum {
-    PALTAG_PIKACHU_INTRO = 0,
+    PALTAG_PIKACHU_PADDLE = 0,
     PALTAG_PIKACHU_SURF = 1
 };
 
 void DestroyGfxManager(void);
 void MovePikachu(s32 dx, s32 dy);
-
-// Sprites
-// void CreateSprite_Pikachu_Surf(void);
 
 
 #endif // GUARD_PIKACHU_BEACH_H

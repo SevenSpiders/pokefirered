@@ -11,7 +11,7 @@ static const union AnimCmd sAnimCmd_Pikachu_idle[] = {
 };
 
 static const union AnimCmd sAnimCmd_Pikachu_1[] = {
-    ANIMCMD_FRAME(0, 10),
+    ANIMCMD_FRAME(0, 1),
     ANIMCMD_END
 };
 
@@ -48,7 +48,7 @@ static const struct SpriteTemplate sSpriteTemplate_Pikachu_Surfing = {
     .callback = SpriteCallbackDummy
 };
 
-static s32 CreateSpriteId_Pikachu_Surf(void)
+static s32 CreateSprite_Pikachu_Surf(void)
 {
     s32 spriteId = CreateSprite(&sSpriteTemplate_Pikachu_Surfing, 16, 136, 1);
     StartSpriteAnim(&gSprites[spriteId], 0);

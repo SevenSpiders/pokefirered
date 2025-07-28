@@ -40,6 +40,25 @@ void  PlaySurfMinigame(MainCallback savedCallback)
     }
 }
 
+void MainTask_SurfMinigameLoop(u8 taskId)
+{
+    s16 * data = gTasks[taskId].data;
+    
+
+    switch (data[0])
+    {
+    case 0:
+        SurfMinigame_HandleInput();
+        SurfMinigame_ScrollBG();
+        break;
+    case 1:
+        break;
+    
+    default:
+        break;
+    }
+}
+
 static void InitSurfMinigameState(struct SurfMinigameState * state)
 {
     state->taskId = 0;

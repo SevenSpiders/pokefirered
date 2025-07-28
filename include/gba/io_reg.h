@@ -5,181 +5,411 @@
 
 // I/O register offsets
 
-#define REG_OFFSET_DISPCNT     0x0
-#define REG_OFFSET_DISPSTAT    0x4
-#define REG_OFFSET_VCOUNT      0x6
-#define REG_OFFSET_BG0CNT      0x8
-#define REG_OFFSET_BG1CNT      0xa
-#define REG_OFFSET_BG2CNT      0xc
-#define REG_OFFSET_BG3CNT      0xe
-#define REG_OFFSET_BG0HOFS     0x10
-#define REG_OFFSET_BG0VOFS     0x12
-#define REG_OFFSET_BG1HOFS     0x14
-#define REG_OFFSET_BG1VOFS     0x16
-#define REG_OFFSET_BG2HOFS     0x18
-#define REG_OFFSET_BG2VOFS     0x1a
-#define REG_OFFSET_BG3HOFS     0x1c
-#define REG_OFFSET_BG3VOFS     0x1e
-#define REG_OFFSET_BG2PA       0x20
-#define REG_OFFSET_BG2PB       0x22
-#define REG_OFFSET_BG2PC       0x24
-#define REG_OFFSET_BG2PD       0x26
-#define REG_OFFSET_BG2X        0x28
-#define REG_OFFSET_BG2X_L      0x28
-#define REG_OFFSET_BG2X_H      0x2a
-#define REG_OFFSET_BG2Y        0x2c
-#define REG_OFFSET_BG2Y_L      0x2c
-#define REG_OFFSET_BG2Y_H      0x2e
-#define REG_OFFSET_BG3PA       0x30
-#define REG_OFFSET_BG3PB       0x32
-#define REG_OFFSET_BG3PC       0x34
-#define REG_OFFSET_BG3PD       0x36
-#define REG_OFFSET_BG3X        0x38
-#define REG_OFFSET_BG3X_L      0x38
-#define REG_OFFSET_BG3X_H      0x3a
-#define REG_OFFSET_BG3Y        0x3c
-#define REG_OFFSET_BG3Y_L      0x3c
-#define REG_OFFSET_BG3Y_H      0x3e
+// Display control register offset: Configures video mode, background/sprite enable, and forced blank.
+#define REG_OFFSET_DISPCNT      0x0
+// Display status register offset: Contains information about VBlank, HBlank, and VCount match.
+#define REG_OFFSET_DISPSTAT     0x4
+// Vertical scanline counter register offset: Reads the current scanline number.
+#define REG_OFFSET_VCOUNT       0x6
+
+// Background 0 control register offset: Configures BG0's properties like priority, tile base block, map base block, and size.
+#define REG_OFFSET_BG0CNT       0x8
+// Background 1 control register offset: Configures BG1's properties.
+#define REG_OFFSET_BG1CNT       0xa
+// Background 2 control register offset: Configures BG2's properties. Used for affine transformations in modes 1, 2, 3, 4, 5.
+#define REG_OFFSET_BG2CNT       0xc
+// Background 3 control register offset: Configures BG3's properties. Used for affine transformations in mode 2.
+#define REG_OFFSET_BG3CNT       0xe
+
+// Background 0 horizontal scroll offset register.
+#define REG_OFFSET_BG0HOFS      0x10
+// Background 0 vertical scroll offset register.
+#define REG_OFFSET_BG0VOFS      0x12
+// Background 1 horizontal scroll offset register.
+#define REG_OFFSET_BG1HOFS      0x14
+// Background 1 vertical scroll offset register.
+#define REG_OFFSET_BG1VOFS      0x16
+// Background 2 horizontal scroll offset register. Used for regular BG scrolling, or part of affine transform for BG2.
+#define REG_OFFSET_BG2HOFS      0x18
+// Background 2 vertical scroll offset register. Used for regular BG scrolling, or part of affine transform for BG2.
+#define REG_OFFSET_BG2VOFS      0x1a
+// Background 3 horizontal scroll offset register. Used for regular BG scrolling, or part of affine transform for BG3.
+#define REG_OFFSET_BG3HOFS      0x1c
+// Background 3 vertical scroll offset register. Used for regular BG scrolling, or part of affine transform for BG3.
+#define REG_OFFSET_BG3VOFS      0x1e
+
+// Background 2 affine transform parameter A register.
+#define REG_OFFSET_BG2PA        0x20
+// Background 2 affine transform parameter B register.
+#define REG_OFFSET_BG2PB        0x22
+// Background 2 affine transform parameter C register.
+#define REG_OFFSET_BG2PC        0x24
+// Background 2 affine transform parameter D register.
+#define REG_OFFSET_BG2PD        0x26
+// Background 2 reference point X-coordinate register (lower 16 bits).
+#define REG_OFFSET_BG2X         0x28
+// Background 2 reference point X-coordinate register (lower 16 bits).
+#define REG_OFFSET_BG2X_L       0x28
+// Background 2 reference point X-coordinate register (higher 12 bits, extending BG2X_L).
+#define REG_OFFSET_BG2X_H       0x2a
+// Background 2 reference point Y-coordinate register (lower 16 bits).
+#define REG_OFFSET_BG2Y         0x2c
+// Background 2 reference point Y-coordinate register (lower 16 bits).
+#define REG_OFFSET_BG2Y_L       0x2c
+// Background 2 reference point Y-coordinate register (higher 12 bits, extending BG2Y_L).
+#define REG_OFFSET_BG2Y_H       0x2e
+
+// Background 3 affine transform parameter A register.
+#define REG_OFFSET_BG3PA        0x30
+// Background 3 affine transform parameter B register.
+#define REG_OFFSET_BG3PB        0x32
+// Background 3 affine transform parameter C register.
+#define REG_OFFSET_BG3PC        0x34
+// Background 3 affine transform parameter D register.
+#define REG_OFFSET_BG3PD        0x36
+// Background 3 reference point X-coordinate register (lower 16 bits).
+#define REG_OFFSET_BG3X         0x38
+// Background 3 reference point X-coordinate register (lower 16 bits).
+#define REG_OFFSET_BG3X_L       0x38
+// Background 3 reference point X-coordinate register (higher 12 bits, extending BG3X_L).
+#define REG_OFFSET_BG3X_H       0x3a
+// Background 3 reference point Y-coordinate register (lower 16 bits).
+#define REG_OFFSET_BG3Y         0x3c
+// Background 3 reference point Y-coordinate register (lower 16 bits).
+#define REG_OFFSET_BG3Y_L       0x3c
+// Background 3 reference point Y-coordinate register (higher 12 bits, extending BG3Y_L).
+#define REG_OFFSET_BG3Y_H       0x3e
+
+// Window 0 horizontal boundaries register.
 #define REG_OFFSET_WIN0H       0x40
+// Window 1 horizontal boundaries register.
 #define REG_OFFSET_WIN1H       0x42
+// Window 0 vertical boundaries register.
 #define REG_OFFSET_WIN0V       0x44
+// Window 1 vertical boundaries register.
 #define REG_OFFSET_WIN1V       0x46
+// Window inside control register: Configures layers displayed/blended inside Window 0 and Window 1.
 #define REG_OFFSET_WININ       0x48
+// Window outside control register: Configures layers displayed/blended outside Window 0/1 and in the "OBJ Window".
 #define REG_OFFSET_WINOUT      0x4a
+// Mosaic effect register offset: Configures mosaic size for backgrounds and sprites.
 #define REG_OFFSET_MOSAIC      0x4c
+// Color blending control register offset: Selects blending mode and involved layers.
 #define REG_OFFSET_BLDCNT      0x50
+// Color blending alpha coefficients register offset: Sets blending ratios for layers in alpha blending mode.
 #define REG_OFFSET_BLDALPHA    0x52
+// Color blending brightness (fade) coefficient register offset: Sets the amount of darkening or lightening.
 #define REG_OFFSET_BLDY        0x54
 
+// ============================================================================
+// GBA Sound Registers (Offsets from 0x04000000)
+// These registers control the GBA's sound channels, including wave, square, and noise.
+// Many are named with 'NR' (Noise Register) followed by a channel and a sub-register number,
+// referencing the original Game Boy's sound chip, which the GBA largely inherits for these channels.
+// ============================================================================
+
+// Sound Channel 1 (Square Wave 1) Control Register L: Sweep control.
 #define REG_OFFSET_SOUND1CNT_L 0x60
+// Noise Register 10 (NR10): Equivalent to SOUND1CNT_L (Sweep control).
 #define REG_OFFSET_NR10        0x60
+
+// Sound Channel 1 Control Register H: Wave pattern duty, length load, envelope.
 #define REG_OFFSET_SOUND1CNT_H 0x62
+// Noise Register 11 (NR11): Equivalent to SOUND1CNT_H (Wave pattern duty/length).
 #define REG_OFFSET_NR11        0x62
+// Noise Register 12 (NR12): Volume envelope (initial volume and envelope sweep).
 #define REG_OFFSET_NR12        0x63
+
+// Sound Channel 1 Control Register X: Frequency and control/restart.
 #define REG_OFFSET_SOUND1CNT_X 0x64
+// Noise Register 13 (NR13): Equivalent to SOUND1CNT_X (Frequency LSB).
 #define REG_OFFSET_NR13        0x64
+// Noise Register 14 (NR14): Frequency MSB and control bits (trigger, length enable).
 #define REG_OFFSET_NR14        0x65
+
+// Sound Channel 2 (Square Wave 2) Control Register L: Wave pattern duty, length load, envelope.
 #define REG_OFFSET_SOUND2CNT_L 0x68
+// Noise Register 21 (NR21): Equivalent to SOUND2CNT_L (Wave pattern duty/length).
 #define REG_OFFSET_NR21        0x68
+// Noise Register 22 (NR22): Volume envelope (initial volume and envelope sweep).
 #define REG_OFFSET_NR22        0x69
+
+// Sound Channel 2 Control Register H: Frequency and control/restart.
 #define REG_OFFSET_SOUND2CNT_H 0x6c
+// Noise Register 23 (NR23): Equivalent to SOUND2CNT_H (Frequency LSB).
 #define REG_OFFSET_NR23        0x6c
+// Noise Register 24 (NR24): Frequency MSB and control bits (trigger, length enable).
 #define REG_OFFSET_NR24        0x6d
+
+// Sound Channel 3 (Wave) Control Register L: Wave enable, length, and output level.
 #define REG_OFFSET_SOUND3CNT_L 0x70
+// Noise Register 30 (NR30): Equivalent to SOUND3CNT_L (Wave enable/output level).
 #define REG_OFFSET_NR30        0x70
+
+// Sound Channel 3 Control Register H: Wave length load.
 #define REG_OFFSET_SOUND3CNT_H 0x72
+// Noise Register 31 (NR31): Equivalent to SOUND3CNT_H (Wave length).
 #define REG_OFFSET_NR31        0x72
+// Noise Register 32 (NR32): Wave output level.
 #define REG_OFFSET_NR32        0x73
+
+// Sound Channel 3 Control Register X: Frequency and control/restart.
 #define REG_OFFSET_SOUND3CNT_X 0x74
+// Noise Register 33 (NR33): Equivalent to SOUND3CNT_X (Frequency LSB).
 #define REG_OFFSET_NR33        0x74
+// Noise Register 34 (NR34): Frequency MSB and control bits (trigger, length enable).
 #define REG_OFFSET_NR34        0x75
+
+// Sound Channel 4 (Noise) Control Register L: Length load and envelope.
 #define REG_OFFSET_SOUND4CNT_L 0x78
+// Noise Register 41 (NR41): Equivalent to SOUND4CNT_L (Length).
 #define REG_OFFSET_NR41        0x78
+// Noise Register 42 (NR42): Volume envelope (initial volume and envelope sweep).
 #define REG_OFFSET_NR42        0x79
+
+// Sound Channel 4 Control Register H: Noise polynomial counter settings and control/restart.
 #define REG_OFFSET_SOUND4CNT_H 0x7c
+// Noise Register 43 (NR43): Equivalent to SOUND4CNT_H (Noise polynomial counter settings).
 #define REG_OFFSET_NR43        0x7c
+// Noise Register 44 (NR44): Control bits (trigger, length enable).
 #define REG_OFFSET_NR44        0x7d
+
+// Sound Control Register L: Channel output selection to speakers (Left/Right).
 #define REG_OFFSET_SOUNDCNT_L  0x80
+// Noise Register 50 (NR50): Equivalent to SOUNDCNT_L (Master volume and VIN (Audio in) mixing).
 #define REG_OFFSET_NR50        0x80
+// Noise Register 51 (NR51): Sound channel panning (output to Left/Right speakers).
 #define REG_OFFSET_NR51        0x81
+
+// Sound Control Register H: Direct Sound (FIFO A/B) volume and enable.
 #define REG_OFFSET_SOUNDCNT_H  0x82
+
+// Sound Control Register X: Global sound enable.
 #define REG_OFFSET_SOUNDCNT_X  0x84
+// Noise Register 52 (NR52): Global sound system enable/status.
 #define REG_OFFSET_NR52        0x84
+
+// Sound Bias register offset: Controls bias for Direct Sound (FIFO) output.
 #define REG_OFFSET_SOUNDBIAS   0x88
+// Sound Bias register lower byte.
 #define REG_OFFSET_SOUNDBIAS_L 0x88
+// Sound Bias register higher byte.
 #define REG_OFFSET_SOUNDBIAS_H 0x89
+
+// Wave RAM for channel 3, block 0. Used to store waveform samples.
 #define REG_OFFSET_WAVE_RAM0   0x90
+// Wave RAM for channel 3, block 1.
 #define REG_OFFSET_WAVE_RAM1   0x94
+// Wave RAM for channel 3, block 2.
 #define REG_OFFSET_WAVE_RAM2   0x98
+// Wave RAM for channel 3, block 3.
 #define REG_OFFSET_WAVE_RAM3   0x9c
+
+// Direct Sound (FIFO) A write register: For streaming audio data to DAC A.
 #define REG_OFFSET_FIFO_A      0xa0
+// Direct Sound (FIFO) B write register: For streaming audio data to DAC B.
 #define REG_OFFSET_FIFO_B      0xa4
 
+// ============================================================================
+// GBA DMA (Direct Memory Access) Registers (Offsets from 0x04000000)
+// DMA channels allow high-speed data transfers between memory regions
+// without constant CPU intervention, freeing up the CPU for other tasks.
+// The GBA has 4 DMA channels (DMA0 to DMA3).
+// ============================================================================
+
+// DMA Channel 0 base address.
 #define REG_OFFSET_DMA0        0xb0
+// DMA Channel 0 Source Address register (32-bit).
 #define REG_OFFSET_DMA0SAD     0xb0
+// DMA Channel 0 Source Address (lower 16 bits).
 #define REG_OFFSET_DMA0SAD_L   0xb0
+// DMA Channel 0 Source Address (higher 16 bits).
 #define REG_OFFSET_DMA0SAD_H   0xb2
+
+// DMA Channel 0 Destination Address register (32-bit).
 #define REG_OFFSET_DMA0DAD     0xb4
+// DMA Channel 0 Destination Address (lower 16 bits).
 #define REG_OFFSET_DMA0DAD_L   0xb4
+// DMA Channel 0 Destination Address (higher 16 bits).
 #define REG_OFFSET_DMA0DAD_H   0xb6
+
+// DMA Channel 0 Control/Count register (32-bit).
 #define REG_OFFSET_DMA0CNT     0xb8
+// DMA Channel 0 Transfer Count register (lower 16 bits of DMA0CNT).
 #define REG_OFFSET_DMA0CNT_L   0xb8
+// DMA Channel 0 Control flags register (higher 16 bits of DMA0CNT).
 #define REG_OFFSET_DMA0CNT_H   0xba
+
+// DMA Channel 1 base address.
 #define REG_OFFSET_DMA1        0xbc
+// DMA Channel 1 Source Address register (32-bit).
 #define REG_OFFSET_DMA1SAD     0xbc
+// DMA Channel 1 Source Address (lower 16 bits).
 #define REG_OFFSET_DMA1SAD_L   0xbc
+// DMA Channel 1 Source Address (higher 16 bits).
 #define REG_OFFSET_DMA1SAD_H   0xbe
+
+// DMA Channel 1 Destination Address register (32-bit).
 #define REG_OFFSET_DMA1DAD     0xc0
+// DMA Channel 1 Destination Address (lower 16 bits).
 #define REG_OFFSET_DMA1DAD_L   0xc0
+// DMA Channel 1 Destination Address (higher 16 bits).
 #define REG_OFFSET_DMA1DAD_H   0xc2
+
+// DMA Channel 1 Control/Count register (32-bit).
 #define REG_OFFSET_DMA1CNT     0xc4
+// DMA Channel 1 Transfer Count register (lower 16 bits of DMA1CNT).
 #define REG_OFFSET_DMA1CNT_L   0xc4
+// DMA Channel 1 Control flags register (higher 16 bits of DMA1CNT).
 #define REG_OFFSET_DMA1CNT_H   0xc6
+
+// DMA Channel 2 base address.
 #define REG_OFFSET_DMA2        0xc8
+// DMA Channel 2 Source Address register (32-bit).
 #define REG_OFFSET_DMA2SAD     0xc8
+// DMA Channel 2 Source Address (lower 16 bits).
 #define REG_OFFSET_DMA2SAD_L   0xc8
+// DMA Channel 2 Source Address (higher 16 bits).
 #define REG_OFFSET_DMA2SAD_H   0xca
+
+// DMA Channel 2 Destination Address register (32-bit).
 #define REG_OFFSET_DMA2DAD     0xcc
+// DMA Channel 2 Destination Address (lower 16 bits).
 #define REG_OFFSET_DMA2DAD_L   0xcc
+// DMA Channel 2 Destination Address (higher 16 bits).
 #define REG_OFFSET_DMA2DAD_H   0xce
+
+// DMA Channel 2 Control/Count register (32-bit).
 #define REG_OFFSET_DMA2CNT     0xd0
+// DMA Channel 2 Transfer Count register (lower 16 bits of DMA2CNT).
 #define REG_OFFSET_DMA2CNT_L   0xd0
+// DMA Channel 2 Control flags register (higher 16 bits of DMA2CNT).
 #define REG_OFFSET_DMA2CNT_H   0xd2
+
+// DMA Channel 3 base address. This channel is typically used for GBA cartridge ROM access.
 #define REG_OFFSET_DMA3        0xd4
+// DMA Channel 3 Source Address register (32-bit).
 #define REG_OFFSET_DMA3SAD     0xd4
+// DMA Channel 3 Source Address (lower 16 bits).
 #define REG_OFFSET_DMA3SAD_L   0xd4
+// DMA Channel 3 Source Address (higher 16 bits).
 #define REG_OFFSET_DMA3SAD_H   0xd6
+
+// DMA Channel 3 Destination Address register (32-bit).
 #define REG_OFFSET_DMA3DAD     0xd8
+// DMA Channel 3 Destination Address (lower 16 bits).
 #define REG_OFFSET_DMA3DAD_L   0xd8
+// DMA Channel 3 Destination Address (higher 16 bits).
 #define REG_OFFSET_DMA3DAD_H   0xda
+
+// DMA Channel 3 Control/Count register (32-bit).
 #define REG_OFFSET_DMA3CNT     0xdc
+// DMA Channel 3 Transfer Count register (lower 16 bits of DMA3CNT).
 #define REG_OFFSET_DMA3CNT_L   0xdc
+// DMA Channel 3 Control flags register (higher 16 bits of DMA3CNT).
 #define REG_OFFSET_DMA3CNT_H   0xde
 
+// ============================================================================
+// GBA Timer Registers (Offsets from 0x04000000)
+// The GBA has 4 general-purpose 16-bit timers (TM0 to TM3) that can be
+// configured to count at different frequencies and generate interrupts.
+// ============================================================================
+
+// Base address for Timer Control registers. (TMCNT is often a conceptual grouping).
 #define REG_OFFSET_TMCNT       0x100
+
+// Timer 0 Counter/Reload register (lower 16 bits). This holds the current count or the value to reload.
 #define REG_OFFSET_TMCNT_L     0x100
+// Timer 0 Control register (higher 16 bits). Configures start/stop, clock source, and interrupt enable.
 #define REG_OFFSET_TMCNT_H     0x102
+
+// Timer 0 Counter/Reload register (same as TMCNT_L, often used for clarity).
 #define REG_OFFSET_TM0CNT      0x100
+// Timer 0 Counter/Reload register (lower 16 bits).
 #define REG_OFFSET_TM0CNT_L    0x100
+// Timer 0 Control register (higher 16 bits).
 #define REG_OFFSET_TM0CNT_H    0x102
+
+// Timer 1 Counter/Reload register (lower 16 bits).
 #define REG_OFFSET_TM1CNT      0x104
+// Timer 1 Counter/Reload register (lower 16 bits).
 #define REG_OFFSET_TM1CNT_L    0x104
+// Timer 1 Control register (higher 16 bits).
 #define REG_OFFSET_TM1CNT_H    0x106
+
+// Timer 2 Counter/Reload register (lower 16 bits).
 #define REG_OFFSET_TM2CNT      0x108
+// Timer 2 Counter/Reload register (lower 16 bits).
 #define REG_OFFSET_TM2CNT_L    0x108
+// Timer 2 Control register (higher 16 bits).
 #define REG_OFFSET_TM2CNT_H    0x10a
+
+// Timer 3 Counter/Reload register (lower 16 bits).
 #define REG_OFFSET_TM3CNT      0x10c
+// Timer 3 Counter/Reload register (lower 16 bits).
 #define REG_OFFSET_TM3CNT_L    0x10c
+// Timer 3 Control register (higher 16 bits).
 #define REG_OFFSET_TM3CNT_H    0x10e
 
+// ============================================================================
+// GBA Communication, Input, Interrupt, and System Control Registers
+// (Offsets from 0x04000000)
+// These registers handle serial communication (SIO), joypad input,
+// interrupt management, and memory access timings.
+// ============================================================================
+
+// Serial I/O Control register: Configures SIO mode (normal, multi-play, UART, JOYBUS).
 #define REG_OFFSET_SIOCNT      0x128
+// Serial I/O 8-bit Data register: Used for normal 8-bit SIO communication.
 #define REG_OFFSET_SIODATA8    0x12a
+// Serial I/O 32-bit Data register: Used for normal 32-bit SIO communication.
 #define REG_OFFSET_SIODATA32   0x120
+// Multi-Play SIO Send Data register: For sending data in multi-play mode.
 #define REG_OFFSET_SIOMLT_SEND 0x12a
+// Multi-Play SIO Receive Data register: For receiving data from other GBA's in multi-play mode.
 #define REG_OFFSET_SIOMLT_RECV 0x120
+// Multi-Play SIO Data register for Player 0 (Master).
 #define REG_OFFSET_SIOMULTI0   0x120
+// Multi-Play SIO Data register for Player 1.
 #define REG_OFFSET_SIOMULTI1   0x122
+// Multi-Play SIO Data register for Player 2.
 #define REG_OFFSET_SIOMULTI2   0x124
+// Multi-Play SIO Data register for Player 3.
 #define REG_OFFSET_SIOMULTI3   0x126
 
+// Key Input register: Reads the current state of the GBA's buttons. (Active low).
 #define REG_OFFSET_KEYINPUT    0x130
+// Key Control register: Configures key interrupt settings (enable, trigger type).
 #define REG_OFFSET_KEYCNT      0x132
 
+// RCNT register: Infrared communication control for Game Boy Color peripherals, or general-purpose GPIO.
 #define REG_OFFSET_RCNT        0x134
 
+// JOYBUS Control register: For external devices connected via the GBA link port (e.g., e-Reader, GameCube link cable).
 #define REG_OFFSET_JOYCNT      0x140
+// JOYBUS Status register.
 #define REG_OFFSET_JOYSTAT     0x158
+// JOYBUS Receive Data register (lower 16 bits for high-speed JOYBUS).
 #define REG_OFFSET_JOY_RECV    0x150
+// JOYBUS Receive Data (lower 16 bits).
 #define REG_OFFSET_JOY_RECV_L  0x150
+// JOYBUS Receive Data (higher 16 bits).
 #define REG_OFFSET_JOY_RECV_H  0x152
+// JOYBUS Transmit Data register (lower 16 bits for high-speed JOYBUS).
 #define REG_OFFSET_JOY_TRANS   0x154
+// JOYBUS Transmit Data (lower 16 bits).
 #define REG_OFFSET_JOY_TRANS_L 0x154
+// JOYBUS Transmit Data (higher 16 bits).
 #define REG_OFFSET_JOY_TRANS_H 0x156
 
+// Interrupt Master Enable register: Global switch to enable or disable all interrupts.
 #define REG_OFFSET_IME         0x208
+// Interrupt Enable register: Enables individual interrupt sources (e.g., VBlank, Timer, DMA, Keypad).
 #define REG_OFFSET_IE          0x200
+// Interrupt Flag register: Indicates which interrupts are pending. (Cleared by writing a 1 to the bit).
 #define REG_OFFSET_IF          0x202
 
+// Wait State Control register: Configures memory access timings for different memory regions (e.g., Game Pak ROM, SRAM).
 #define REG_OFFSET_WAITCNT     0x204
 
 // I/O register addresses
