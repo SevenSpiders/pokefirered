@@ -1,0 +1,202 @@
+{
+  "main": {
+    "id": "deda4ddefad2fd48",
+    "type": "split",
+    "children": [
+      {
+        "id": "84f42f01b8cfa0d6",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "e5f57f8de074f370",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Pokemon CODE_RED/7. Combat.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "7. Combat"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "d40bc3993e219615",
+    "type": "split",
+    "children": [
+      {
+        "id": "f46fa301bdf0bed4",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "de63f9bf3ef59bc0",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "279fae4f638a03e4",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "0df3e87fff42800d",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "0893e26464e1ac32",
+    "type": "split",
+    "children": [
+      {
+        "id": "adcaccc0c4a1babc",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "2ed4967c4e1891b3",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "Pokemon CODE_RED/7. Combat.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for 7. Combat"
+            }
+          },
+          {
+            "id": "82f09f48daaa7397",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "Pokemon CODE_RED/7. Combat.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from 7. Combat"
+            }
+          },
+          {
+            "id": "1b1c9aff584f7bc2",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "cff3b795d3d6bdd3",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "Pokemon CODE_RED/7. Combat.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of 7. Combat"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
+    }
+  },
+  "active": "e5f57f8de074f370",
+  "lastOpenFiles": [
+    "Pokemon CODE_RED/0. Design Goals.md",
+    "Welcome.md",
+    "Pokemon CODE_RED/TODO.md",
+    "Pokemon CODE_RED/Sword Team.md",
+    "Pokemon CODE_RED/Summary.md",
+    "Pokemon CODE_RED/Programming.md",
+    "Pokemon CODE_RED/Pokemon.md",
+    "Pokemon CODE_RED/Pokemon Computer.md",
+    "Pokemon CODE_RED/Pikachu Beach.md",
+    "Pokemon CODE_RED/NPCs.md",
+    "Pokemon CODE_RED/Engine.md",
+    "Pokemon CODE_RED/Arcade.md",
+    "Pokemon CODE_RED/8. Pokedex.md",
+    "Pokemon CODE_RED/7. Combat.md",
+    "Pokemon CODE_RED/7. Combat Badges.md",
+    "Pokemon CODE_RED/7. Combat Archetypes.md",
+    "Pokemon CODE_RED/6. Pokemon.md",
+    "Pokemon CODE_RED/5. Gadgets.md",
+    "Pokemon CODE_RED/4. UI.md",
+    "Pokemon CODE_RED/3. Pokemon Alters.md",
+    "Pokemon CODE_RED/23. Digital World.md",
+    "Pokemon CODE_RED/22. Cinnabar Volcano.md",
+    "Pokemon CODE_RED/21. Rock Gardens.md",
+    "Pokemon CODE_RED/20. Infinite Hotel.md",
+    "Pokemon CODE_RED/2. Type Squish.md",
+    "Pokemon CODE_RED/12. New Locations.md",
+    "Pokemon CODE_RED"
+  ]
+}

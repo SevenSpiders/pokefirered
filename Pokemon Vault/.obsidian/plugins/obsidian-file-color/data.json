@@ -1,0 +1,63 @@
+{
+  "cascadeColors": true,
+  "colorBackground": false,
+  "palette": [
+    {
+      "id": "4HosHHh21cuO94_kcpWlk",
+      "name": "Blue",
+      "value": "#5780c1"
+    },
+    {
+      "id": "KLzbvg1CeSuY_zgQw-zQq",
+      "name": "Purple",
+      "value": "#d977fd"
+    },
+    {
+      "id": "F3u8gSZmv8T6ieKvxOUcx",
+      "name": "Yellow",
+      "value": "#dedf9f"
+    },
+    {
+      "id": "OtlFb0H-CVrGdRDVmrEAw",
+      "name": "Green",
+      "value": "#76d0a6"
+    },
+    {
+      "id": "S7kpRcTL59yYaWT7kCIOr",
+      "name": "White",
+      "value": "#eee7e7"
+    },
+    {
+      "id": "KTeb39EBu1CdL4ESaIQWQ",
+      "name": "Grey",
+      "value": "#808080"
+    },
+    {
+      "id": "3_CJnzs3PQMEfUCFAyYIx",
+      "name": "Red",
+      "value": "#df7653"
+    }
+  ],
+  "fileColors": [
+    {
+      "path": "Art",
+      "color": "4HosHHh21cuO94_kcpWlk"
+    },
+    {
+      "path": "World Design",
+      "color": "KLzbvg1CeSuY_zgQw-zQq"
+    },
+    {
+      "path": "Card Gameplay",
+      "color": "F3u8gSZmv8T6ieKvxOUcx"
+    },
+    {
+      "path": "Programming",
+      "color": "OtlFb0H-CVrGdRDVmrEAw"
+    },
+    {
+      "path": "PROJECT",
+      "color": "S7kpRcTL59yYaWT7kCIOr"
+    }
+  ]
+}
