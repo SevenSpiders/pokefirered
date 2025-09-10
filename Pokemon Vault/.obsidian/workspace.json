@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Pokemon CODE_RED/7. Combat.md",
+                "file": "Pokemon CODE_RED/3. Pokemon Alters.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "7. Combat"
+              "title": "3. Pokemon Alters"
             }
           }
         ]
@@ -172,6 +172,21 @@
   "active": "e5f57f8de074f370",
   "lastOpenFiles": [
     "Pokemon CODE_RED/0. Design Goals.md",
+    "Pokemon CODE_RED/4.1 UI Summary.md",
+    "Assets/pokemon summary 2.png",
+    "Assets/talents7.png",
+    "Assets/pokemon summary 3.png",
+    "Assets/pokemon summary 1.png",
+    "Assets/Pokemon - Fire Red Version (U) (V1.1)-7.png",
+    "Assets/Pokemon - Fire Red Version (U) (V1.1)-6.png",
+    "Assets/Pokemon - Fire Red Version (U) (V1.1)-4.png",
+    "Assets/moves Replace.png",
+    "Assets/moves page2.png",
+    "Assets/moves Page 1.png",
+    "Pokemon CODE_RED/4. UI.md",
+    "Pokemon CODE_RED/7. Combat.md",
+    "Pokemon CODE_RED/5. Gadgets.md",
+    "Assets",
     "Welcome.md",
     "Pokemon CODE_RED/TODO.md",
     "Pokemon CODE_RED/Sword Team.md",
@@ -184,19 +199,14 @@
     "Pokemon CODE_RED/Engine.md",
     "Pokemon CODE_RED/Arcade.md",
     "Pokemon CODE_RED/8. Pokedex.md",
-    "Pokemon CODE_RED/7. Combat.md",
     "Pokemon CODE_RED/7. Combat Badges.md",
     "Pokemon CODE_RED/7. Combat Archetypes.md",
     "Pokemon CODE_RED/6. Pokemon.md",
-    "Pokemon CODE_RED/5. Gadgets.md",
-    "Pokemon CODE_RED/4. UI.md",
     "Pokemon CODE_RED/3. Pokemon Alters.md",
     "Pokemon CODE_RED/23. Digital World.md",
     "Pokemon CODE_RED/22. Cinnabar Volcano.md",
     "Pokemon CODE_RED/21. Rock Gardens.md",
     "Pokemon CODE_RED/20. Infinite Hotel.md",
-    "Pokemon CODE_RED/2. Type Squish.md",
-    "Pokemon CODE_RED/12. New Locations.md",
     "Pokemon CODE_RED"
   ]
 }
