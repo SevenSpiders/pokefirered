@@ -1,8 +1,0 @@
-{
-  "snippetsFile": "Snip me! |+| Snippet successfully replaced.\n-==-\n-> |+| ➔\n-==-\n->  |+| ➔\n-==-\n=> |+| ➠",
-  "triggerOnSpace": "y-ws",
-  "triggerOnEnter": "n-ws",
-  "triggerOnTab": "n-ws",
-  "snippetPartDivider": " |+| ",
-  "snippetDivider": "-==-"
-}

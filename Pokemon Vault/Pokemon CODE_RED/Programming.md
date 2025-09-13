@@ -1,7 +1,22 @@
 
 
+
+### BUILD
 make -j16
 start pokefirered.gba
+
+
+#### Mods
+
+max 10 mods on a pokemon
+64 differnt buffs 
+
+1 bit stackable
+5 bits enum -> 32 stacked buffs ( none, 6 stats: atk, sp atk, def, sp def, speed, acc, ) : 25 left
+4 bits counters -> 16 stacks ( +/- 7)
+
+u32 -> 3 buffs
+-> 4 u32 -> 12 buffs
 
 
 
