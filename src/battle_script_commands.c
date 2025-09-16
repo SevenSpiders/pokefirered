@@ -4918,7 +4918,7 @@ static void Cmd_switchhandleorder(void)
 
     switch (gBattlescriptCurrInstr[2])
     {
-    case 0:
+    case SWITCH_ORDER_COLLECT_CHOICE:
         for (i = 0; i < gBattlersCount; i++)
         {
             if (gBattleBufferB[i][0] == CONTROLLER_CHOSENMONRETURNVALUE)
@@ -4927,11 +4927,11 @@ static void Cmd_switchhandleorder(void)
             }
         }
         break;
-    case 1:
+    case SWITCH_ORDER_UPDATE_OWNER:
         if (!(gBattleTypeFlags & BATTLE_TYPE_MULTI))
             UpdatePartyOwnerOnSwitch_NonMulti(gActiveBattler);
         break;
-    case 2:
+    case SWITCH_ORDER_EXECUTE_SWITCH:
         gBattleCommunication[0] = gBattleBufferB[gActiveBattler][1];
         *(gBattleStruct->monToSwitchIntoId + gActiveBattler) = gBattleBufferB[gActiveBattler][1];
 

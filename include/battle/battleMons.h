@@ -1,0 +1,6 @@
+#ifndef GUARD_BATTLEMONS_H
+#define GUARD_BATTLEMONS_H
+
+
+
+#endif // GUARD_BATTLEMONS_H

@@ -61,6 +61,11 @@
 #define BS_PLAYER2                  13 // for Cmd_updatestatusicon
 #define BS_OPPONENT2                14
 
+// Switch in command
+#define SWITCH_ORDER_COLLECT_CHOICE   0
+#define SWITCH_ORDER_UPDATE_OWNER     1
+#define SWITCH_ORDER_EXECUTE_SWITCH   2
+
 // atk 01, accuracy calc
 #define NO_ACC_CALC 0xFFFE
 #define NO_ACC_CALC_CHECK_LOCK_ON 0xFFFF
