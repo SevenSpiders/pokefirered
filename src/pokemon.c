@@ -2817,9 +2817,15 @@ static union PokemonSubstruct *GetSubstruct(struct BoxPokemon *boxMon, u8 substr
     return &substructs[substructType];
 }
 
-u32 GetMonData(struct Pokemon *mon, s32 field, u8 *data)
+u32 GetMonData(struct Pokemon *mon, u32 field, u8 *data)
 {
     u32 ret;
+
+    if (field < 0 || field >= MON_DATA_END)
+    {
+        DebugPrintf("lv %d: why field %d ?", mon->level, field);
+        return ret;
+    }
 
     switch (field)
     {
@@ -2879,13 +2885,14 @@ u32 GetMonData(struct Pokemon *mon, s32 field, u8 *data)
         ret = mon->mail;
         break;
     default:
+        DebugPrintf("lv %d: GET FIELD %d !", mon->level, field);
         ret = GetBoxMonData(&mon->box, field, data);
         break;
     }
     return ret;
 }
 
-u32 GetBoxMonData(struct BoxPokemon *boxMon, s32 field, u8 *data)
+u32 GetBoxMonData(struct BoxPokemon *boxMon, u32 field, u8 *data)
 {
     s32 i;
     u32 retVal = 0;
@@ -2893,14 +2900,15 @@ u32 GetBoxMonData(struct BoxPokemon *boxMon, s32 field, u8 *data)
     struct PokemonSubstruct1 *substruct1 = NULL;
     struct PokemonSubstruct2 *substruct2 = NULL;
     struct PokemonSubstruct3 *substruct3 = NULL;
-
+    
     if (field > MON_DATA_ENCRYPT_SEPARATOR)
     {
-        substruct0 = &(GetSubstruct(boxMon, 0)->type0);
-        substruct1 = &(GetSubstruct(boxMon, 1)->type1);
-        substruct2 = &(GetSubstruct(boxMon, 2)->type2);
-        substruct3 = &(GetSubstruct(boxMon, 3)->type3);
+        substruct0 = &boxMon->secure.substructs->struct0; //  &(GetSubstruct(boxMon, 0)->struct0);
+        substruct1 = &boxMon->secure.substructs->struct1;
+        substruct2 = &boxMon->secure.substructs->struct2;
+        substruct3 = &boxMon->secure.substructs->struct3;
     }
+    // DebugPrintf("request field %d field species %d", field, substruct0->species);
 
     switch (field)
     {
@@ -3223,6 +3231,7 @@ u32 GetBoxMonData(struct BoxPokemon *boxMon, s32 field, u8 *data)
         }
         break;
     default:
+        DebugPrintf("could not handle field %d", field);
         break;
     }
 
@@ -3312,10 +3321,10 @@ void SetBoxMonData(struct BoxPokemon *boxMon, s32 field, const void *dataArg)
 
     if (field > MON_DATA_ENCRYPT_SEPARATOR)
     {
-        substruct0 = &(GetSubstruct(boxMon, 0)->type0);
-        substruct1 = &(GetSubstruct(boxMon, 1)->type1);
-        substruct2 = &(GetSubstruct(boxMon, 2)->type2);
-        substruct3 = &(GetSubstruct(boxMon, 3)->type3);
+        substruct0 = &(GetSubstruct(boxMon, 0)->struct0);
+        substruct1 = &(GetSubstruct(boxMon, 1)->struct1);
+        substruct2 = &(GetSubstruct(boxMon, 2)->struct2);
+        substruct3 = &(GetSubstruct(boxMon, 3)->struct3);
     }
 
     switch (field)

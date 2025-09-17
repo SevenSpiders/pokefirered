@@ -96,10 +96,10 @@ struct PokemonSubstruct3
 
 union PokemonSubstruct
 {
-    struct PokemonSubstruct0 type0;
-    struct PokemonSubstruct1 type1;
-    struct PokemonSubstruct2 type2;
-    struct PokemonSubstruct3 type3;
+    struct PokemonSubstruct0 struct0;
+    struct PokemonSubstruct1 struct1;
+    struct PokemonSubstruct2 struct2;
+    struct PokemonSubstruct3 struct3;
     u16 raw[NUM_SUBSTRUCT_BYTES / 2]; // /2 because it's u16, not u8
 };
 
@@ -310,8 +310,8 @@ void SetMultiuseSpriteTemplateToTrainerBack(u16 trainerSpriteId, u8 battlerPosit
 // u32 GetBoxMonData(struct BoxPokemon *boxMon, s32 field, u8 *data);
 
 #ifdef IS_POKEMON_C
-u32 GetMonData(struct Pokemon *, s32, u8 *);
-u32 GetBoxMonData(struct BoxPokemon *, s32, u8 *);
+u32 GetMonData(struct Pokemon *, u32, u8 *);
+u32 GetBoxMonData(struct BoxPokemon *, u32, u8 *);
 #else
 u32 GetMonData();
 u32 GetBoxMonData();

@@ -284,7 +284,7 @@ extern u8 gActiveBattler;
 extern u8 gBattlerTarget;
 extern u8 gAbsentBattlerFlags;
 
-extern struct BattlePokemon gBattleMons[PARTY_SIZE + PARTY_SIZE];
+extern BattlePokemon gBattleMons[PARTY_SIZE + PARTY_SIZE];
 
 struct UsedMoves
 {

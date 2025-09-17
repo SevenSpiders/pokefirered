@@ -3,9 +3,9 @@
 #include "gflib.h" // stringcopy
 
 
-EWRAM_DATA struct BattlePokemon gBattleMons[PARTY_SIZE + PARTY_SIZE] = {0};
+EWRAM_DATA BattlePokemon gBattleMons[PARTY_SIZE + PARTY_SIZE] = {0};
 
-static BattlePokemon CreateBattleMon(Pokemon mon);
+static BattlePokemon CreateBattleMon(Pokemon *mon);
 
 
 void BattleMons_Init()
@@ -15,50 +15,53 @@ void BattleMons_Init()
 
     for(i=0; i< PARTY_SIZE; i++)
     {
-        gBattleMons[i*2] = CreateBattleMon(gPlayerParty[i]);
-        gBattleMons[i*2+1] = CreateBattleMon(gEnemyParty[i]);
+        gBattleMons[i*2] = CreateBattleMon(&gPlayerParty[i]);
+        gBattleMons[i*2+1] = CreateBattleMon(&gEnemyParty[i]);
     }
 
 }
 
 
-static BattlePokemon CreateBattleMon(Pokemon mon)
+static BattlePokemon CreateBattleMon(Pokemon *mon)
 {
     u32 i;
     u8 nickname[20];
-    u32 species = GetMonData(mon, MON_DATA_SPECIES);
-    BattlePokemon battleMon;
-    DebugPrintf("Create mon: species %d, level %d", species, mon.level);
+    BattlePokemon battleMon = {0};
+    u32 species = mon->box.secure.substructs->struct0.species;
+    // DebugPrintf("Create mon: species %d, level %d", species, mon->level);
     
     battleMon.species = species;
+    if (species == SPECIES_NONE)
+        return battleMon;
+
     battleMon.item = GetMonData(mon, MON_DATA_HELD_ITEM);
     for (i = 0; i < MAX_MON_MOVES; i++)
     {
-        battleMon.moves[i] = GetMonData(mon, MON_DATA_MOVE1 + i);
-        battleMon.pp[i] = GetMonData(mon, MON_DATA_PP1 + i);
+        battleMon.moves[i] = GetMonData(mon, MON_DATA_MOVE1 + i, NULL);
+        battleMon.pp[i] = GetMonData(mon, MON_DATA_PP1 + i, NULL);
     }
-    battleMon.ppBonuses = GetMonData(mon, MON_DATA_PP_BONUSES);
-    battleMon.friendship = GetMonData(mon, MON_DATA_FRIENDSHIP);
-    battleMon.experience = GetMonData(mon, MON_DATA_EXP);
-    battleMon.hpIV = GetMonData(mon, MON_DATA_HP_IV);
-    battleMon.attackIV = GetMonData(mon, MON_DATA_ATK_IV);
-    battleMon.defenseIV = GetMonData(mon, MON_DATA_DEF_IV);
-    battleMon.speedIV = GetMonData(mon, MON_DATA_SPEED_IV);
-    battleMon.spAttackIV = GetMonData(mon, MON_DATA_SPATK_IV);
-    battleMon.spDefenseIV = GetMonData(mon, MON_DATA_SPDEF_IV);
-    battleMon.personality = GetMonData(mon, MON_DATA_PERSONALITY);
-    battleMon.status1 = GetMonData(mon, MON_DATA_STATUS);
-    battleMon.level = GetMonData(mon, MON_DATA_LEVEL);
-    battleMon.hp = GetMonData(mon, MON_DATA_HP);
-    battleMon.maxHP = GetMonData(mon, MON_DATA_MAX_HP);
-    battleMon.attack = GetMonData(mon, MON_DATA_ATK);
-    battleMon.defense = GetMonData(mon, MON_DATA_DEF);
-    battleMon.speed = GetMonData(mon, MON_DATA_SPEED);
-    battleMon.spAttack = GetMonData(mon, MON_DATA_SPATK);
-    battleMon.spDefense = GetMonData(mon, MON_DATA_SPDEF);
-    battleMon.isEgg = GetMonData(mon, MON_DATA_IS_EGG);
-    battleMon.abilityNum = GetMonData(mon, MON_DATA_ABILITY_NUM);
-    battleMon.otId = GetMonData(mon, MON_DATA_OT_ID);
+    battleMon.ppBonuses = GetMonData(mon, MON_DATA_PP_BONUSES, NULL);
+    battleMon.friendship = GetMonData(mon, MON_DATA_FRIENDSHIP, NULL);
+    battleMon.experience = GetMonData(mon, MON_DATA_EXP, NULL);
+    battleMon.hpIV = GetMonData(mon, MON_DATA_HP_IV, NULL);
+    battleMon.attackIV = GetMonData(mon, MON_DATA_ATK_IV, NULL);
+    battleMon.defenseIV = GetMonData(mon, MON_DATA_DEF_IV, NULL);
+    battleMon.speedIV = GetMonData(mon, MON_DATA_SPEED_IV, NULL);
+    battleMon.spAttackIV = GetMonData(mon, MON_DATA_SPATK_IV, NULL);
+    battleMon.spDefenseIV = GetMonData(mon, MON_DATA_SPDEF_IV, NULL);
+    battleMon.personality = GetMonData(mon, MON_DATA_PERSONALITY, NULL);
+    battleMon.status1 = GetMonData(mon, MON_DATA_STATUS, NULL);
+    battleMon.level = GetMonData(mon, MON_DATA_LEVEL, NULL);
+    battleMon.hp = GetMonData(mon, MON_DATA_HP, NULL);
+    battleMon.maxHP = GetMonData(mon, MON_DATA_MAX_HP, NULL);
+    battleMon.attack = GetMonData(mon, MON_DATA_ATK, NULL);
+    battleMon.defense = GetMonData(mon, MON_DATA_DEF, NULL);
+    battleMon.speed = GetMonData(mon, MON_DATA_SPEED, NULL);
+    battleMon.spAttack = GetMonData(mon, MON_DATA_SPATK, NULL);
+    battleMon.spDefense = GetMonData(mon, MON_DATA_SPDEF, NULL);
+    battleMon.isEgg = GetMonData(mon, MON_DATA_IS_EGG, NULL);
+    battleMon.abilityNum = GetMonData(mon, MON_DATA_ABILITY_NUM, NULL);
+    battleMon.otId = GetMonData(mon, MON_DATA_OT_ID, NULL);
     GetMonData(mon, MON_DATA_NICKNAME, nickname);
     StringCopy_Nickname(battleMon.nickname, nickname);
     GetMonData(mon, MON_DATA_OT_NAME, battleMon.otName);
