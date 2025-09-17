@@ -2217,6 +2217,7 @@ static u16 GiveMoveToBoxMon(struct BoxPokemon *boxMon, u16 move)
         {
             SetBoxMonData(boxMon, MON_DATA_MOVE1 + i, &move);
             SetBoxMonData(boxMon, MON_DATA_PP1 + i, &gBattleMoves[move].pp);
+            DebugPrintf("%d boxmon move %d -> %d", i, move, boxMon->secure.substructs->struct1.moves[i]);
             return move;
         }
         if (existingMove == move)
@@ -2265,6 +2266,8 @@ static void GiveBoxMonInitialMoveset(struct BoxPokemon *boxMon)
     s32 level = GetLevelFromBoxMonExp(boxMon);
     s32 i;
 
+    DebugPrintf("Create wild mon (%d) moveset", species);
+
     for (i = 0; gLevelUpLearnsets[species][i] != LEVEL_UP_END; i++)
     {
         u16 moveLevel;
@@ -2276,6 +2279,7 @@ static void GiveBoxMonInitialMoveset(struct BoxPokemon *boxMon)
             break;
 
         move = (gLevelUpLearnsets[species][i] & LEVEL_UP_MOVE_ID);
+        DebugPrintf("move %d", move);
 
         if (GiveMoveToBoxMon(boxMon, move) == MON_HAS_MAX_MOVES)
             DeleteFirstMoveAndGiveMoveToBoxMon(boxMon, move);
@@ -2885,7 +2889,7 @@ u32 GetMonData(struct Pokemon *mon, u32 field, u8 *data)
         ret = mon->mail;
         break;
     default:
-        DebugPrintf("lv %d: GET FIELD %d !", mon->level, field);
+        // DebugPrintf("lv %d: GET FIELD %d !", mon->level, field);
         ret = GetBoxMonData(&mon->box, field, data);
         break;
     }

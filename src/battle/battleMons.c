@@ -10,11 +10,18 @@ static BattlePokemon CreateBattleMon(Pokemon *mon);
 
 void BattleMons_Init()
 {
-    u32 i, species;
+    u32 i, move;
     Pokemon mon;
+
+    for (i = 0; i < MAX_MON_MOVES; i++)
+    {
+        move = gPlayerParty[0].box.secure.substructs->struct1.moves[i];
+        DebugPrintf("enemy move %d", move);
+    }
 
     for(i=0; i< PARTY_SIZE; i++)
     {
+        
         gBattleMons[i*2] = CreateBattleMon(&gPlayerParty[i]);
         gBattleMons[i*2+1] = CreateBattleMon(&gEnemyParty[i]);
     }
@@ -39,6 +46,8 @@ static BattlePokemon CreateBattleMon(Pokemon *mon)
     {
         battleMon.moves[i] = GetMonData(mon, MON_DATA_MOVE1 + i, NULL);
         battleMon.pp[i] = GetMonData(mon, MON_DATA_PP1 + i, NULL);
+        battleMon.moves[i] = mon->box.secure.substructs->struct1.moves[i];
+        DebugPrintf("Create mon: move %d: %d, pp %d", i, battleMon.moves[i], battleMon.pp[i]);
     }
     battleMon.ppBonuses = GetMonData(mon, MON_DATA_PP_BONUSES, NULL);
     battleMon.friendship = GetMonData(mon, MON_DATA_FRIENDSHIP, NULL);

@@ -14,3 +14,9 @@ CB2_HandleStartBattle ➔ step 15
 
 
 CopyPlayerPartyMonToBattleData?
+
+
+
+Bug Moves in pokemon not correct
+
+TryGenerateWildMon
