@@ -126,7 +126,7 @@ struct BoxPokemon
     } secure;
 };
 
-struct Pokemon
+typedef struct Pokemon
 {
     struct BoxPokemon box;
     u32 status;
@@ -139,7 +139,7 @@ struct Pokemon
     u16 speed;
     u16 spAttack;
     u16 spDefense;
-};
+} Pokemon;
 
 struct BattleTowerPokemon
 {

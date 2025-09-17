@@ -428,18 +428,18 @@ void OpponentBufferExecCompleted(void)
 
 static void OpponentHandleGetMonData(void)
 {
-    u8 monData[sizeof(struct Pokemon) * 2 + 56]; // this allows to get full data of two pokemon, trying to get more will result in overwriting data
+    // this allows to get full data of two pokemon, trying to get more will result in overwriting data
+    u8 monData[sizeof(struct Pokemon) * 2 + 56]; 
     u32 size = 0;
-    u8 monToCheck;
+    u8 monToCheck = gBattleBufferA[gActiveBattler][2];
     s32 i;
 
-    if (!gBattleBufferA[gActiveBattler][2])
+    if (monToCheck == 0)
     {
         size += GetOpponentMonData(gBattlerPartyIndexes[gActiveBattler], monData);
     }
     else
     {
-        monToCheck = gBattleBufferA[gActiveBattler][2];
         for (i = 0; i < PARTY_SIZE; ++i)
         {
             if (monToCheck & 1)

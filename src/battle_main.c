@@ -2198,7 +2198,7 @@ void BeginBattleIntroDummy(void)
 void BeginBattleIntro(void)
 {
     BattleStartClearSetData();
-    gBattleCommunication[1] = 0;
+    gBattleCommunication[BCOM_ACTIVE_BATTLER] = 0;
     gBattleMainFunc = BattleIntroGetMonsData;
 }
 
@@ -2333,6 +2333,8 @@ void SwitchInClearSetData(void)
     struct DisableStruct disableStructCopy = gDisableStructs[gActiveBattler];
     s32 i;
     u8 *ptr;
+
+    DebugPrintf("switch in set data");
 
     if (gBattleMoves[gCurrentMove].effect != EFFECT_BATON_PASS)
     {
@@ -2523,16 +2525,17 @@ static void BattleIntroGetMonsData(void)
     switch (gBattleCommunication[MULTIUSE_STATE])
     {
     case 0:
-        gActiveBattler = gBattleCommunication[1];
-        BtlController_EmitGetMonData(BUFFER_A, REQUEST_ALL_BATTLE, 0);
+        gActiveBattler = gBattleCommunication[BCOM_ACTIVE_BATTLER]; // starts at 0
+        BtlController_EmitGetMonData(BUFFER_A, REQUEST_ALL_BATTLE, 0); 
+        // results in monData from gEnemyParty being buffered in BufferB ( maximum of 2 mons per call)
         MarkBattlerForControllerExec(gActiveBattler);
         gBattleCommunication[MULTIUSE_STATE]++;
         break;
     case 1:
         if (gBattleControllerExecFlags == 0)
         {
-            gBattleCommunication[1]++;
-            if (gBattleCommunication[1] == gBattlersCount)
+            gBattleCommunication[BCOM_ACTIVE_BATTLER]++;
+            if (gBattleCommunication[BCOM_ACTIVE_BATTLER] == gBattlersCount)
                 gBattleMainFunc = BattleIntroPrepareBackgroundSlide;
             else
                 gBattleCommunication[MULTIUSE_STATE] = 0;
@@ -2551,6 +2554,7 @@ static void BattleIntroPrepareBackgroundSlide(void)
         gBattleMainFunc = BattleIntroDrawTrainersOrMonsSprites;
         gBattleCommunication[MULTIUSE_STATE] = 0;
         gBattleCommunication[SPRITES_INIT_STATE1] = 0;
+        BattleMons_Init();
     }
 }
 
@@ -2577,7 +2581,7 @@ static void BattleIntroDrawTrainersOrMonsSprites(void)
 
             ptr = (u8 *)&gBattleMons[gActiveBattler];
             for (i = 0; i < sizeof(struct BattlePokemon); i++)
-                ptr[i] = gBattleBufferB[gActiveBattler][4 + i];
+                ptr[i] = gBattleBufferB[gActiveBattler][4 + i]; // Here the data is transfered
 
             gBattleMons[gActiveBattler].type1 = gSpeciesInfo[gBattleMons[gActiveBattler].species].types[0];
             gBattleMons[gActiveBattler].type2 = gSpeciesInfo[gBattleMons[gActiveBattler].species].types[1];

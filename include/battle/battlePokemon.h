@@ -5,7 +5,7 @@
 #include "constants/pokemon.h"
 
 
-struct BattlePokemon
+typedef struct BattlePokemon
 {
     /*0x00*/ u16 species;
     /*0x02*/ u16 attack;
@@ -42,7 +42,8 @@ struct BattlePokemon
     /*0x50*/ u32 status2;
     /*0x54*/ u32 otId;
     u16 statuses[MAX_MON_STATUSES];
-};
+    u8 partyIndex;
+} BattlePokemon ;
 
 
 
