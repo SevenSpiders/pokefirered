@@ -3,7 +3,8 @@
 #include "gflib.h" // stringcopy
 
 
-EWRAM_DATA BattlePokemon gBattleMons[PARTY_SIZE + PARTY_SIZE] = {0};
+// EWRAM_DATA BattlePokemon gBattleMons[PARTY_SIZE + PARTY_SIZE] = {0};
+EWRAM_DATA BattlePokemon gBattleMons[4] = {0};
 
 static BattlePokemon CreateBattleMon(Pokemon *mon);
 
@@ -13,9 +14,11 @@ void BattleMons_Init()
     u32 i, move;
     Pokemon mon;
 
+    return;
+
     for (i = 0; i < MAX_MON_MOVES; i++)
     {
-        move = gPlayerParty[0].box.secure.substructs->struct1.moves[i];
+        move = gPlayerParty[0].box.struct1.moves[i];
         DebugPrintf("enemy move %d", move);
     }
 
@@ -34,7 +37,7 @@ static BattlePokemon CreateBattleMon(Pokemon *mon)
     u32 i;
     u8 nickname[20];
     BattlePokemon battleMon = {0};
-    u32 species = mon->box.secure.substructs->struct0.species;
+    u32 species = mon->box.struct0.species;
     // DebugPrintf("Create mon: species %d, level %d", species, mon->level);
     
     battleMon.species = species;
@@ -46,7 +49,7 @@ static BattlePokemon CreateBattleMon(Pokemon *mon)
     {
         battleMon.moves[i] = GetMonData(mon, MON_DATA_MOVE1 + i, NULL);
         battleMon.pp[i] = GetMonData(mon, MON_DATA_PP1 + i, NULL);
-        battleMon.moves[i] = mon->box.secure.substructs->struct1.moves[i];
+        battleMon.moves[i] = mon->box.struct1.moves[i];
         DebugPrintf("Create mon: move %d: %d, pp %d", i, battleMon.moves[i], battleMon.pp[i]);
     }
     battleMon.ppBonuses = GetMonData(mon, MON_DATA_PP_BONUSES, NULL);

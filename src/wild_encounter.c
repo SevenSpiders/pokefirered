@@ -227,7 +227,6 @@ static void GenerateWildMon(u16 species, u8 level, u8 slot)
 {
     u32 personality;
     s8 chamber;
-    u32 species0, move0, move1;
 
     ZeroEnemyPartyMons();
     if (species != SPECIES_UNOWN)
@@ -240,10 +239,6 @@ static void GenerateWildMon(u16 species, u8 level, u8 slot)
         personality = GenerateUnownPersonalityByLetter(sUnownLetterSlots[chamber][slot]);
         CreateMon(&gEnemyParty[0], species, level, USE_RANDOM_IVS, TRUE, personality, FALSE, 0);
     }
-    species0 = gEnemyParty[0].box.secure.substructs->struct0.species;
-    move0 = gEnemyParty[0].box.secure.substructs->struct1.moves[0];
-    move1 = gEnemyParty[0].box.secure.substructs->struct1.moves[1];
-    DebugPrintf("Generate wild mon (%d) move0: %d, move1 %d", species0, move0, move1);
 }
 
 static u32 GenerateUnownPersonalityByLetter(u8 letter)

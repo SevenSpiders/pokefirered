@@ -2217,7 +2217,6 @@ static u16 GiveMoveToBoxMon(struct BoxPokemon *boxMon, u16 move)
         {
             SetBoxMonData(boxMon, MON_DATA_MOVE1 + i, &move);
             SetBoxMonData(boxMon, MON_DATA_PP1 + i, &gBattleMoves[move].pp);
-            DebugPrintf("%d boxmon move %d -> %d", i, move, boxMon->secure.substructs->struct1.moves[i]);
             return move;
         }
         if (existingMove == move)
@@ -2266,8 +2265,6 @@ static void GiveBoxMonInitialMoveset(struct BoxPokemon *boxMon)
     s32 level = GetLevelFromBoxMonExp(boxMon);
     s32 i;
 
-    DebugPrintf("Create wild mon (%d) moveset", species);
-
     for (i = 0; gLevelUpLearnsets[species][i] != LEVEL_UP_END; i++)
     {
         u16 moveLevel;
@@ -2279,7 +2276,6 @@ static void GiveBoxMonInitialMoveset(struct BoxPokemon *boxMon)
             break;
 
         move = (gLevelUpLearnsets[species][i] & LEVEL_UP_MOVE_ID);
-        DebugPrintf("move %d", move);
 
         if (GiveMoveToBoxMon(boxMon, move) == MON_HAS_MAX_MOVES)
             DeleteFirstMoveAndGiveMoveToBoxMon(boxMon, move);
@@ -2797,29 +2793,29 @@ void SetMultiuseSpriteTemplateToTrainerBack(u16 trainerSpriteId, u8 battlerPosit
 
 static void EncryptBoxMon(struct BoxPokemon *boxMon)
 {
-    u32 i;
-    for (i = 0; i < ARRAY_COUNT(boxMon->secure.raw); i++)
-    {
-        boxMon->secure.raw[i] ^= boxMon->personality;
-        boxMon->secure.raw[i] ^= boxMon->otId;
-    }
+    // u32 i;
+    // for (i = 0; i < ARRAY_COUNT(boxMon->secure.raw); i++)
+    // {
+    //     boxMon->secure.raw[i] ^= boxMon->personality;
+    //     boxMon->secure.raw[i] ^= boxMon->otId;
+    // }
 }
 
 static void DecryptBoxMon(struct BoxPokemon *boxMon)
 {
-    u32 i;
-    for (i = 0; i < ARRAY_COUNT(boxMon->secure.raw); i++)
-    {
-        boxMon->secure.raw[i] ^= boxMon->otId;
-        boxMon->secure.raw[i] ^= boxMon->personality;
-    }
+    // u32 i;
+    // for (i = 0; i < ARRAY_COUNT(boxMon->secure.raw); i++)
+    // {
+    //     boxMon->secure.raw[i] ^= boxMon->otId;
+    //     boxMon->secure.raw[i] ^= boxMon->personality;
+    // }
 }
 
-static union PokemonSubstruct *GetSubstruct(struct BoxPokemon *boxMon, u8 substructType)
-{
-    union PokemonSubstruct *substructs = boxMon->secure.substructs;
-    return &substructs[substructType];
-}
+// static union PokemonSubstruct *GetSubstruct(struct BoxPokemon *boxMon, u8 substructType)
+// {
+//     union PokemonSubstruct *substructs = boxMon->secure.substructs;
+//     return &substructs[substructType];
+// }
 
 u32 GetMonData(struct Pokemon *mon, u32 field, u8 *data)
 {
@@ -2889,7 +2885,6 @@ u32 GetMonData(struct Pokemon *mon, u32 field, u8 *data)
         ret = mon->mail;
         break;
     default:
-        // DebugPrintf("lv %d: GET FIELD %d !", mon->level, field);
         ret = GetBoxMonData(&mon->box, field, data);
         break;
     }
@@ -2907,12 +2902,11 @@ u32 GetBoxMonData(struct BoxPokemon *boxMon, u32 field, u8 *data)
     
     if (field > MON_DATA_ENCRYPT_SEPARATOR)
     {
-        substruct0 = &boxMon->secure.substructs->struct0; //  &(GetSubstruct(boxMon, 0)->struct0);
-        substruct1 = &boxMon->secure.substructs->struct1;
-        substruct2 = &boxMon->secure.substructs->struct2;
-        substruct3 = &boxMon->secure.substructs->struct3;
+        substruct0 = &boxMon->struct0; //  &(GetSubstruct(boxMon, 0)->struct0);
+        substruct1 = &boxMon->struct1;
+        substruct2 = &boxMon->struct2;
+        substruct3 = &boxMon->struct3;
     }
-    // DebugPrintf("request field %d field species %d", field, substruct0->species);
 
     switch (field)
     {
@@ -3325,10 +3319,10 @@ void SetBoxMonData(struct BoxPokemon *boxMon, s32 field, const void *dataArg)
 
     if (field > MON_DATA_ENCRYPT_SEPARATOR)
     {
-        substruct0 = &(GetSubstruct(boxMon, 0)->struct0);
-        substruct1 = &(GetSubstruct(boxMon, 1)->struct1);
-        substruct2 = &(GetSubstruct(boxMon, 2)->struct2);
-        substruct3 = &(GetSubstruct(boxMon, 3)->struct3);
+        substruct0 = &boxMon->struct0;
+        substruct1 = &boxMon->struct1;
+        substruct2 = &boxMon->struct2;
+        substruct3 = &boxMon->struct3;
     }
 
     switch (field)
