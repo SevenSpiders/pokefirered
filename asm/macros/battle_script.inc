@@ -1315,6 +1315,11 @@
 	setbyte cEFFECT_CHOOSER, \effect
 	.endm
 
+	.macro setmoveeffectdata effect:req, data:req
+	setbyte sMOVE_EFFECT \effect
+	setbyte sMOVE_DATA \data
+	.endm
+
 	.macro chosenstatus1animation battler:req, status:req
 	chosenstatusanimation \battler, 0x0, \status
 	.endm

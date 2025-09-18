@@ -3,9 +3,11 @@
 
 
 #define STAT_NEGATE 7 // Offset for negative status icons in icons_status array
-#define ICON1(address) { 16, 8,  address} // normal icons
-#define ICON2(address) { 11, 8, address} // number icon
-#define ICON3(address) { 16, 8,  address} // type icons
+// { width, height, offset }
+#define ICON1(address) { 14, 8,  address} // normal icons
+#define ICON_NUMBER(address) { 8, 8, address}
+#define ICON_TYPE(address) { 32, 8,  address}
+#define ICON_CATEGORY(address) {14, 11, address}
 
 #include "pokemon.h" // BattlePokemon + stats
 
@@ -26,56 +28,54 @@ static const IconData icons_types[] = {
 };
 
 static const IconData icons_stats[] = {
-    // { width, height, offset }
-    [STAT_ATK] =    { 16, 8,  0xc6}, // Attack
-    [STAT_DEF] =    { 16, 8,  0xc8}, // Defense
-    [STAT_SPEED] =  { 16, 8,  0xce}, // Speed
-    [STAT_SPATK] =  { 16, 8,  0xca}, // Sp. Atk
-    [STAT_SPDEF] =  { 16, 8,  0xcc}, // Sp. Def
-    [STAT_ACC] =    { 16, 8,  0xe6}, // Accuracy
-    [STAT_EVASION] =    { 16, 8, 0xe8}, // Evasion
+    [STAT_ATK] =    ICON1(0), // Attack
+    [STAT_DEF] =    ICON1(2), // Defense
+    [STAT_SPEED] =  ICON1(4), // Speed
+    [STAT_SPATK] =  ICON1(6), // Sp. Atk
+    [STAT_SPDEF] =  ICON1(8), // Sp. Def
+    [STAT_ACC] =    ICON1(10), // Accuracy
+    [STAT_EVASION] =    ICON1(12), // Evasion
 
-    [STAT_ATK   + STAT_NEGATE] = { 16, 8, 0xd6}, // negative Attack
-    [STAT_DEF   + STAT_NEGATE] = { 16, 8, 0xd8}, // negative Defense
-    [STAT_SPEED + STAT_NEGATE] = { 16, 8, 0xda}, // negative Sp. Atk
-    [STAT_SPATK + STAT_NEGATE] = { 16, 8, 0xdc}, // negative Sp. Def
-    [STAT_SPDEF + STAT_NEGATE] = { 16, 8, 0xde}, // negative Speed
-    [STAT_ACC   + STAT_NEGATE] = { 16, 8, 0xf6}, // negative Accuracy
-    [STAT_EVASION + STAT_NEGATE] = { 16, 8, 0xf8}, // negative Evasion
+    [STAT_ATK   + STAT_NEGATE] = ICON1(16),
+    [STAT_DEF   + STAT_NEGATE] = ICON1(18),
+    [STAT_SPEED + STAT_NEGATE] = ICON1(20), // negative Sp. Atk
+    [STAT_SPATK + STAT_NEGATE] = ICON1(22), // negative Sp. Def
+    [STAT_SPDEF + STAT_NEGATE] = ICON1(24), // negative Speed
+    [STAT_ACC   + STAT_NEGATE] = ICON1(26), // negative Accuracy
+    [STAT_EVASION + STAT_NEGATE] = ICON1(28), // negative Evasion
 };
 
 static const IconData icons_status[] = {
     // { width, height, offset }
-    [STATUS_NULL] = {},
+    [STATUS_NONE] = {},
 
-    [STATUS_SLEEP] = { 16, 8, 0x124}, // Sleep
-    [STATUS_POISON] = { 16, 8, 0x120}, // Poison
-    [STATUS_BURN] = { 16, 8, 0x128}, // Burn
-    [STATUS_FREEZE] = { 16, 8, 0x126}, // Freeze
-    [STATUS_PARALYSIS] = { 16, 8, 0x122}, // Paralysis
+    // row 1
+    [STATUS_POISON] =       ICON1(64),
+    [STATUS_SLEEP] =        ICON1(66),
+    [STATUS_BURN] =         ICON1(68),
+    [STATUS_FREEZE] =       ICON1(70),
+    [STATUS_PARALYSIS] =    ICON1(72),
 
-
-    [STATUS_ALWAYS_HITS] = { 16, 8, 0xea}, // Critical Hit
-    [STATUS_FLINCHED] = { 16, 8, 0xec}, // Flinch
-    [STATUS_CONFUSED] = { 16, 8, 0xea}, // Confusion
-    [STATUS_WRAPPED] = { 16, 8, 0xfe}, // wrapped
-
-
+    // row 2
+    [STATUS_CONFUSED] =     ICON1(80),
+    [STATUS_WRAPPED] =      ICON1(82),
+    // [STATUS_CONFUSED] =     ICON1(84),
+    // [STATUS_WRAPPED] =      ICON1(86),
 };
 
 static const IconData icons_numbers[] = {
     // { width, height, offset }
-    [0] = {11, 8, 0x13a}, // x0 multiplier
-    [1] = {11, 8, 0x130}, // x1 multiplier
-    [2] = {11, 8, 0x132}, // x2 multiplier
-    [3] = {11, 8, 0x134}, // x3 multiplier
-    [4] = {11, 8, 0x136}, // x4 multiplier
-    [5] = {11, 8, 0x138}, // x5 multiplier
-    [6] = {11, 8, 0x13a}, // x6 multiplier
-    [7] = {11, 8, 0x13a}, // x7 multiplier
-    [8] = {11, 8, 0x13a}, // x8 multiplier
-    [9] = {11, 8, 0x13a}, // x9 multiplier
-    [10] = {11, 8, 0x13a}, // highlighted x6 multiplier
+    [0] = ICON_NUMBER(32), // x0 multiplier
+    [1] = ICON_NUMBER(33), // x1 multiplier
+    [2] = ICON_NUMBER(34), // x2 multiplier
+    [3] = ICON_NUMBER(35), // x3 multiplier
+    [4] = ICON_NUMBER(36), // x4 multiplier
+    [5] = ICON_NUMBER(37), // x5 multiplier
+    [6] = ICON_NUMBER(38), // x6 multiplier
+    [7] = ICON_NUMBER(39), // x7 multiplier
+    [8] = ICON_NUMBER(40), // x8 multiplier
+    [9] = ICON_NUMBER(41), // x9 multiplier
+    [10] = ICON_NUMBER(42), // highlighted x6 multiplier
 };
 
 static const IconData icons_zone[] = {
@@ -90,7 +90,7 @@ static const IconData icons_zone[] = {
     [8] = { 16, 8,  0xe0}, // Mist
 };
 
-static void BlitIcon(u8 windowId,const u8 *gfx, IconData icon, u16 x, u16 y)
+static void BlitIcon(u8 windowId, IconData icon, u16 x, u16 y)
 {
     BlitBitmapRectToWindow(
         windowId, 
@@ -102,7 +102,7 @@ static void BlitIcon(u8 windowId,const u8 *gfx, IconData icon, u16 x, u16 y)
 
 static void Icons_Init()
 {
-    LoadPalette(sIcons_Pal, 10 * 0x10, sizeof(sIcons_Pal));
+    LoadPalette(sIcons_Pal, PLTT_ID(11), sizeof(sIcons_Pal));
 }
 
 #endif // GUARD_STATUSICONS

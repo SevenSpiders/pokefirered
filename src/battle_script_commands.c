@@ -609,6 +609,25 @@ static const u32 sStatusFlagsForMoveEffects[NUM_MOVE_EFFECTS] =
     [MOVE_EFFECT_THRASH]         = STATUS2_LOCK_CONFUSE,
 };
 
+static const u32 sStatusFromMoveEffect[NUM_MOVE_EFFECTS] = 
+{
+    [MOVE_EFFECT_SLEEP]          = STATUS_SLEEP,
+    [MOVE_EFFECT_POISON]         = STATUS_POISON,
+    [MOVE_EFFECT_BURN]           = STATUS_BURN,
+    [MOVE_EFFECT_FREEZE]         = STATUS_FREEZE,
+    [MOVE_EFFECT_PARALYSIS]      = STATUS_PARALYSIS,
+    [MOVE_EFFECT_TOXIC]          = STATUS_TOXIC,
+    [MOVE_EFFECT_CONFUSION]      = STATUS_CONFUSED,
+    [MOVE_EFFECT_FLINCH]         = STATUS_FLINCHED,
+    [MOVE_EFFECT_UPROAR]         = STATUS_UPROAR,
+    [MOVE_EFFECT_CHARGING]       = STATUS_CHARGING,
+    [MOVE_EFFECT_WRAP]           = STATUS_WRAPPED,
+    [MOVE_EFFECT_RECHARGE]       = STATUS_RECHARGE,
+    [MOVE_EFFECT_PREVENT_ESCAPE] = STATUS_NO_ESCAPE,
+    [MOVE_EFFECT_NIGHTMARE]      = STATUS_NIGHTMARE,
+    [MOVE_EFFECT_THRASH]         = STATUS_THRASH,
+};
+
 static const u8 *const sMoveEffectBS_Ptrs[] =
 {
     [0]                            = BattleScript_MoveEffectSleep,
@@ -2116,6 +2135,8 @@ void SetMoveEffect(bool8 primary, u8 certain)
     u8 affectsUser = 0; // 0x40 otherwise
     bool32 noSunCanFreeze = TRUE;
 
+    DebugPrintf("Set Move Effect %d data %d", gBattleScripting.moveEffect, gBattleScripting.moveData);
+
     if (gBattleCommunication[MOVE_EFFECT_BYTE] & MOVE_EFFECT_AFFECTS_USER)
     {
         gEffectBattler = gBattlerAttacker; // battlerId that effects get applied on
@@ -2359,6 +2380,8 @@ void SetMoveEffect(bool8 primary, u8 certain)
                 gBattleMons[gEffectBattler].status1 |= STATUS1_SLEEP_TURN((Random() & 3) + 2); // 2-5 turns
             else
                 gBattleMons[gEffectBattler].status1 |= sStatusFlagsForMoveEffects[gBattleCommunication[MOVE_EFFECT_BYTE]];
+
+            BattleMon_AddStatus(&gBattleMons[gEffectBattler], sStatusFromMoveEffect[gBattleCommunication[MOVE_EFFECT_BYTE]]);
 
             gBattlescriptCurrInstr = sMoveEffectBS_Ptrs[gBattleCommunication[MOVE_EFFECT_BYTE]];
 

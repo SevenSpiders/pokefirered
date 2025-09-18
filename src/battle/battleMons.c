@@ -1,7 +1,7 @@
 #include "global.h"
+#include "constants/battle.h" // STATUS
 #include "battle/battleMons.h"
 #include "gflib.h" // stringcopy
-
 
 EWRAM_DATA BattlePokemon gBattleMons[PARTY_SIZE + PARTY_SIZE] = {0};
 // EWRAM_DATA BattlePokemon gBattleMons[4] = {0};
@@ -21,19 +21,60 @@ void BattleMons_Init()
 
         gBattleMons[i*2].partyIndex = i;
         gBattleMons[i*2+1].partyIndex = i;
-    }
 
+    }
+    
+    BattleMon_AddStatus(&gBattleMons[0], STATUS_SLEEP);
+    BattleMon_AddStatus(&gBattleMons[1], STATUS_PARALYSIS);
+    BattleMon_AddStatus(&gBattleMons[2], STATUS_POISON);
+    BattleMon_AddStatus(&gBattleMons[3], STATUS_FREEZE);
 }
 
-bool8 BattleMon_HasStatus(BattlePokemon mon, u32 status)
+bool8 BattleMon_HasStatus(BattlePokemon *mon, u32 status)
 {
     u32 i, statusType;
 
     for(i=0; i<MAX_MON_STATUSES; i++)
     {
-        statusType = mon.statuses[i]; // decypher
+        statusType = mon->statuses[i]; // decypher
         if (statusType == status)
             return TRUE;
+    }
+    return FALSE;
+}
+
+bool8 BattleMon_AddStatus(BattlePokemon *mon, u32 status)
+{
+    u32 i;
+
+    if (mon->species == SPECIES_NONE)
+        return FALSE;
+
+    for (i=0; i<MAX_MON_STATUSES; i++)
+    {
+        if (mon->statuses[i] == STATUS_NONE)
+        {
+            mon->statuses[i] = status;
+            return TRUE;
+        }
+    }
+    return FALSE;
+}
+
+bool8 BattleMon_RemoveStatus(BattlePokemon *mon, u32 status)
+{
+    u32 i;
+
+    if (mon->species == SPECIES_NONE)
+        return FALSE;
+
+    for (i=0; i<MAX_MON_STATUSES; i++)
+    {
+        if (mon->statuses[i] == status)
+        {
+            mon->statuses[i] = STATUS_NONE;
+            return TRUE;
+        }
     }
     return FALSE;
 }

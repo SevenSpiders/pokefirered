@@ -26,6 +26,8 @@
 #define sRESHOW_MAIN_STATE           gBattleScripting + 0x21 // reshowMainState
 #define sRESHOW_HELPER_STATE         gBattleScripting + 0x22 // reshowHelperState
 #define sLVLUP_HP                    gBattleScripting + 0x23 // levelUpHP
+#define sMOVE_EFFECT                 gBattleScripting + 0x24 // moveEffect
+#define sMOVE_DATA                   gBattleScripting + 0x25 // moveData
 
 // Array entries for battle communication
 #define MULTIUSE_STATE          0
@@ -42,6 +44,7 @@
 #define BATTLE_COMMUNICATION_ENTRIES_COUNT  8
 
 #define cEFFECT_CHOOSER      (gBattleCommunication + MOVE_EFFECT_BYTE)
+#define cEFFECT_DATA         (gBattleCommunication + ACTIONS_CONFIRMED_COUNT)
 #define cMULTISTRING_CHOOSER (gBattleCommunication + MULTISTRING_CHOOSER)
 #define cMISS_TYPE           (gBattleCommunication + MISS_TYPE)
 

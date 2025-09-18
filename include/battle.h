@@ -525,6 +525,8 @@ struct BattleScripting
     u8 reshowMainState;
     u8 reshowHelperState;
     u8 levelUpHP;
+    u8 moveEffect;
+    u8 moveData;
 };
 
 struct BattleSpriteInfo

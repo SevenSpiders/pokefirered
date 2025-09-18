@@ -297,6 +297,7 @@ BattleScript_EffectSleep::
 	attackanimation
 	waitanimation
 	setmoveeffect MOVE_EFFECT_SLEEP
+	setmoveeffectdata MOVE_EFFECT_SLEEP 7
 	seteffectprimary
 	goto BattleScript_MoveEnd
 
@@ -363,10 +364,12 @@ BattleScript_AbsorbTryFainting::
 
 BattleScript_EffectBurnHit::
 	setmoveeffect MOVE_EFFECT_BURN
+	setmoveeffectdata MOVE_EFFECT_BURN 2
 	goto BattleScript_EffectHit
 
 BattleScript_EffectFreezeHit::
 	setmoveeffect MOVE_EFFECT_FREEZE
+	setmoveeffectdata MOVE_EFFECT_FREEZE 1
 	goto BattleScript_EffectHit
 
 BattleScript_EffectParalyzeHit::
@@ -997,6 +1000,7 @@ BattleScript_EffectPoison::
 	attackanimation
 	waitanimation
 	setmoveeffect MOVE_EFFECT_POISON
+	setmoveeffectdata MOVE_EFFECT_POISON 5
 	seteffectprimary
 	resultmessage
 	waitmessage B_WAIT_TIME_LONG
@@ -1017,6 +1021,7 @@ BattleScript_EffectParalyze::
 	attackanimation
 	waitanimation
 	setmoveeffect MOVE_EFFECT_PARALYSIS
+	setmoveeffectdata MOVE_EFFECT_PARALYSIS 4
 	seteffectprimary
 	resultmessage
 	waitmessage B_WAIT_TIME_LONG

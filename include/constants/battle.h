@@ -87,7 +87,7 @@
 
 // NEW status
 // STATUS_NONE aldready defined as 0
-#define STATUS_NULL             0
+#define STATUS_NONE             0
 #define STATUS_SLEEP            1
 #define STATUS_POISON           2
 #define STATUS_BURN             3
@@ -129,6 +129,9 @@
 #define STATUS_UNDERWATER       39
 #define STATUS_INTIMIDATE       40
 #define STATUS_TRACE            41
+#define STATUS_CHARGING         42
+#define STATUS_THRASH           43
+#define STATUS_END              43
 
 
 // Non-volatile status conditions
