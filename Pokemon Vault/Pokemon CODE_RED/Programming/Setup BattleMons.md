@@ -16,7 +16,47 @@ CB2_HandleStartBattle ➔ step 15
 CopyPlayerPartyMonToBattleData?
 
 
+---
 
-Bug Moves in pokemon not correct
+what is hpOnSwitchout ➔ for strings when switching
 
-TryGenerateWildMon
+
+---
+
+Switch
+
+	switchoutabilities BS_ATTACKER
+
+    waitstate
+
+    returnatktoball
+
+    waitstate
+
+    drawpartystatussummary BS_ATTACKER
+
+    switchhandleorder BS_ATTACKER, SWITCH_ORDER_UPDATE_OWNER
+
+    getswitchedmondata BS_ATTACKER
+
+    switchindataupdate BS_ATTACKER
+
+    hpthresholds BS_ATTACKER
+
+    printstring STRINGID_SWITCHINMON
+
+    hidepartystatussummary BS_ATTACKER
+
+    switchinanim BS_ATTACKER, FALSE
+
+    waitstate
+
+    switchineffects BS_ATTACKER
+
+
+in party menu
+
+CursorCB_SendMon➔ TrySwitchInPokemon
+
+SwitchPartyMonSlots
+SwapPartyPokemon

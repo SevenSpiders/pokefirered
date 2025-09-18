@@ -136,6 +136,7 @@ static void Cmd_playstatchangeanimation(void);
 static void Cmd_moveend(void);
 static void Cmd_typecalc2(void);
 static void Cmd_returnatktoball(void);
+static void Cmd_switchMons(void);
 static void Cmd_getswitchedmondata(void);
 static void Cmd_switchindataupdate(void);
 static void Cmd_switchinanim(void);
@@ -559,6 +560,8 @@ void (* const gBattleScriptingCommandsTable[])(void) =
     Cmd_removeattackerstatus1,                   //0xF5
     Cmd_finishaction,                            //0xF6
     Cmd_finishturn,                              //0xF7
+    Cmd_switchMons,                 //0xF8
+
 };
 
 struct StatFractions
@@ -4449,6 +4452,15 @@ static void Cmd_returnatktoball(void)
     gBattlescriptCurrInstr++;
 }
 
+static void Cmd_switchMons(void)
+{
+    u8 indexA, indexB;
+    indexA = gBattlerAttacker;
+    indexB = gChosenPartyMon;
+    BattleMons_Switch(indexA, indexB);
+    gBattlescriptCurrInstr++;
+}
+
 static void Cmd_getswitchedmondata(void)
 {
     if (gBattleControllerExecFlags)
@@ -4527,7 +4539,8 @@ static void Cmd_switchinanim(void)
 
     gAbsentBattlerFlags &= ~(gBitTable[gActiveBattler]);
 
-    BtlController_EmitSwitchInAnim(BUFFER_A, gBattlerPartyIndexes[gActiveBattler], gBattlescriptCurrInstr[2]);
+    // BtlController_EmitSwitchInAnim(BUFFER_A, gBattlerPartyIndexes[gActiveBattler], gBattlescriptCurrInstr[2]);
+    BtlController_EmitSwitchInAnim(BUFFER_A, gActiveBattler, gBattlescriptCurrInstr[2]);
     MarkBattlerForControllerExec(gActiveBattler);
 
     gBattlescriptCurrInstr += 3;

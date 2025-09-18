@@ -6039,8 +6039,10 @@ static bool8 TrySwitchInPokemon(void)
     gSelectedMonPartyId = GetPartyIdFromBattleSlot(slot);
     gPartyMenuUseExitCallback = TRUE;
     newSlot = GetPartyIdFromBattlePartyId(gBattlerPartyIndexes[gBattlerInMenuId]);
-    SwitchPartyMonSlots(newSlot, slot);
-    SwapPartyPokemon(&gPlayerParty[newSlot], &gPlayerParty[slot]);
+    // SwitchPartyMonSlots(newSlot, slot);
+    // SwapPartyPokemon(&gPlayerParty[newSlot], &gPlayerParty[slot]);
+    gChosenPartyMon = slot;
+    DebugPrintf("new slot %d %d %d", slot, 0,0);
     return TRUE;
 }
 
@@ -6264,13 +6266,14 @@ u8 GetPartyIdFromBattlePartyId(u8 battlePartyId)
 
 static void UpdatePartyToBattleOrder(void)
 {
-    struct Pokemon *partyBuffer = Alloc(sizeof(gPlayerParty));
-    u8 i;
+    // struct Pokemon *partyBuffer = Alloc(sizeof(gPlayerParty));
+    // u8 i;
 
-    memcpy(partyBuffer, gPlayerParty, sizeof(gPlayerParty));
-    for (i = 0; i < PARTY_SIZE; ++i)
-        memcpy(&gPlayerParty[GetPartyIdFromBattlePartyId(i)], &partyBuffer[i], sizeof(struct Pokemon));
-    Free(partyBuffer);
+    // memcpy(partyBuffer, gPlayerParty, sizeof(gPlayerParty));
+    // for (i = 0; i < PARTY_SIZE; ++i)
+    //     memcpy(&gPlayerParty[GetPartyIdFromBattlePartyId(i)], &partyBuffer[i], sizeof(struct Pokemon));
+    // Free(partyBuffer);
+    DebugPrintf("update to battle order");
 }
 
 static void UpdatePartyToFieldOrder(void)
@@ -6285,24 +6288,24 @@ static void UpdatePartyToFieldOrder(void)
 }
 
 // not used
-static void SwitchAliveMonIntoLeadSlot(void)
-{
-    u8 i;
-    struct Pokemon *mon;
-    u8 partyId;
+// static void SwitchAliveMonIntoLeadSlot(void)
+// {
+//     u8 i;
+//     struct Pokemon *mon;
+//     u8 partyId;
 
-    for (i = 1; i < PARTY_SIZE; ++i)
-    {
-        mon = &gPlayerParty[GetPartyIdFromBattleSlot(i)];
-        if (GetMonData(mon, MON_DATA_SPECIES) != SPECIES_NONE && GetMonData(mon, MON_DATA_HP) != 0)
-        {
-            partyId = GetPartyIdFromBattleSlot(0);
-            SwitchPartyMonSlots(0, i);
-            SwapPartyPokemon(&gPlayerParty[partyId], mon);
-            break;
-        }
-    }
-}
+//     for (i = 1; i < PARTY_SIZE; ++i)
+//     {
+//         mon = &gPlayerParty[GetPartyIdFromBattleSlot(i)];
+//         if (GetMonData(mon, MON_DATA_SPECIES) != SPECIES_NONE && GetMonData(mon, MON_DATA_HP) != 0)
+//         {
+//             partyId = GetPartyIdFromBattleSlot(0);
+//             SwitchPartyMonSlots(0, i);
+//             SwapPartyPokemon(&gPlayerParty[partyId], mon);
+//             break;
+//         }
+//     }
+// }
 
 static void CB2_SetUpExitToBattleScreen(void)
 {

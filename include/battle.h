@@ -12,6 +12,8 @@
 #include "battle_gfx_sfx_util.h"
 #include "battle_util2.h"
 #include "battle_bg.h"
+#include "battle/battleMons.h"
+
 
 /*
     Banks are a name given to what could be called a 'battlerId' or 'monControllerId'.
@@ -724,5 +726,6 @@ extern u8 gChosenActionByBattler[MAX_BATTLERS_COUNT];
 extern u8 gBattleTerrain;
 extern struct MultiBattlePokemonTx gMultiPartnerParty[3];
 extern u16 gRandomTurnNumber;
+extern u8 gChosenPartyMon;
 
 #endif // GUARD_BATTLE_H

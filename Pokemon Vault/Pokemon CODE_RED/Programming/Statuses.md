@@ -33,3 +33,16 @@ enum StatusTypes {
 
 ```
 
+lots of data already
+
+gLastMoves[gActiveBattler] = MOVE_NONE;
+
+gLastLandedMoves[gActiveBattler] = MOVE_NONE;
+
+gLastHitByType[gActiveBattler] = 0;
+
+gLastResultingMoves[gActiveBattler] = MOVE_NONE;
+
+gLastPrintedMoves[gActiveBattler] = MOVE_NONE;
+
+gLastHitBy[gActiveBattler] = 0xFF;

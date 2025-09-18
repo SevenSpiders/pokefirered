@@ -18,8 +18,32 @@ void BattleMons_Init()
     {   
         gBattleMons[i*2] = CreateBattleMon(&gPlayerParty[i]);
         gBattleMons[i*2+1] = CreateBattleMon(&gEnemyParty[i]);
+
+        gBattleMons[i*2].partyIndex = i;
+        gBattleMons[i*2+1].partyIndex = i;
     }
 
+}
+
+bool8 BattleMon_HasStatus(BattlePokemon mon, u32 status)
+{
+    u32 i, statusType;
+
+    for(i=0; i<MAX_MON_STATUSES; i++)
+    {
+        statusType = mon.statuses[i]; // decypher
+        if (statusType == status)
+            return TRUE;
+    }
+    return FALSE;
+}
+
+void BattleMons_Switch(u32 indexA, u32 indexB)
+{
+    BattlePokemon temp = gBattleMons[indexA];
+    DebugPrintf("switch mons %d -> %d", indexA, indexB);
+    gBattleMons[indexA] = gBattleMons[indexB];
+    gBattleMons[indexB] = temp;
 }
 
 

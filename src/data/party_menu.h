@@ -1060,7 +1060,7 @@ static struct
 } const sCursorOptions[] =
 {
     [CURSOR_OPTION_SUMMARY]                              = {gText_Summary5,               CursorCB_Summary  },
-    [CURSOR_OPTION_CHANGE_MOVES]                                = {gText_Moves_Menu,             CursorCb_Moves    },
+    [CURSOR_OPTION_CHANGE_MOVES]                         = {gText_Moves_Menu,             CursorCb_Moves    },
     [CURSOR_OPTION_SWITCH]                               = {gText_Switch2,                CursorCB_Switch   },
     [CURSOR_OPTION_CANCEL1]                              = {gFameCheckerText_Cancel,      CursorCB_Cancel1  },
     [CURSOR_OPTION_ITEM]                                 = {gText_Item,                   CursorCB_Item     },

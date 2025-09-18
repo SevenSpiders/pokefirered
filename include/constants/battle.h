@@ -85,6 +85,52 @@
 #define B_OUTCOME_MON_TELEPORTED       10
 #define B_OUTCOME_LINK_BATTLE_RAN      (1 << 7) // 128
 
+// NEW status
+// STATUS_NONE aldready defined as 0
+#define STATUS_NULL             0
+#define STATUS_SLEEP            1
+#define STATUS_POISON           2
+#define STATUS_BURN             3
+#define STATUS_FREEZE           4
+#define STATUS_PARALYSIS        5
+#define STATUS_TOXIC            6
+#define STATUS_CONFUSED         7
+#define STATUS_FLINCHED         8
+#define STATUS_UPROAR           9
+#define STATUS_BIDE             10
+#define STATUS_WRAPPED          11
+#define STATUS_INFATUATION      12
+#define STATUS_FOCUS            13
+#define STATUS_TRANSFORMED      14
+#define STATUS_RECHARGE         15
+#define STATUS_RAGE             16
+#define STATUS_SUBSTITUTE       17
+#define STATUS_DESTINY_BOND     18
+#define STATUS_NO_ESCAPE        19
+#define STATUS_NIGHTMARE        20
+#define STATUS_CURSED           21
+#define STATUS_FORSIGHT         22
+#define STATUS_DEFENSE_CURL     23
+#define STATUS_TORMENT          24
+#define STATUS_LEECHSEED        25
+#define STATUS_ALWAYS_HITS      26
+#define STATUS_PERISH_SONG      27
+#define STATUS_IN_AIR           28
+#define STATUS_UNDERGROUND      29
+#define STATUS_MINIMIZED        30
+#define STATUS_CHARGED_UP       31
+#define STATUS_ROOTED           32
+#define STATUS_YAWN             33
+#define STATUS_IMPRISONED       34
+#define STATUS_GRUDGE           35
+#define STATUS_NO_CRIT          36
+#define STATUS_MUDSPORT         37
+#define STATUS_WATERSPORT       38
+#define STATUS_UNDERWATER       39
+#define STATUS_INTIMIDATE       40
+#define STATUS_TRACE            41
+
+
 // Non-volatile status conditions
 // These persist remain outside of battle and after switching out
 #define STATUS1_NONE             0

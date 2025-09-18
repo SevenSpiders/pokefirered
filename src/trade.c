@@ -131,9 +131,9 @@ enum {
 
 // Values for signaling to/from the link partner
 enum {
-    STATUS_NONE,
-    STATUS_READY,
-    STATUS_CANCEL,
+    TRADE_STATUS_NONE,
+    TRADE_STATUS_READY,
+    TRADE_STATUS_CANCEL,
 };
 
 // Checked to confirm DrawSelectedMonScreen has reached final state
@@ -812,8 +812,8 @@ static void InitTradeMenu(void)
         sTradeMenu->unk_70 = 0;
         sTradeMenu->drawSelectedMonState[TRADE_PLAYER] = 0;
         sTradeMenu->drawSelectedMonState[TRADE_PARTNER] = 0;
-        sTradeMenu->playerConfirmStatus = STATUS_NONE;
-        sTradeMenu->partnerConfirmStatus = STATUS_NONE;
+        sTradeMenu->playerConfirmStatus = TRADE_STATUS_NONE;
+        sTradeMenu->partnerConfirmStatus = TRADE_STATUS_NONE;
         sTradeMenu->timer = 0;
     }
 }
@@ -1597,16 +1597,16 @@ static void Leader_ReadLinkBuffer(u8 mpId, u8 status)
         switch (gBlockRecvBuffer[0][0])
         {
         case LINKCMD_REQUEST_CANCEL:
-            sTradeMenu->playerSelectStatus = STATUS_CANCEL;
+            sTradeMenu->playerSelectStatus = TRADE_STATUS_CANCEL;
             break;
         case LINKCMD_READY_TO_TRADE:
-            sTradeMenu->playerSelectStatus = STATUS_READY;
+            sTradeMenu->playerSelectStatus = TRADE_STATUS_READY;
             break;
         case LINKCMD_INIT_BLOCK:
-            sTradeMenu->playerConfirmStatus = STATUS_READY;
+            sTradeMenu->playerConfirmStatus = TRADE_STATUS_READY;
             break;
         case LINKCMD_READY_CANCEL_TRADE:
-            sTradeMenu->playerConfirmStatus = STATUS_CANCEL;
+            sTradeMenu->playerConfirmStatus = TRADE_STATUS_CANCEL;
             break;
         }
         ResetBlockReceivedFlag(0);
@@ -1617,17 +1617,17 @@ static void Leader_ReadLinkBuffer(u8 mpId, u8 status)
         switch (gBlockRecvBuffer[1][0])
         {
         case LINKCMD_REQUEST_CANCEL:
-            sTradeMenu->partnerSelectStatus = STATUS_CANCEL;
+            sTradeMenu->partnerSelectStatus = TRADE_STATUS_CANCEL;
             break;
         case LINKCMD_READY_TO_TRADE:
             sTradeMenu->partnerCursorPosition = gBlockRecvBuffer[1][1] + PARTY_SIZE;
-            sTradeMenu->partnerSelectStatus = STATUS_READY;
+            sTradeMenu->partnerSelectStatus = TRADE_STATUS_READY;
             break;
         case LINKCMD_INIT_BLOCK:
-            sTradeMenu->partnerConfirmStatus = STATUS_READY;
+            sTradeMenu->partnerConfirmStatus = TRADE_STATUS_READY;
             break;
         case LINKCMD_READY_CANCEL_TRADE:
-            sTradeMenu->partnerConfirmStatus = STATUS_CANCEL;
+            sTradeMenu->partnerConfirmStatus = TRADE_STATUS_CANCEL;
             break;
         }
         ResetBlockReceivedFlag(1);
@@ -1680,72 +1680,72 @@ static void Follower_ReadLinkBuffer(u8 mpId, u8 status)
 
 static void Leader_HandleCommunication(void)
 {
-    if (sTradeMenu->playerSelectStatus != STATUS_NONE
-     && sTradeMenu->partnerSelectStatus != STATUS_NONE)
+    if (sTradeMenu->playerSelectStatus != TRADE_STATUS_NONE
+     && sTradeMenu->partnerSelectStatus != TRADE_STATUS_NONE)
     {
-        if (sTradeMenu->playerSelectStatus == STATUS_READY
-         && sTradeMenu->partnerSelectStatus == STATUS_READY)
+        if (sTradeMenu->playerSelectStatus == TRADE_STATUS_READY
+         && sTradeMenu->partnerSelectStatus == TRADE_STATUS_READY)
         {
             // Both players have selected a pokemon to trade 
             sTradeMenu->callbackId = CB_SET_SELECTED_MONS;
             QueueLinkData(LINKCMD_SET_MONS_TO_TRADE, sTradeMenu->cursorPosition);
-            sTradeMenu->playerSelectStatus = sTradeMenu->partnerSelectStatus = STATUS_NONE;
+            sTradeMenu->playerSelectStatus = sTradeMenu->partnerSelectStatus = TRADE_STATUS_NONE;
         }
-        else if (sTradeMenu->playerSelectStatus == STATUS_READY
-              && sTradeMenu->partnerSelectStatus == STATUS_CANCEL)
+        else if (sTradeMenu->playerSelectStatus == TRADE_STATUS_READY
+              && sTradeMenu->partnerSelectStatus == TRADE_STATUS_CANCEL)
         {
             // The player has selected a pokemon to trade,
             // but the partner has selected Cancel
             PrintTradeMessage(MSG_CANCELED);
             QueueLinkData(LINKCMD_PARTNER_CANCEL_TRADE, 0);
-            sTradeMenu->playerConfirmStatus = sTradeMenu->partnerConfirmStatus = STATUS_NONE;
-            sTradeMenu->playerSelectStatus = sTradeMenu->partnerSelectStatus = STATUS_NONE;
+            sTradeMenu->playerConfirmStatus = sTradeMenu->partnerConfirmStatus = TRADE_STATUS_NONE;
+            sTradeMenu->playerSelectStatus = sTradeMenu->partnerSelectStatus = TRADE_STATUS_NONE;
             sTradeMenu->callbackId = CB_HANDLE_TRADE_CANCELED;
         }
-        else if (sTradeMenu->playerSelectStatus == STATUS_CANCEL
-              && sTradeMenu->partnerSelectStatus == STATUS_READY)
+        else if (sTradeMenu->playerSelectStatus == TRADE_STATUS_CANCEL
+              && sTradeMenu->partnerSelectStatus == TRADE_STATUS_READY)
         {
             // The partner has selected a pokemon to trade,
             // but the player has selected cancel
             PrintTradeMessage(MSG_FRIEND_WANTS_TO_TRADE);
             QueueLinkData(LINKCMD_PLAYER_CANCEL_TRADE, 0);
-            sTradeMenu->playerConfirmStatus = sTradeMenu->partnerConfirmStatus = STATUS_NONE;
-            sTradeMenu->playerSelectStatus = sTradeMenu->partnerSelectStatus = STATUS_NONE;
+            sTradeMenu->playerConfirmStatus = sTradeMenu->partnerConfirmStatus = TRADE_STATUS_NONE;
+            sTradeMenu->playerSelectStatus = sTradeMenu->partnerSelectStatus = TRADE_STATUS_NONE;
             sTradeMenu->callbackId = CB_HANDLE_TRADE_CANCELED;
         }
-        else if (sTradeMenu->playerSelectStatus == STATUS_CANCEL
-              && sTradeMenu->partnerSelectStatus == STATUS_CANCEL)
+        else if (sTradeMenu->playerSelectStatus == TRADE_STATUS_CANCEL
+              && sTradeMenu->partnerSelectStatus == TRADE_STATUS_CANCEL)
         {
             // Both players have selected Cancel
             QueueLinkData(LINKCMD_BOTH_CANCEL_TRADE, 0);
             BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 16, RGB_BLACK);
-            sTradeMenu->playerSelectStatus = sTradeMenu->partnerSelectStatus = STATUS_NONE;
+            sTradeMenu->playerSelectStatus = sTradeMenu->partnerSelectStatus = TRADE_STATUS_NONE;
             sTradeMenu->callbackId = CB_INIT_EXIT_CANCELED_TRADE;
         }
     }
 
-    if (sTradeMenu->playerConfirmStatus != STATUS_NONE
-     && sTradeMenu->partnerConfirmStatus != STATUS_NONE)
+    if (sTradeMenu->playerConfirmStatus != TRADE_STATUS_NONE
+     && sTradeMenu->partnerConfirmStatus != TRADE_STATUS_NONE)
     {
-        if (sTradeMenu->playerConfirmStatus == STATUS_READY
-         && sTradeMenu->partnerConfirmStatus == STATUS_READY)
+        if (sTradeMenu->playerConfirmStatus == TRADE_STATUS_READY
+         && sTradeMenu->partnerConfirmStatus == TRADE_STATUS_READY)
         {
             // Both players have confirmed the trade
             QueueLinkData(LINKCMD_START_TRADE, 0);
-            sTradeMenu->playerConfirmStatus = STATUS_NONE;
-            sTradeMenu->partnerConfirmStatus = STATUS_NONE;
+            sTradeMenu->playerConfirmStatus = TRADE_STATUS_NONE;
+            sTradeMenu->partnerConfirmStatus = TRADE_STATUS_NONE;
             sTradeMenu->callbackId = CB_FADE_TO_START_TRADE;
         }
 
-        if (sTradeMenu->playerConfirmStatus == STATUS_CANCEL
-         || sTradeMenu->partnerConfirmStatus == STATUS_CANCEL)
+        if (sTradeMenu->playerConfirmStatus == TRADE_STATUS_CANCEL
+         || sTradeMenu->partnerConfirmStatus == TRADE_STATUS_CANCEL)
         {
             // One of the players has decided not to confirm the trade,
             // or the trade was not allowed.
             PrintTradeMessage(MSG_CANCELED);
             QueueLinkData(LINKCMD_PLAYER_CANCEL_TRADE, 0);
-            sTradeMenu->playerConfirmStatus = STATUS_NONE;
-            sTradeMenu->partnerConfirmStatus = STATUS_NONE;
+            sTradeMenu->playerConfirmStatus = TRADE_STATUS_NONE;
+            sTradeMenu->partnerConfirmStatus = TRADE_STATUS_NONE;
             sTradeMenu->callbackId = CB_HANDLE_TRADE_CANCELED;
         }
     }
@@ -1823,7 +1823,7 @@ static void SetReadyToTrade(void)
     else
     {
         // We are the link leader, no communication necessary
-        sTradeMenu->playerSelectStatus = STATUS_READY;
+        sTradeMenu->playerSelectStatus = TRADE_STATUS_READY;
     }
 }
 

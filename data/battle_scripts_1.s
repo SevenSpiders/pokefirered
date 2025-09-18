@@ -3064,11 +3064,12 @@ BattleScript_DoSwitchOut::
 	waitstate
 	returnatktoball
 	waitstate
-	drawpartystatussummary BS_ATTACKER
-	switchhandleorder BS_ATTACKER, SWITCH_ORDER_UPDATE_OWNER
-	getswitchedmondata BS_ATTACKER
-	switchindataupdate BS_ATTACKER
-	hpthresholds BS_ATTACKER
+	@ drawpartystatussummary BS_ATTACKER
+	@ switchhandleorder BS_ATTACKER, SWITCH_ORDER_UPDATE_OWNER
+	@ getswitchedmondata BS_ATTACKER
+	@ switchindataupdate BS_ATTACKER
+	@ hpthresholds BS_ATTACKER
+	switchMons
 	printstring STRINGID_SWITCHINMON
 	hidepartystatussummary BS_ATTACKER
 	switchinanim BS_ATTACKER, FALSE
