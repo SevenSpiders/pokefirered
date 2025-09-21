@@ -25,24 +25,25 @@ static const u8 sIcons_Gfx[] = INCBIN_U8("graphics/battle_interface/icons.4bpp")
 
 
 static const IconData icons_types[] = {
+    [TYPE_BUG] = ICON1(0)
 };
 
 static const IconData icons_stats[] = {
-    [STAT_ATK] =    ICON1(0), // Attack
-    [STAT_DEF] =    ICON1(2), // Defense
-    [STAT_SPEED] =  ICON1(4), // Speed
-    [STAT_SPATK] =  ICON1(6), // Sp. Atk
-    [STAT_SPDEF] =  ICON1(8), // Sp. Def
-    [STAT_ACC] =    ICON1(10), // Accuracy
-    [STAT_EVASION] =    ICON1(12), // Evasion
+    [STAT_ATK] =                    ICON1(0),
+    [STAT_DEF] =                    ICON1(2),
+    [STAT_SPEED] =                  ICON1(4),
+    [STAT_SPATK] =                  ICON1(6),
+    [STAT_SPDEF] =                  ICON1(8),
+    [STAT_EVASION] =                ICON1(10),
+    [STAT_ACC] =                    ICON1(12),
 
-    [STAT_ATK   + STAT_NEGATE] = ICON1(16),
-    [STAT_DEF   + STAT_NEGATE] = ICON1(18),
-    [STAT_SPEED + STAT_NEGATE] = ICON1(20), // negative Sp. Atk
-    [STAT_SPATK + STAT_NEGATE] = ICON1(22), // negative Sp. Def
-    [STAT_SPDEF + STAT_NEGATE] = ICON1(24), // negative Speed
-    [STAT_ACC   + STAT_NEGATE] = ICON1(26), // negative Accuracy
-    [STAT_EVASION + STAT_NEGATE] = ICON1(28), // negative Evasion
+    [STAT_ATK   + STAT_NEGATE] =    ICON1(16),
+    [STAT_DEF   + STAT_NEGATE] =    ICON1(18),
+    [STAT_SPEED + STAT_NEGATE] =    ICON1(20), // negative Sp. Atk
+    [STAT_SPATK + STAT_NEGATE] =    ICON1(22), // negative Sp. Def
+    [STAT_SPDEF + STAT_NEGATE] =    ICON1(24), // negative Speed
+    [STAT_ACC   + STAT_NEGATE] =    ICON1(26), // negative Accuracy
+    [STAT_EVASION + STAT_NEGATE] =  ICON1(28), // negative Evasion
 };
 
 static const IconData icons_status[] = {

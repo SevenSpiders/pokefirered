@@ -6,6 +6,29 @@ make -j16
 start pokefirered.gba
 
 
+Lighting
+[GitHub - aarant/pokeemerald at just-lighting](https://github.com/aarant/pokeemerald/tree/just-lighting)
+[Comparing pret:master...aarant:just-lighting · pret/pokeemerald · GitHub](https://github.com/pret/pokeemerald/compare/master...aarant:pokeemerald:just-lighting?diff=split&w)
+-> UpdateAltBgPalettes
+-> UpdatePalettesWithTime ( was TimeBlendPalettes ) | committedon Apr 25, 2021
+
+crucial commit
+Commit 6e621d8
+https://github.com/aarant/pokeemerald/commit/6e621d80a10f015e00ae017342cfb71284f51503
+https://github.com/aarant/pokeemerald/commits/just-lighting?after=692947b60eb463a3f4a73a802fb304df1ca714ac+845
+
+-> revert before- 493210d66ff41bcd934c639c7d188c520d094094
+
+
+
+[Adding Time Based Encounters · pret/pokeemerald Wiki · GitHub](https://github.com/pret/pokeemerald/wiki/Adding-Time-Based-Encounters#without-a-variable)
+
+approach sierra
+[Comparing pret:master...Sierraffinity:daynight · pret/pokeemerald · GitHub](https://github.com/pret/pokeemerald/compare/master...Sierraffinity:pokeemerald:daynight)
+
+approach shiny
+[Comparing pret:master...ShinyDragonHunter:DayNight · pret/pokeemerald · GitHub](https://github.com/pret/pokeemerald/compare/master...ShinyDragonHunter:pokeemerald:DayNight)
+
 #### Mods
 
 max 10 mods on a pokemon
@@ -100,3 +123,5 @@ layouts.json ➔ delete entry
 map_groups.json ➔ delete entry line ( depends on map group )
 
 run: make clean
+
+

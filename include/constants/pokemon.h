@@ -115,17 +115,30 @@
 #define TYPE_DARK           17
 #define NUMBER_OF_MON_TYPES 18
 
+// Pokemon genus
+#define GENUS_BIRD
+#define GENUS_BUG
+#define GENUS_CUB
+#define GENUS_DRAGON
+#define GENUS_FAIRY
+#define GENUS_FIGHTER
+#define GENUS_FISH
+#define GENUS_FOSSILE
+#define GENUS_GHOST
+#define GENUS_LEGEND
+#define GENUS_ROCK
+
 // Pokemon egg groups
 #define EGG_GROUP_NONE         0
 #define EGG_GROUP_MONSTER      1
-#define EGG_GROUP_WATER_1      2
+#define EGG_GROUP_WATER_1      2 // Amphibious
 #define EGG_GROUP_BUG          3
 #define EGG_GROUP_FLYING       4
-#define EGG_GROUP_FIELD        5
-#define EGG_GROUP_FAIRY        6
+#define EGG_GROUP_FIELD        5 // Ground: Biggest group 
+#define EGG_GROUP_FAIRY        6 // Cute petite
 #define EGG_GROUP_GRASS        7
 #define EGG_GROUP_HUMAN_LIKE   8
-#define EGG_GROUP_WATER_3      9
+#define EGG_GROUP_WATER_3      9 // Invertebras such crabs, squids, 
 #define EGG_GROUP_MINERAL      10
 #define EGG_GROUP_AMORPHOUS    11
 #define EGG_GROUP_WATER_2      12

@@ -27,12 +27,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Pokemon CODE_RED/10. Gyms.md",
+                "file": "Pokemon CODE_RED/1. Features.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "10. Gyms"
+              "title": "1. Features"
             }
           },
           {
@@ -41,16 +41,58 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Pokemon CODE_RED/Programming/Setup BattleMons.md",
+                "file": "Pokemon CODE_RED/Cooking.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Setup BattleMons"
+              "title": "Cooking"
+            }
+          },
+          {
+            "id": "8636d93eddbe9fcb",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Pokemon CODE_RED/Pokemon Computer.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Pokemon Computer"
+            }
+          },
+          {
+            "id": "9cab1a94ad42920c",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Pokemon CODE_RED/Traits.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Traits"
+            }
+          },
+          {
+            "id": "b4a5ec68ac1f3ff6",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Pokemon CODE_RED/Programming.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Programming"
             }
           }
         ],
-        "currentTab": 2
+        "currentTab": 5
       }
     ],
     "direction": "vertical"
@@ -198,10 +240,24 @@
       "bases:Create new base": false
     }
   },
-  "active": "fe15918216c60887",
+  "active": "b4a5ec68ac1f3ff6",
   "lastOpenFiles": [
-    "Pokemon CODE_RED/Programming/Statuses.md",
+    "Music.md",
+    "Pokemon CODE_RED/Programming.md",
+    "Pokemon CODE_RED/4.1 UI Summary.md",
+    "Pokemon CODE_RED/Cooking.md",
+    "Pokemon CODE_RED/4. UI.md",
+    "Pokemon CODE_RED/Pokemon Computer.md",
+    "Pokemon CODE_RED/Pokemon Groups.md",
+    "Pokemon CODE_RED/Traits.md",
+    "Assets/cooking3.png",
+    "Pokemon CODE_RED/1. Features.md",
+    "Assets/title2.png",
+    "Pokemon CODE_RED/2. Type Squish.md",
+    "Pokemon CODE_RED/10. Gyms.md",
+    "Assets/pokefirered-info stamp3.png",
     "Pokemon CODE_RED/Programming/Setup BattleMons.md",
+    "Pokemon CODE_RED/Programming/Statuses.md",
     "Pokemon CODE_RED/0. Design Goals.md",
     "Assets/Pokemon - Fire Red Version (U) (V1.1)-6.png",
     "Assets/Pokemon - Fire Red Version (U) (V1.1)-5.png",
@@ -209,35 +265,22 @@
     "Assets/pokefirered-talents.png",
     "Assets/pokefirered-info.png",
     "Assets/pokedexGB3.png",
-    "Pokemon CODE_RED/1. Features.md",
-    "Pokemon CODE_RED/2. Type Squish.md",
     "Assets/pokemon summary 2.png",
-    "Pokemon CODE_RED/Programming.md",
     "Pokemon CODE_RED/11. New Story.md",
     "Pokemon CODE_RED/11. Main Story.md",
-    "Pokemon CODE_RED/10. Gyms.md",
-    "Pokemon CODE_RED/4.1 UI Summary.md",
-    "Assets/matchups_digital_redt 1.png",
-    "Assets/matchups_digital_redt.png",
     "Pokemon CODE_RED/12. New Locations.md",
     "Pokemon CODE_RED/3. Pokemon Alters.md",
-    "Assets/Pasted image 20250913115007.png",
     "Pokemon CODE_RED/Pokemon.md",
     "Pokemon CODE_RED/6. Pokemon.md",
     "Pokemon CODE_RED/Programming",
     "Assets/pokedex.ase",
-    "Music.md",
-    "Pokemon CODE_RED/4. UI.md",
+    "Pokemon CODE_RED/Music.md",
     "Pokemon CODE_RED/7. Combat.md",
     "Pokemon CODE_RED/5. Gadgets.md",
     "Assets",
     "Welcome.md",
     "Pokemon CODE_RED/TODO.md",
     "Pokemon CODE_RED/Sword Team.md",
-    "Pokemon CODE_RED/Summary.md",
-    "Pokemon CODE_RED/Pokemon Computer.md",
-    "Pokemon CODE_RED/Pikachu Beach.md",
-    "Pokemon CODE_RED/NPCs.md",
     "Pokemon CODE_RED"
   ]
 }
