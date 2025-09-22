@@ -20,6 +20,12 @@ https://github.com/aarant/pokeemerald/commits/just-lighting?after=692947b60eb463
 -> revert before- 493210d66ff41bcd934c639c7d188c520d094094
 
 
+things to get
+
+- TimeMixPalettes
+- UpdateSpritePaletteWithTime -> UpdateSpritePaletteWithWeather
+- PulseBlend
+
 
 [Adding Time Based Encounters · pret/pokeemerald Wiki · GitHub](https://github.com/pret/pokeemerald/wiki/Adding-Time-Based-Encounters#without-a-variable)
 

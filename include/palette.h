@@ -16,8 +16,14 @@
 #define PALETTE_FADE_STATUS_LOADING 0xFF
 
 #define PALETTES_BG      0x0000FFFF
+#define PALETTES_MAP     0x00001FFF // like PALETTES_BG but excludes UI pals [13, 15]
 #define PALETTES_OBJECTS 0xFFFF0000
 #define PALETTES_ALL     (PALETTES_BG | PALETTES_OBJECTS)
+
+// Used to determine whether a sprite palette tag
+// should be excluded from time (and weather) blending
+#define BLEND_IMMUNE_FLAG (1 << 15)
+#define IS_BLEND_IMMUNE_TAG(tag) ((tag) & BLEND_IMMUNE_FLAG)
 
 #define PLTT_ID(n) ((n) * 16)
 #define BG_PLTT_OFFSET 0x000

@@ -397,4 +397,6 @@ extern struct MapHeader gMapHeader;
 extern struct PlayerAvatar gPlayerAvatar;
 extern struct Camera gCamera;
 
+#define MapHasNaturalLight(mapType) ((mapType) == MAP_TYPE_TOWN || (mapType) == MAP_TYPE_CITY || (mapType) == MAP_TYPE_ROUTE)    
+
 #endif // GUARD_GLOBAL_FIELDMAP_H
