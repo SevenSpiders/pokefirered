@@ -1465,7 +1465,7 @@ static void OverworldBasic(void)
     UpdatePaletteFade();
     UpdateTilesetAnimations();
     DoScheduledBgTilemapCopiesToVram();
-    // DNS_Update();
+    DNS_Update();
 }
 
 // This CB2 is used when starting
