@@ -19,6 +19,8 @@
 #define PALETTES_MAP     0x00001FFF // like PALETTES_BG but excludes UI pals [13, 15]
 #define PALETTES_OBJECTS 0xFFFF0000
 #define PALETTES_ALL     (PALETTES_BG | PALETTES_OBJECTS)
+#define PALLETES_BG_PRIMARY     0x0000007F
+#define PALLETES_BG_SECONDARY   0x00003F00
 
 // Used to determine whether a sprite palette tag
 // should be excluded from time (and weather) blending

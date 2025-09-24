@@ -3,124 +3,89 @@
 #include "DNS/DNS.h"
 #include "global.h"
 
-struct RGB {
-    s32 r, g, b;
-};
 
+static u16 FadeColourForDNS(struct PlttData* blend, u8 coeff, s8 r, s8 g, s8 b)
+{
+	return ((r + (((blend->r - r) * coeff) >> 4)) << 0)
+		 | ((g + (((blend->g - g) * coeff) >> 4)) << 5)
+		 | ((b + (((blend->b - b) * coeff) >> 4)) << 10);
 
-// Extract RGB from 15-bit GBA color
-struct RGB ExtractGBARGB(u16 color) {
-    struct RGB rgb;
-    rgb.r = (color << 27) >> 27;
-    rgb.g = (color << 22) >> 27;
-    rgb.b = (color << 17) >> 27;
-    return rgb;
 }
 
-// struct RGB ExtractGBARGB(u16 color) {
-//     struct RGB out;
-
-//     // Extract 5-bit values
-//     u32 r5 =  color        & 0x1F;
-//     u32 g5 = (color >> 5)  & 0x1F;
-//     u32 b5 = (color >> 10) & 0x1F;
-
-//     // Expand to 0–255 range for easier math later
-//     out.r = (r5 << 3) | (r5 >> 2);  // replicate bits to fill 8 bits
-//     out.g = (g5 << 3) | (g5 >> 2);
-//     out.b = (b5 << 3) | (b5 >> 2);
-
-//     return out;
-// }
-
-
-
-
-static void Darken(u16 *src, u16 *dst) {
+static u16 DarkenColor(struct PlttData* srcColor) {
     
     // Constants
     const u32 darkFactor = 128;   // ~0.5 in fixed point (0-255)
     const u32 blueFactor = 77;    // ~0.3 in fixed point (0-255)
-    u32 i;
-
-    DebugPrintf("darken ");
-
-    // Copy color 0 (transparent) unchanged
-    *dst++ = *src++;
-
-    // Process colors 1-15
-    for (i = 1; i < 16; i++) {
-        u16 srcColor = *src++;
-        struct RGB srcRGB = ExtractGBARGB(srcColor);
-
-        // Convert to 0-255 range for math
-        u32 r = srcRGB.r << 3;
-        u32 g = srcRGB.g << 3;
-        u32 b = srcRGB.b << 3;
-
-        // Compute luminance (scaled integer math)
-        // Y = 0.2126R + 0.7152G + 0.0722B
-        u32 luminance = (54 * r + 183 * g + 19 * b) >> 8;  // weights sum to 256
-
-        // Apply darkening
-        r = (r * darkFactor) >> 8;
-        g = (g * darkFactor) >> 8;
-        b = (b * darkFactor) >> 8;
-
-        // Add blue shift proportional to luminance
-        b += (luminance * blueFactor) >> 8;
-        if (b > 255) b = 255;
-
-        // Convert back to 5-bit per channel GBA color
-        *dst++ = RGB2(r >> 3, g >> 3, b >> 3);
-    }
-}
-
-static void Blacken(u16 *dst)
-{
-    u32 i;
-    for (i = 0; i < 16; i++) {
-        *dst++ = RGB2(11, 11, 29);
-    }
-    DebugPrintf("blackened");
-}
-
-static void ProcessSinglePalette(u16 *src, u16 *dst, struct BlendSettings *blend0, 
-                         struct BlendSettings *blend1, u16 weight0) 
-{
-    u32 i;
-    Blacken(dst);
-
-    // if (blend0->isTint)
-    //     Darken(src, dst);
-    // else
-    //     for (i = 0; i < 16; i++) {
-    //         *dst++ = *src++;
-    //     }
-}
-
-
-
-
-void TimeMixPalettes(u32 palettes, u16 *src, u16 *dst, struct BlendSettings *blend0, 
-                    struct BlendSettings *blend1, u16 weight0) {
-
-    u32 i;
-    DebugPrintf("time mix");
-
-    if (!palettes) 
-        return;
     
-    // Process each palette bit
-    do {
-        // if (palettes & 1) {
-            ProcessSinglePalette(src, dst, blend0, blend1, weight0);
-        // } else {
-        //     // Skip this palette - copy 16 colors unchanged
-        //     for (i = 0; i < 16; i++) {
-        //         *dst++ = *src++;
-        //     }
-        // }
-        palettes >>= 1;
-    } while (palettes);
+    
+    // Convert to 0-255 range for math
+    u32 r = srcColor->r << 3;
+    u32 g = srcColor->g << 3;
+    u32 b = srcColor->b << 3;
+    
+    // Compute luminance (scaled integer math)
+    // Y = 0.2126R + 0.7152G + 0.0722B
+    u32 luminance = (54 * r + 183 * g + 19 * b) >> 8;  // weights sum to 256
+    
+    // Apply darkening
+    r = (r * darkFactor) >> 8;
+    g = (g * darkFactor) >> 8;
+    b = (b * darkFactor) >> 8;
+    
+    // Add blue shift proportional to luminance
+    b += (luminance * blueFactor) >> 8;
+    if (b > 255) b = 255;
+
+    return RGB2(r >> 3, g >> 3, b >> 3);
+}
+
+
+static void BlendFadedUnfadedPalette(u16 palOffset, u16 numEntries, u8 coeff, u32 blendColor, bool8 palFadeActive)
+{
+	u16 i;
+	u16 ignoreOffset = palOffset / 16;
+
+	for (i = 0; i < numEntries; ++i)
+	{
+		u16 index = i + palOffset;
+        
+        
+		struct PlttData* color1 = (struct PlttData*) &gPlttBufferUnfaded[index];
+		struct PlttData* color2 = (struct PlttData*) &blendColor;
+		s8 r = color1->r;
+		s8 g = color1->g;
+		s8 b = color1->b;
+        
+		// u16 newColor = FadeColourForDNS(color2, coeff, r, g, b);
+        u16 newColor = DarkenColor(color1);
+		// if (gIgnoredDNSPalIndices[ignoreOffset][i]) continue; //Don't fade this index.
+		if (gPlttBufferUnfaded[index] == RGB_BLACK) continue; //Don't fade black
+		gPlttBufferUnfaded[index] = newColor;
+
+		if (!palFadeActive)
+			gPlttBufferFaded[index] = newColor;
+	}
+}
+
+
+
+
+
+void TimeMixPalettes(u32 selectedPalettes, u16 *src, u16 *dst, struct BlendSettings *blend0, 
+                    struct BlendSettings *blend1, u16 weight0) 
+{
+
+    u32 i, paletteOffset;
+
+    // if (!selectedPalettes) 
+    //     return;
+
+    for (paletteOffset = 0; paletteOffset < 13 * 16; paletteOffset += 16) //Only background colours
+	{
+		if (selectedPalettes & 1)
+			BlendFadedUnfadedPalette(paletteOffset, 16, 1, RGB_BLUE, FALSE);
+
+		selectedPalettes >>= 1;
+	}
 }

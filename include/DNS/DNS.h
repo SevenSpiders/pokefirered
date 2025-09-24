@@ -31,6 +31,7 @@ extern u8 gTimeOfDay;
 
 void DNS_Update(void);
 void TimeMixPalettes(u32 palettes, u16 *src, u16 *dest, BlendSettings *bld0, BlendSettings *bld1, u16 weight);
+void UpdatePalettesWithTime(u32 palettes);
 
 
 #endif // GUARD_DNS_H

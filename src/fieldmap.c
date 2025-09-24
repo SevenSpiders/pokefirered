@@ -5,6 +5,7 @@
 #include "new_menu_helpers.h"
 #include "quest_log.h"
 #include "fieldmap.h"
+#include "DNS/DNS.h"
 
 struct ConnectionFlags
 {
@@ -925,11 +926,13 @@ void CopySecondaryTilesetToVramUsingHeap(const struct MapLayout *mapLayout)
 static void LoadPrimaryTilesetPalette(const struct MapLayout *mapLayout)
 {
     LoadTilesetPalette(mapLayout->primaryTileset, BG_PLTT_ID(0), NUM_PALS_IN_PRIMARY * PLTT_SIZE_4BPP);
+    UpdatePalettesWithTime(PALLETES_BG_PRIMARY | 1 << 16);
 }
 
 void LoadSecondaryTilesetPalette(const struct MapLayout *mapLayout)
 {
     LoadTilesetPalette(mapLayout->secondaryTileset, BG_PLTT_ID(NUM_PALS_IN_PRIMARY), (NUM_PALS_TOTAL - NUM_PALS_IN_PRIMARY) * PLTT_SIZE_4BPP);
+    UpdatePalettesWithTime(PALLETES_BG_SECONDARY| 1 << 16);
 }
 
 void CopyMapTilesetsToVram(struct MapLayout const *mapLayout)
@@ -947,5 +950,6 @@ void LoadMapTilesetPalettes(struct MapLayout const *mapLayout)
     {
         LoadPrimaryTilesetPalette(mapLayout);
         LoadSecondaryTilesetPalette(mapLayout);
+        // UpdatePalettesWithTime(PALETTES_ALL);
     }
 }

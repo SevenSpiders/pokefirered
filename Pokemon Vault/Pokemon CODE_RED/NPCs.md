@@ -12,11 +12,12 @@ is vehemently opposed to Silph Co creating new pokemon
 painful relationship with Prof Oak
 
 
-Trainers
+#### Trainers
 
 ➔ hiding in grass and jumping out
 trader who want generic type pokemon ➔ water, grass etc. or subtypes ➔ bug, dragon etc.
 
+➔ old trainers having limited sight ( just in front of them)
 
 Normal guy in psychic club / gym ( "Nobody suspects a thing" )
 
@@ -24,6 +25,9 @@ Bug Hunter in Silph Co using bug pokemon
 
 Kid wanting to scam trade you "Wow you have a {pokemon}. I have a Ratikarl we could trade"
 "I never wanted it anyway"
+
+super intellectual team rocket dude using very basic pokemon
+"Consider this: who really owns a pokemon. The trainer or the system that gave them a pokeball?"
 
 ### Funny Quotes
 
@@ -58,5 +62,7 @@ With great power comes a huge electric bill.
 It's not rocket surgery
 
 
+
+#### Objects
 
 Braile translation: DO NOT TOUCH

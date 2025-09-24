@@ -4,6 +4,7 @@
 #include "gflib.h"
 #include "constants/map_types.h"
 
+#define DNS_UPDATE_COUNTER 10000
 
 u8 gTimeOfDay;
 BlendState currentTimeBlend;
@@ -17,7 +18,7 @@ const BlendSettings gTimeOfDayBlend[] =
 
 
 static u8 UpdateTimeOfDay(void);
-static void UpdatePalettesWithTime(u32 palettes);
+void UpdatePalettesWithTime(u32 palettes);
 
 
 
@@ -30,18 +31,15 @@ void DNS_Update(void)
         u32 *bld0 = (u32*)&cachedBlend;
         u32 *bld1 = (u32*)&currentTimeBlend;
 
-        // if (!gPaletteFade.active)
-        //     return; 
-
         DebugPrintf("UPDATE ");
-        gTimeUpdateCounter = 10;
+        gTimeUpdateCounter = DNS_UPDATE_COUNTER;
         UpdateTimeOfDay();
-        // if (bld0[0] != bld1[0]
-        //     || bld0[1] != bld1[1]
-        //     || bld0[2] != bld1[2]
-        // ) {
+        if (bld0[0] != bld1[0]
+            || bld0[1] != bld1[1]
+            || bld0[2] != bld1[2]
+        ) {
            UpdatePalettesWithTime(PALETTES_ALL);
-        // }
+        }
     }
     else
     {
@@ -50,16 +48,18 @@ void DNS_Update(void)
 }
 
 
-static void UpdatePalettesWithTime(u32 palettes) {
+void UpdatePalettesWithTime(u32 palettes) {
     if (MapHasNaturalLight(gMapHeader.mapType)) {
         u32 i;
         u32 mask = 1 << 16;
-        DebugPrintf("Update Palettes with time");
-        if (palettes >= (1 << 16))
+
+        DebugPrintf("Update Palettes with time %d", palettes);
+
         for (i = 0; i < 16; i++, mask <<= 1)
+        {
             if (IS_BLEND_IMMUNE_TAG(GetSpritePaletteTagByPaletteNum(i)))
                 palettes &= ~(mask);
-
+        }
         palettes &= PALETTES_MAP | PALETTES_OBJECTS; // Don't blend UI pals
         if (!palettes)
             return;

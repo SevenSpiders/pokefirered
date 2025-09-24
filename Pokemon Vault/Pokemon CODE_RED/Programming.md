@@ -19,6 +19,12 @@ https://github.com/aarant/pokeemerald/commits/just-lighting?after=692947b60eb463
 
 -> revert before- 493210d66ff41bcd934c639c7d188c520d094094
 
+CopyPrimaryTilesetToVram
+LoadTilesetPalette
+ShowMapNamePopup
+LoadMapTilesetPalettes
+InitMapView
+CopySecondaryTilesetToVramUsingHeap
 
 things to get
 
