@@ -6,7 +6,7 @@ make -j16
 start pokefirered.gba
 
 
-Lighting
+#### Lighting
 [GitHub - aarant/pokeemerald at just-lighting](https://github.com/aarant/pokeemerald/tree/just-lighting)
 [Comparing pret:master...aarant:just-lighting · pret/pokeemerald · GitHub](https://github.com/pret/pokeemerald/compare/master...aarant:pokeemerald:just-lighting?diff=split&w)
 -> UpdateAltBgPalettes
@@ -31,6 +31,16 @@ things to get
 - TimeMixPalettes
 - UpdateSpritePaletteWithTime -> UpdateSpritePaletteWithWeather
 - PulseBlend
+
+
+#### Persistent Party
+
+PlayerHandleSwitchInAnim
+
+current order
+- 0: 16 Pidgey
+- 1: 52 Meowth
+- 2: 59 Growlith
 
 
 [Adding Time Based Encounters · pret/pokeemerald Wiki · GitHub](https://github.com/pret/pokeemerald/wiki/Adding-Time-Based-Encounters#without-a-variable)

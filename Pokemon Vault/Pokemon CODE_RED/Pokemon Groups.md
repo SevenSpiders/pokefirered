@@ -13,6 +13,7 @@ Replace Fighting, Bug, Dragon, Fairy, Ghost
 - Fighter
 - Ghost
 - Fairy
+- Beast
 
 8bit ➔ escaped digital pokemon
 Jelly ➔ Ditto, Grimmer, Muk, Tentacool, 

@@ -2070,8 +2070,9 @@ static void PlayerHandleLoadMonSprite(void)
 
 static void PlayerHandleSwitchInAnim(void)
 {
+    DebugPrintf("Handle switch in animation of batttler %d", gBattleMons[gActiveBattler].partyIndex);
     ClearTemporarySpeciesSpriteData(gActiveBattler, gBattleBufferA[gActiveBattler][2]);
-    gBattlerPartyIndexes[gActiveBattler] = gBattleBufferA[gActiveBattler][1];
+    // gBattlerPartyIndexes[gActiveBattler] = gBattleBufferA[gActiveBattler][1];
     // BattleLoadPlayerMonSpriteGfx(&gPlayerParty[gBattlerPartyIndexes[gActiveBattler]], gActiveBattler);
     BattleLoadPlayerMonSpriteGfx(&gPlayerParty[gBattleMons[gActiveBattler].partyIndex], gActiveBattler);
     gActionSelectionCursor[gActiveBattler] = 0;

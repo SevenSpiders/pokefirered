@@ -6041,7 +6041,7 @@ static bool8 TrySwitchInPokemon(void)
     newSlot = GetPartyIdFromBattlePartyId(gBattlerPartyIndexes[gBattlerInMenuId]);
     // SwitchPartyMonSlots(newSlot, slot);
     // SwapPartyPokemon(&gPlayerParty[newSlot], &gPlayerParty[slot]);
-    gChosenPartyMon = slot;
+    gChosenPartySlot = slot;
     DebugPrintf("new slot %d %d %d", slot, 0,0);
     return TRUE;
 }
@@ -6076,15 +6076,16 @@ static void BufferBattlePartyOrder(u8 *partyBattleOrder, u8 flankId)
     }
     else if (IsDoubleBattle() == FALSE)
     {
-        j = 1;
-        partyIds[0] = gBattlerPartyIndexes[GetBattlerAtPosition(B_POSITION_PLAYER_LEFT)];
+        // j = 1;
+        // partyIds[0] = gBattlerPartyIndexes[GetBattlerAtPosition(B_POSITION_PLAYER_LEFT)];
         for (i = 0; i < PARTY_SIZE; ++i)
         {
-            if (i != partyIds[0])
-            {
-                partyIds[j] = i;
-                ++j;
-            }
+            // if (i != partyIds[0])
+            // {
+            //     partyIds[j] = i;
+            //     ++j;
+            // }
+            partyIds[i] = gBattleMons[i*2].partyIndex;
         }
     }
     else

@@ -83,6 +83,8 @@ void BattleMons_Switch(u32 indexA, u32 indexB)
 {
     BattlePokemon temp = gBattleMons[indexA];
     DebugPrintf("switch mons %d -> %d", indexA, indexB);
+    DebugPrintf("species A %d -> B %d", gBattleMons[indexA].species, gBattleMons[indexB].species);
+    DebugPrintf("party index %d -> %d", gBattleMons[indexA].partyIndex, gBattleMons[indexB].partyIndex);
     gBattleMons[indexA] = gBattleMons[indexB];
     gBattleMons[indexB] = temp;
 }

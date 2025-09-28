@@ -4478,8 +4478,16 @@ static void Cmd_returnatktoball(void)
 static void Cmd_switchMons(void)
 {
     u8 indexA, indexB;
-    indexA = gBattlerAttacker;
-    indexB = gChosenPartyMon;
+    if (TRUE) // player party
+    {
+        indexA = 0;
+        indexB = gChosenPartySlot*2;
+    }
+    else 
+    {
+        indexA = gBattlerAttacker;
+        indexB = gChosenPartySlot*2 + 1;
+    }
     BattleMons_Switch(indexA, indexB);
     gBattlescriptCurrInstr++;
 }
@@ -4558,8 +4566,9 @@ static void Cmd_switchinanim(void)
                                  | BATTLE_TYPE_POKEDUDE
                                  | BATTLE_TYPE_EREADER_TRAINER
                                  | BATTLE_TYPE_GHOST)))
+    {
         HandleSetPokedexFlag(SpeciesToNationalPokedexNum(gBattleMons[gActiveBattler].species), FLAG_SET_SEEN, gBattleMons[gActiveBattler].personality);
-
+    }
     gAbsentBattlerFlags &= ~(gBitTable[gActiveBattler]);
 
     // BtlController_EmitSwitchInAnim(BUFFER_A, gBattlerPartyIndexes[gActiveBattler], gBattlescriptCurrInstr[2]);
