@@ -6053,7 +6053,7 @@ void BufferBattlePartyCurrentOrder(void)
 
 static void BufferBattlePartyOrder(u8 *partyBattleOrder, u8 flankId)
 {
-    u8 partyIds[PARTY_SIZE];
+    u8 partyIndexes[PARTY_SIZE];
     s32 i, j;
 
     if (IsMultiBattle() == TRUE)
@@ -6077,33 +6077,34 @@ static void BufferBattlePartyOrder(u8 *partyBattleOrder, u8 flankId)
     else if (IsDoubleBattle() == FALSE)
     {
         // j = 1;
-        // partyIds[0] = gBattlerPartyIndexes[GetBattlerAtPosition(B_POSITION_PLAYER_LEFT)];
+        // partyIndexes[0] = gBattlerPartyIndexes[GetBattlerAtPosition(B_POSITION_PLAYER_LEFT)];
         for (i = 0; i < PARTY_SIZE; ++i)
         {
-            // if (i != partyIds[0])
+            // if (i != partyIndexes[0])
             // {
-            //     partyIds[j] = i;
+            //     partyIndexes[j] = i;
             //     ++j;
             // }
-            partyIds[i] = gBattleMons[i*2].partyIndex;
+            partyIndexes[i] = gBattleMons[i*2].partyIndex;
         }
     }
-    else
+    else // double battle
     {
         j = 2;
-        partyIds[0] = gBattlerPartyIndexes[GetBattlerAtPosition(B_POSITION_PLAYER_LEFT)];
-        partyIds[1] = gBattlerPartyIndexes[GetBattlerAtPosition(B_POSITION_PLAYER_RIGHT)];
+        partyIndexes[0] = gBattlerPartyIndexes[GetBattlerAtPosition(B_POSITION_PLAYER_LEFT)];
+        partyIndexes[1] = gBattlerPartyIndexes[GetBattlerAtPosition(B_POSITION_PLAYER_RIGHT)];
         for (i = 0; i < PARTY_SIZE; ++i)
         {
-            if (i != partyIds[0] && i != partyIds[1])
+            if (i != partyIndexes[0] && i != partyIndexes[1])
             {
-                partyIds[j] = i;
+                partyIndexes[j] = i;
                 ++j;
             }
         }
     }
+    // compactification of battle order -> each byte contains position i and i+1 ( 4 bits each )
     for (i = 0; i < (s32)NELEMS(gBattlePartyCurrentOrder); ++i)
-        partyBattleOrder[i] = (partyIds[0 + (i * 2)] << 4) | partyIds[1 + (i * 2)];
+        partyBattleOrder[i] = (partyIndexes[0 + (i * 2)] << 4) | partyIndexes[1 + (i * 2)];
 }
 
 void BufferBattlePartyCurrentOrderBySide(u8 battlerId, u8 flankId)
@@ -6147,15 +6148,19 @@ static void BufferBattlePartyOrderBySide(u8 *partyBattleOrder, u8 flankId, u8 ba
     }
     else if (IsDoubleBattle() == FALSE)
     {
-        j = 1;
-        partyIndexes[0] = gBattlerPartyIndexes[leftBattler];
+        // j = 1;
+        // partyIndexes[0] = gBattlerPartyIndexes[leftBattler];
+        // for (i = 0; i < PARTY_SIZE; ++i)
+        // {
+        //     if (i != partyIndexes[0])
+        //     {
+        //         partyIndexes[j] = i;
+        //         ++j;
+        //     }
+        // }
         for (i = 0; i < PARTY_SIZE; ++i)
         {
-            if (i != partyIndexes[0])
-            {
-                partyIndexes[j] = i;
-                ++j;
-            }
+            partyIndexes[i] = gBattleMons[i*2].partyIndex;
         }
     }
     else
@@ -6178,7 +6183,7 @@ static void BufferBattlePartyOrderBySide(u8 *partyBattleOrder, u8 flankId, u8 ba
 
 void SwitchPartyOrderLinkMulti(u8 battlerId, u8 slot, u8 slot2)
 {
-    u8 partyIds[PARTY_SIZE];
+    u8 partyIndexes[PARTY_SIZE];
     u8 tempSlot = 0;
     s32 i, j;
     u8 *partyBattleOrder;
@@ -6189,26 +6194,26 @@ void SwitchPartyOrderLinkMulti(u8 battlerId, u8 slot, u8 slot2)
         partyBattleOrder = gBattleStruct->battlerPartyOrders[battlerId];
         for (i = j = 0; i < 3; ++j, ++i)
         {
-            partyIds[j] = partyBattleOrder[i] >> 4;
+            partyIndexes[j] = partyBattleOrder[i] >> 4;
             ++j;
-            partyIds[j] = partyBattleOrder[i] & 0xF;
+            partyIndexes[j] = partyBattleOrder[i] & 0xF;
         }
-        partyIdBuffer = partyIds[slot2];
+        partyIdBuffer = partyIndexes[slot2];
         for (i = 0; i < PARTY_SIZE; ++i)
         {
-            if (partyIds[i] == slot)
+            if (partyIndexes[i] == slot)
             {
-                tempSlot = partyIds[i];
-                partyIds[i] = partyIdBuffer;
+                tempSlot = partyIndexes[i];
+                partyIndexes[i] = partyIdBuffer;
                 break;
             }
         }
         if (i != PARTY_SIZE)
         {
-            partyIds[slot2] = tempSlot;
-            partyBattleOrder[0] = (partyIds[0] << 4) | partyIds[1];
-            partyBattleOrder[1] = (partyIds[2] << 4) | partyIds[3];
-            partyBattleOrder[2] = (partyIds[4] << 4) | partyIds[5];
+            partyIndexes[slot2] = tempSlot;
+            partyBattleOrder[0] = (partyIndexes[0] << 4) | partyIndexes[1];
+            partyBattleOrder[1] = (partyIndexes[2] << 4) | partyIndexes[3];
+            partyBattleOrder[2] = (partyIndexes[4] << 4) | partyIndexes[5];
         }
     }
 }
