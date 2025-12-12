@@ -4524,7 +4524,7 @@ void BattleMons_Init()
 {
     u32 i;
 
-    for(i=0; i< PARTY_SIZE; i++) // PARTY_SIZE
+    for(i=0; i< PARTY_SIZE; i++)
     {
         gBattleMons[i*2] = CreateBattleMon(&gPlayerParty[i]);
         gBattleMons[i*2+1] = CreateBattleMon(&gEnemyParty[i]);
@@ -4535,7 +4535,7 @@ void BattleMons_Init()
 void BattleMons_Switch(u8 indexA, u8 indexB)
 {
     BattlePokemon temp = gBattleMons[indexA];
-    // DebugPrintf("switch mons %d -> %d", indexA, indexB);
+    DebugPrintf("switch mons %d -> %d", indexA, indexB);
     // DebugPrintf("species A %d -> B %d", gBattleMons[indexA].species, gBattleMons[indexB].species);
     // DebugPrintf("party index %d -> %d", gBattleMons[indexA].partyIndex, gBattleMons[indexB].partyIndex);
     gBattleMons[indexA] = gBattleMons[indexB];

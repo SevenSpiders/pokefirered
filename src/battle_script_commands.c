@@ -4474,33 +4474,34 @@ static void Cmd_switchindataupdate(void)
         return;
 
     gActiveBattler = GetBattlerForBattleScript(gBattlescriptCurrInstr[1]);
-    oldData = gBattleMons[gActiveBattler];
-    monData = (u8 *)(&gBattleMons[gActiveBattler]);
+    // oldData = gBattleMons[gActiveBattler];
+    // monData = (u8 *)(&gBattleMons[gActiveBattler]);
 
-    for (i = 0; i < sizeof(struct BattlePokemon); i++)
-        monData[i] = gBattleBufferB[gActiveBattler][4 + i];
+    // for (i = 0; i < sizeof(struct BattlePokemon); i++)
+    //     monData[i] = gBattleBufferB[gActiveBattler][4 + i];
 
-    gBattleMons[gActiveBattler].type1 = gSpeciesInfo[gBattleMons[gActiveBattler].species].types[0];
-    gBattleMons[gActiveBattler].type2 = gSpeciesInfo[gBattleMons[gActiveBattler].species].types[1];
-    gBattleMons[gActiveBattler].ability = GetAbilityBySpecies(gBattleMons[gActiveBattler].species, gBattleMons[gActiveBattler].abilityNum);
+    // gBattleMons[gActiveBattler].type1 = gSpeciesInfo[gBattleMons[gActiveBattler].species].types[0];
+    // gBattleMons[gActiveBattler].type2 = gSpeciesInfo[gBattleMons[gActiveBattler].species].types[1];
+    // gBattleMons[gActiveBattler].ability = GetAbilityBySpecies(gBattleMons[gActiveBattler].species, gBattleMons[gActiveBattler].abilityNum);
 
-    // check knocked off item
-    i = GetBattlerSide(gActiveBattler);
-    if (gWishFutureKnock.knockedOffMons[i] & gBitTable[gBattlerPartyIndexes[gActiveBattler]])
-    {
-        gBattleMons[gActiveBattler].item = ITEM_NONE;
-    }
+    // // check knocked off item
+    // i = GetBattlerSide(gActiveBattler);
+    // if (gWishFutureKnock.knockedOffMons[i] & gBitTable[gBattlerPartyIndexes[gActiveBattler]])
+    // {
+    //     gBattleMons[gActiveBattler].item = ITEM_NONE;
+    // }
 
-    if (gBattleMoves[gCurrentMove].effect == EFFECT_BATON_PASS)
-    {
-        for (i = 0; i < NUM_BATTLE_STATS; i++)
-        {
-            gBattleMons[gActiveBattler].statStages[i] = oldData.statStages[i];
-        }
-        gBattleMons[gActiveBattler].status2 = oldData.status2;
-    }
+    // if (gBattleMoves[gCurrentMove].effect == EFFECT_BATON_PASS)
+    // {
+    //     for (i = 0; i < NUM_BATTLE_STATS; i++)
+    //     {
+    //         gBattleMons[gActiveBattler].statStages[i] = oldData.statStages[i];
+    //     }
+    //     gBattleMons[gActiveBattler].status2 = oldData.status2;
+    // }
 
-    SwitchInClearSetData();
+    // SwitchInClearSetData();
+    BattleMons_Switch(gActiveBattler, gSelectedMonPartyId*2);
 
     gBattleScripting.battler = gActiveBattler;
 
