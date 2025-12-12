@@ -203,6 +203,7 @@ typedef struct BattlePokemon
     /*0x4C*/ u32 status1;
     /*0x50*/ u32 status2;
     /*0x54*/ u32 otId;
+    u8 partyIndex;
 } BattlePokemon;
 
 struct SpeciesInfo

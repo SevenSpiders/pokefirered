@@ -4469,6 +4469,7 @@ static void Cmd_switchindataupdate(void)
     struct BattlePokemon oldData;
     s32 i;
     u8 *monData;
+    u8 r1, r4;
 
     if (gBattleControllerExecFlags)
         return;
@@ -4501,7 +4502,14 @@ static void Cmd_switchindataupdate(void)
     // }
 
     // SwitchInClearSetData();
-    BattleMons_Switch(gActiveBattler, gSelectedMonPartyId*2);
+    // i = gSelectedMonPartyId*2; // does not work because party slot and battle slot change over time
+    // i = gBattlePartyCurrentOrder[i];
+    i = GetPartyIdFromBattlePartyId(*(gBattleStruct->monToSwitchIntoId + gActiveBattler))*2;
+    if (gActiveBattler%2 != 0) //opponent
+    {
+        i += 1;
+    }
+    BattleMons_Switch(gActiveBattler, i);
 
     gBattleScripting.battler = gActiveBattler;
 

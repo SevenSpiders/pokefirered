@@ -4463,7 +4463,7 @@ static void HandleAction_ActionFinished(void)
     gBattleResources->battleScriptsStack->size = 0;
 }
 
-static BattlePokemon CreateBattleMon(Pokemon *mon)
+static BattlePokemon CreateBattleMon(Pokemon *mon, u8 partyIndex)
 {
     u32 i;
     u8 nickname[20];
@@ -4515,6 +4515,7 @@ static BattlePokemon CreateBattleMon(Pokemon *mon)
     for (i = 0; i < NUM_BATTLE_STATS; i++)
         battleMon.statStages[i] = DEFAULT_STAT_STAGE;
     battleMon.status2 = 0;
+    battleMon.partyIndex = partyIndex;
 
     DebugPrintf("Init battlemon: mon%d, type=%d, ability=%d move0=%d", species, battleMon.type1, battleMon.ability, battleMon.moves[0]);
     return battleMon;
@@ -4526,8 +4527,8 @@ void BattleMons_Init()
 
     for(i=0; i< PARTY_SIZE; i++)
     {
-        gBattleMons[i*2] = CreateBattleMon(&gPlayerParty[i]);
-        gBattleMons[i*2+1] = CreateBattleMon(&gEnemyParty[i]);
+        gBattleMons[i*2] = CreateBattleMon(&gPlayerParty[i], i);
+        gBattleMons[i*2+1] = CreateBattleMon(&gEnemyParty[i], i);
     }
     
 }
