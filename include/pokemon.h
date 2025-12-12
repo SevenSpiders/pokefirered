@@ -102,7 +102,7 @@ union PokemonSubstruct
     u16 raw[NUM_SUBSTRUCT_BYTES / 2]; // /2 because it's u16, not u8
 };
 
-struct BoxPokemon
+typedef struct BoxPokemon
 {
     u32 personality;
     u32 otId;
@@ -123,9 +123,9 @@ struct BoxPokemon
         u32 raw[(NUM_SUBSTRUCT_BYTES * 4) / 4]; // *4 because there are 4 substructs, /4 because it's u32, not u8
         union PokemonSubstruct substructs[4];
     } secure;
-};
+} BoxPokemon;
 
-struct Pokemon
+typedef struct Pokemon
 {
     struct BoxPokemon box;
     u32 status;
@@ -138,7 +138,7 @@ struct Pokemon
     u16 speed;
     u16 spAttack;
     u16 spDefense;
-};
+} Pokemon;
 
 struct BattleTowerPokemon
 {
@@ -167,7 +167,7 @@ struct BattleTowerPokemon
     /*0x2B*/ u8 friendship;
 };
 
-struct BattlePokemon
+typedef struct BattlePokemon
 {
     /*0x00*/ u16 species;
     /*0x02*/ u16 attack;
@@ -203,7 +203,7 @@ struct BattlePokemon
     /*0x4C*/ u32 status1;
     /*0x50*/ u32 status2;
     /*0x54*/ u32 otId;
-};
+} BattlePokemon;
 
 struct SpeciesInfo
 {

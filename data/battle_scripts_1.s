@@ -3064,9 +3064,9 @@ BattleScript_DoSwitchOut::
 	waitstate
 	returnatktoball
 	waitstate
-	drawpartystatussummary BS_ATTACKER ; store party hp and statuses in BufferA
-	switchhandleorder BS_ATTACKER, SWITCH_TYPE_NORMAL ; 1 = normal switch
-	getswitchedmondata BS_ATTACKER ; store all mon data of new mon in BufferB
+	drawpartystatussummary BS_ATTACKER @ store party hp and statuses in BufferA
+	switchhandleorder BS_ATTACKER, SWITCH_TYPE_NORMAL
+	getswitchedmondata BS_ATTACKER @ store all mon data of new mon in BufferB
 	switchindataupdate BS_ATTACKER
 	hpthresholds BS_ATTACKER
 	printstring STRINGID_SWITCHINMON
