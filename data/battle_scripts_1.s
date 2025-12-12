@@ -1697,7 +1697,7 @@ BattleScript_EffectBatonPass::
 	openpartyscreen BS_ATTACKER, BattleScript_ButItFailed
 	switchoutabilities BS_ATTACKER
 	waitstate
-	switchhandleorder BS_ATTACKER, 2
+	switchhandleorder BS_ATTACKER, SWITCH_TYPE_AFTER_FAINT
 	returntoball BS_ATTACKER
 	getswitchedmondata BS_ATTACKER
 	switchindataupdate BS_ATTACKER
@@ -2834,7 +2834,7 @@ BattleScript_HandleFaintedMon::
 	printstring STRINGID_CANTESCAPE2
 BattleScript_FaintedMonTryChoose::
 	openpartyscreen BS_FAINTED, BattleScript_FaintedMonEnd
-	switchhandleorder BS_FAINTED, 2
+	switchhandleorder BS_FAINTED, SWITCH_TYPE_AFTER_FAINT
 	jumpifnotbattletype BATTLE_TYPE_TRAINER, BattleScript_FaintedMonSendOutNew
 	jumpifbattletype BATTLE_TYPE_LINK, BattleScript_FaintedMonSendOutNew
 	jumpifbattletype BATTLE_TYPE_BATTLE_TOWER, BattleScript_FaintedMonSendOutNew
@@ -2850,7 +2850,7 @@ BattleScript_FaintedMonTryChoose::
 @ Player said yes, go to party screen (note optional flag, player may exit the menu instead)
 	setatktoplayer0
 	openpartyscreen BS_ATTACKER | PARTY_SCREEN_OPTIONAL, BattleScript_FaintedMonSendOutNew
-	switchhandleorder BS_ATTACKER, 2
+	switchhandleorder BS_ATTACKER, SWITCH_TYPE_AFTER_FAINT
 	jumpifbyte CMP_EQUAL, gBattleCommunication, PARTY_SIZE, BattleScript_FaintedMonSendOutNew
 @ Switch Pokémon before opponent
 	atknameinbuff1
@@ -2890,11 +2890,11 @@ BattleScript_FaintedMonEnd::
 BattleScript_LinkHandleFaintedMonMultiple::
 	openpartyscreen BS_FAINTED_LINK_MULTIPLE_1, BattleScript_LinkHandleFaintedMonMultipleStart
 BattleScript_LinkHandleFaintedMonMultipleStart::
-	switchhandleorder BS_FAINTED, 0
+	switchhandleorder BS_FAINTED, SWITCH_TYPE_LINK
 	openpartyscreen BS_FAINTED_LINK_MULTIPLE_2, BattleScript_LinkHandleFaintedMonMultipleEnd
-	switchhandleorder BS_FAINTED, 0
+	switchhandleorder BS_FAINTED, SWITCH_TYPE_LINK
 BattleScript_LinkHandleFaintedMonLoop::
-	switchhandleorder BS_FAINTED, 2
+	switchhandleorder BS_FAINTED, SWITCH_TYPE_AFTER_FAINT
 	drawpartystatussummary BS_FAINTED
 	getswitchedmondata BS_FAINTED
 	switchindataupdate BS_FAINTED
@@ -3064,9 +3064,9 @@ BattleScript_DoSwitchOut::
 	waitstate
 	returnatktoball
 	waitstate
-	drawpartystatussummary BS_ATTACKER
-	switchhandleorder BS_ATTACKER, 1
-	getswitchedmondata BS_ATTACKER
+	drawpartystatussummary BS_ATTACKER ; store party hp and statuses in BufferA
+	switchhandleorder BS_ATTACKER, SWITCH_TYPE_NORMAL ; 1 = normal switch
+	getswitchedmondata BS_ATTACKER ; store all mon data of new mon in BufferB
 	switchindataupdate BS_ATTACKER
 	hpthresholds BS_ATTACKER
 	printstring STRINGID_SWITCHINMON

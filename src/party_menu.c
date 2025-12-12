@@ -1206,7 +1206,7 @@ static void HandleChooseMonSelection(u8 taskId, s8 *slotPtr)
             if (IsSelectedMonNotEgg((u8 *)slotPtr))
                 TryEnterMonForMinigame(taskId, (u8)*slotPtr);
             break;
-        default:
+        default: // PARTY_ACTION_CHOOSE_MON
         case PARTY_ACTION_ABILITY_PREVENTS:
         case PARTY_ACTION_SWITCHING:
             PlaySE(SE_SELECT);
@@ -3084,7 +3084,7 @@ static void Task_HandleSelectionMenuInput(u8 taskId)
             PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[2]);
             sCursorOptions[sPartyMenuInternal->actions[sPartyMenuInternal->numActions - 1]].func(taskId);
             break;
-        default:
+        default: // input = sMenu.cursorPos
             PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[2]);
             sCursorOptions[sPartyMenuInternal->actions[input]].func(taskId);
             break;
@@ -5829,7 +5829,7 @@ static u8 GetPartyLayoutFromBattleType(void)
     return PARTY_LAYOUT_DOUBLE;
 }
 
-void OpenPartyMenuInTutorialBattle(u8 partyAction)
+void OpenPartyMenuInBattle(u8 partyAction)
 {
     if (!BtlCtrl_OakOldMan_TestState2Flag(FIRST_BATTLE_MSG_FLAG_PARTY_MENU) && (gBattleTypeFlags & BATTLE_TYPE_FIRST_BATTLE))
     {

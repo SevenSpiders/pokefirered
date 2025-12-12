@@ -96,7 +96,10 @@
 #define DMG_DOUBLED                2
 
 // Cmd_jumpifcantswitch
-#define SWITCH_IGNORE_ESCAPE_PREVENTION   (1 << 7)
+#define SWITCH_TYPE_LINK 0 // switchhandleorder
+#define SWITCH_TYPE_NORMAL 1 // switchhandleorder
+#define SWITCH_TYPE_AFTER_FAINT 2 // switchhandleorder
+#define SWITCH_IGNORE_ESCAPE_PREVENTION   (1 << 7) // Cmd_jumpifcantswitch
 
 // Cmd_statbuffchange
 #define STAT_CHANGE_ALLOW_PTR               (1 << 0)   // If set, allow use of jumpptr. Set in every use of statbuffchange

@@ -1292,13 +1292,13 @@ static void OpenPartyMenuToChooseMon(void)
 {
     if (!gPaletteFade.active)
     {
-        u8 caseId;
+        u8 partyAction;
 
         gBattlerControllerFuncs[gActiveBattler] = WaitForMonSelection;
-        caseId = gTasks[gBattleControllerData[gActiveBattler]].data[0];
+        partyAction = gTasks[gBattleControllerData[gActiveBattler]].data[0];
         DestroyTask(gBattleControllerData[gActiveBattler]);
         FreeAllWindowBuffers();
-        OpenPartyMenuInTutorialBattle(caseId);
+        OpenPartyMenuInBattle(partyAction);
     }
 }
 
