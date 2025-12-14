@@ -3048,13 +3048,20 @@ u8 IsRunningFromBattleImpossible(void)
 void UpdatePartyOwnerOnSwitch_NonMulti(u8 battler)
 {
     s32 i;
-    u8 r4, r1;
+    u8 partyId_old, partyId_new;
 
     for (i = 0; i < 3; i++)
         gBattlePartyCurrentOrder[i] = *(battler * 3 + i + (u8 *)(gBattleStruct->battlerPartyOrders));
-    r4 = GetPartyIdFromBattlePartyId(gBattlerPartyIndexes[battler]);
-    r1 = GetPartyIdFromBattlePartyId(*(gBattleStruct->monToSwitchIntoId + battler));
-    SwitchPartyMonSlots(r4, r1);
+    partyId_old = GetPartyIdFromBattlePartyId(gBattlerPartyIndexes[battler]);
+    partyId_new = GetPartyIdFromBattlePartyId(*(gBattleStruct->monToSwitchIntoId + battler));
+    SwitchPartyMonSlots(partyId_old, partyId_new);
+
+    // gBattleMons even indices are player side, odd are opponent side
+    DebugPrintf("UBS: Battler %d switched %d (party %d) with %d (party %d)\n", battler, gBattlerPartyIndexes[battler], partyId_old, *(gBattleStruct->monToSwitchIntoId + battler), partyId_new);
+    partyId_new *= 2;
+    if (GetBattlerSide(battler) == B_SIDE_OPPONENT)
+        partyId_new++; // make odd for opponent side
+    BattleMons_Switch(battler, partyId_new);
     if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE)
     {
         for (i = 0; i < 3; i++)
@@ -4462,6 +4469,25 @@ static void HandleAction_ActionFinished(void)
     gBattleScripting.multihitMoveEffect = 0;
     gBattleResources->battleScriptsStack->size = 0;
 }
+
+// static void SetPartyIdAtBattleSlot(u8 slot, u8 setVal)
+// {
+//     bool32 modResult = slot & 1;
+
+//     slot /= 2;
+//     if (modResult != 0)
+//         gBattlePartyCurrentOrder[slot] = (gBattlePartyCurrentOrder[slot] & 0xF0) | setVal;
+//     else
+//         gBattlePartyCurrentOrder[slot] = (gBattlePartyCurrentOrder[slot] & 0xF) | (setVal << 4);
+// }
+
+// void SwitchPartyMonSlots(u8 slot, u8 slot2)
+// {
+//     u8 partyId = GetPartyIdFromBattleSlot(slot);
+
+//     SetPartyIdAtBattleSlot(slot, GetPartyIdFromBattleSlot(slot2));
+//     SetPartyIdAtBattleSlot(slot2, partyId);
+// }
 
 static BattlePokemon CreateBattleMon(Pokemon *mon, u8 partyIndex)
 {

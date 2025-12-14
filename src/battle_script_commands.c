@@ -2832,7 +2832,7 @@ static void Cmd_tryfaintmon(void)
 {
     const u8 *BS_ptr;
 
-    if (gBattlescriptCurrInstr[2] != 0)
+    if (gBattlescriptCurrInstr[2] != 0) // tryfaintmon_spikes
     {
         gActiveBattler = GetBattlerForBattleScript(gBattlescriptCurrInstr[1]);
         if (gHitMarker & HITMARKER_FAINTED(gActiveBattler))
@@ -4464,6 +4464,19 @@ static void Cmd_getswitchedmondata(void)
     gBattlescriptCurrInstr += 2;
 }
 
+// static u8 GetPartyIdFromBattleSlot2(u8 slot)
+// {
+//     u8 modResult = slot & 1;
+//     u8 retVal;
+
+//     slot /= 2;
+//     if (modResult != 0)
+//         retVal = gBattlePartyCurrentOrder[slot] & 0xF;
+//     else
+//         retVal = gBattlePartyCurrentOrder[slot] >> 4;
+//     return retVal;
+// }
+
 static void Cmd_switchindataupdate(void)
 {
     struct BattlePokemon oldData;
@@ -4503,13 +4516,24 @@ static void Cmd_switchindataupdate(void)
 
     // SwitchInClearSetData();
     // i = gSelectedMonPartyId*2; // does not work because party slot and battle slot change over time
-    // i = gBattlePartyCurrentOrder[i];
-    i = GetPartyIdFromBattlePartyId(*(gBattleStruct->monToSwitchIntoId + gActiveBattler))*2;
-    if (gActiveBattler%2 != 0) //opponent
-    {
-        i += 1;
-    }
-    BattleMons_Switch(gActiveBattler, i);
+    // DebugPrintf("gBattlePartyCurrentOrder: %d, bttlstruct: %d", gBattlePartyCurrentOrder[gActiveBattler])
+    // i = GetPartyIdFromBattlePartyId(*(gBattleStruct->monToSwitchIntoId + gActiveBattler));
+    // for(i=0; i<PARTY_SIZE; i++)
+    // {
+    //     r1 = GetPartyIdFromBattleSlot2(i);
+    //     DebugPrintf("slot %d -> partyId %d",i, r1);
+    // }
+
+    // i = GetPartyIdFromBattleSlot2(gActiveBattler);
+    // // i = GetPartyIdFromBattlePartyId(gActiveBattler);
+    // if (gActiveBattler%2 != 0) //opponent
+    // {
+    //     i*= 2;
+    //     i += 1;
+    // }
+    // else i*= 2;
+    // DebugPrintf("Cmd_switchindataupdate2 gActiveBattler: %d,  monToSwitchIntoId: %d, i: %d", gActiveBattler, *(gBattleStruct->monToSwitchIntoId + gActiveBattler), i);
+    // BattleMons_Switch(gActiveBattler, i); // UpdatePartyOwnerOnSwitch_NonMulti
 
     gBattleScripting.battler = gActiveBattler;
 
