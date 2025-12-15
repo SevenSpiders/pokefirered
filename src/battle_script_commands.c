@@ -4464,19 +4464,6 @@ static void Cmd_getswitchedmondata(void)
     gBattlescriptCurrInstr += 2;
 }
 
-// static u8 GetPartyIdFromBattleSlot2(u8 slot)
-// {
-//     u8 modResult = slot & 1;
-//     u8 retVal;
-
-//     slot /= 2;
-//     if (modResult != 0)
-//         retVal = gBattlePartyCurrentOrder[slot] & 0xF;
-//     else
-//         retVal = gBattlePartyCurrentOrder[slot] >> 4;
-//     return retVal;
-// }
-
 static void Cmd_switchindataupdate(void)
 {
     struct BattlePokemon oldData;
@@ -4488,53 +4475,6 @@ static void Cmd_switchindataupdate(void)
         return;
 
     gActiveBattler = GetBattlerForBattleScript(gBattlescriptCurrInstr[1]);
-    // oldData = gBattleMons[gActiveBattler];
-    // monData = (u8 *)(&gBattleMons[gActiveBattler]);
-
-    // for (i = 0; i < sizeof(struct BattlePokemon); i++)
-    //     monData[i] = gBattleBufferB[gActiveBattler][4 + i];
-
-    // gBattleMons[gActiveBattler].type1 = gSpeciesInfo[gBattleMons[gActiveBattler].species].types[0];
-    // gBattleMons[gActiveBattler].type2 = gSpeciesInfo[gBattleMons[gActiveBattler].species].types[1];
-    // gBattleMons[gActiveBattler].ability = GetAbilityBySpecies(gBattleMons[gActiveBattler].species, gBattleMons[gActiveBattler].abilityNum);
-
-    // // check knocked off item
-    // i = GetBattlerSide(gActiveBattler);
-    // if (gWishFutureKnock.knockedOffMons[i] & gBitTable[gBattlerPartyIndexes[gActiveBattler]])
-    // {
-    //     gBattleMons[gActiveBattler].item = ITEM_NONE;
-    // }
-
-    // if (gBattleMoves[gCurrentMove].effect == EFFECT_BATON_PASS)
-    // {
-    //     for (i = 0; i < NUM_BATTLE_STATS; i++)
-    //     {
-    //         gBattleMons[gActiveBattler].statStages[i] = oldData.statStages[i];
-    //     }
-    //     gBattleMons[gActiveBattler].status2 = oldData.status2;
-    // }
-
-    // SwitchInClearSetData();
-    // i = gSelectedMonPartyId*2; // does not work because party slot and battle slot change over time
-    // DebugPrintf("gBattlePartyCurrentOrder: %d, bttlstruct: %d", gBattlePartyCurrentOrder[gActiveBattler])
-    // i = GetPartyIdFromBattlePartyId(*(gBattleStruct->monToSwitchIntoId + gActiveBattler));
-    // for(i=0; i<PARTY_SIZE; i++)
-    // {
-    //     r1 = GetPartyIdFromBattleSlot2(i);
-    //     DebugPrintf("slot %d -> partyId %d",i, r1);
-    // }
-
-    // i = GetPartyIdFromBattleSlot2(gActiveBattler);
-    // // i = GetPartyIdFromBattlePartyId(gActiveBattler);
-    // if (gActiveBattler%2 != 0) //opponent
-    // {
-    //     i*= 2;
-    //     i += 1;
-    // }
-    // else i*= 2;
-    // DebugPrintf("Cmd_switchindataupdate2 gActiveBattler: %d,  monToSwitchIntoId: %d, i: %d", gActiveBattler, *(gBattleStruct->monToSwitchIntoId + gActiveBattler), i);
-    // BattleMons_Switch(gActiveBattler, i); // UpdatePartyOwnerOnSwitch_NonMulti
-
     gBattleScripting.battler = gActiveBattler;
 
     PREPARE_MON_NICK_BUFFER(gBattleTextBuff1, gActiveBattler, gBattlerPartyIndexes[gActiveBattler]);

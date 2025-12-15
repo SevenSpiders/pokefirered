@@ -3057,7 +3057,6 @@ void UpdatePartyOwnerOnSwitch_NonMulti(u8 battler)
     SwitchPartyMonSlots(partyId_old, partyId_new);
 
     // gBattleMons even indices are player side, odd are opponent side
-    DebugPrintf("UBS: Battler %d switched %d (party %d) with %d (party %d)\n", battler, gBattlerPartyIndexes[battler], partyId_old, *(gBattleStruct->monToSwitchIntoId + battler), partyId_new);
     partyId_new *= 2;
     if (GetBattlerSide(battler) == B_SIDE_OPPONENT)
         partyId_new++; // make odd for opponent side
@@ -4470,25 +4469,6 @@ static void HandleAction_ActionFinished(void)
     gBattleResources->battleScriptsStack->size = 0;
 }
 
-// static void SetPartyIdAtBattleSlot(u8 slot, u8 setVal)
-// {
-//     bool32 modResult = slot & 1;
-
-//     slot /= 2;
-//     if (modResult != 0)
-//         gBattlePartyCurrentOrder[slot] = (gBattlePartyCurrentOrder[slot] & 0xF0) | setVal;
-//     else
-//         gBattlePartyCurrentOrder[slot] = (gBattlePartyCurrentOrder[slot] & 0xF) | (setVal << 4);
-// }
-
-// void SwitchPartyMonSlots(u8 slot, u8 slot2)
-// {
-//     u8 partyId = GetPartyIdFromBattleSlot(slot);
-
-//     SetPartyIdAtBattleSlot(slot, GetPartyIdFromBattleSlot(slot2));
-//     SetPartyIdAtBattleSlot(slot2, partyId);
-// }
-
 static BattlePokemon CreateBattleMon(Pokemon *mon, u8 partyIndex)
 {
     u32 i;
@@ -4549,22 +4529,32 @@ static BattlePokemon CreateBattleMon(Pokemon *mon, u8 partyIndex)
 
 void BattleMons_Init()
 {
-    u32 i;
+    u32 i, numBattlers;
 
     for(i=0; i< PARTY_SIZE; i++)
     {
         gBattleMons[i*2] = CreateBattleMon(&gPlayerParty[i], i);
         gBattleMons[i*2+1] = CreateBattleMon(&gEnemyParty[i], i);
     }
-    
+
+    // DebugPrintf("gBattlerPartyIndexes %d, %d, %d, %d", gBattlerPartyIndexes[0], gBattlerPartyIndexes[1], gBattlerPartyIndexes[2], gBattlerPartyIndexes[3]);
+
+    numBattlers = (gBattleTypeFlags & BATTLE_TYPE_MULTI) ? MAX_BATTLERS_COUNT : 2;
+    for(i=0; i < numBattlers; i++) // make sure initial party order is represented
+    {
+        if (gBattlerPartyIndexes[i] != gBattleMons[i].partyIndex)
+        {
+            u32 idx = gBattlerPartyIndexes[i]*2;
+            if (i%2!=0) idx += 1; // if opponent odd index
+            BattleMons_Switch(i, idx);
+        }
+    }
 }
 
 void BattleMons_Switch(u8 indexA, u8 indexB)
 {
     BattlePokemon temp = gBattleMons[indexA];
     DebugPrintf("switch mons %d -> %d", indexA, indexB);
-    // DebugPrintf("species A %d -> B %d", gBattleMons[indexA].species, gBattleMons[indexB].species);
-    // DebugPrintf("party index %d -> %d", gBattleMons[indexA].partyIndex, gBattleMons[indexB].partyIndex);
     gBattleMons[indexA] = gBattleMons[indexB];
     gBattleMons[indexB] = temp;
 }
