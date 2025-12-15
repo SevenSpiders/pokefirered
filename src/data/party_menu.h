@@ -1161,11 +1161,29 @@ static const u16 sFieldMoves[] =
     MOVE_DIG, MOVE_MILK_DRINK, MOVE_SOFT_BOILED, MOVE_SWEET_SCENT, FIELD_MOVE_END // this may be misuse of enum. same in emerald
 };
 
+const u16 HMFromFieldMove[] = 
+{
+    [FIELD_MOVE_CUT] =        ITEM_HM01,
+    [FIELD_MOVE_FLY] =        ITEM_HM02,
+    [FIELD_MOVE_SURF] =       ITEM_HM03,
+    [FIELD_MOVE_STRENGTH] =   ITEM_HM04,
+    [FIELD_MOVE_FLASH] =      ITEM_HM05,
+    [FIELD_MOVE_ROCK_SMASH] = ITEM_HM06,
+    [FIELD_MOVE_WATERFALL] =  ITEM_HM07,
+    [FIELD_MOVE_TELEPORT] =   0,
+    [FIELD_MOVE_DIG] =        ITEM_TM28,
+    [FIELD_MOVE_MILK_DRINK] = 0,
+    [FIELD_MOVE_SOFT_BOILED] = 0,
+    [FIELD_MOVE_SWEET_SCENT] = 0,
+};
+
 static struct
 {
     bool8 (*fieldMoveFunc)(void);
     u8 msgId;
-} const sFieldMoveCursorCallbacks[] =
+} 
+
+const sFieldMoveCursorCallbacks[] =
 {
     [FIELD_MOVE_FLASH]        = {SetUpFieldMove_Flash,       PARTY_MSG_CANT_USE_HERE},
     [FIELD_MOVE_CUT]          = {SetUpFieldMove_Cut,         PARTY_MSG_NOTHING_TO_CUT},

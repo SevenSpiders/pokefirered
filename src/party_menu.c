@@ -1137,6 +1137,10 @@ void Task_HandleChooseMonInput(u8 taskId)
                 MoveCursorToConfirm();
             }
             break;
+        case SELECT_BUTTON:
+            if (gPartyMenu.menuType == PARTY_MENU_TYPE_FIELD)
+                CursorCB_Switch(taskId);
+            break;
         }
     }
 }
@@ -1329,6 +1333,8 @@ static u16 PartyMenuButtonHandler(s8 *slotPtr)
     }
     if (JOY_NEW(START_BUTTON))
         return START_BUTTON;
+    if (JOY_NEW(SELECT_BUTTON))
+        return SELECT_BUTTON;
     if (movementDir)
     {
         UpdateCurrentPartySelection(slotPtr, movementDir);
@@ -2960,6 +2966,29 @@ static void SetPartyMonSelectionActions(struct Pokemon *mons, u8 slotId, u8 acti
     }
 }
 
+static bool8 CanMonLearnFieldMove(struct Pokemon *mon, u8 fieldMove)
+{
+
+    if (CanMonLearnTMHM(mon, HMFromFieldMove[fieldMove] - ITEM_TM01)) 
+        return TRUE;
+    else
+    {
+        u32 i,j;
+        u16 learnedMoves[MAX_MON_MOVES];
+        u32 n = GetMoveRelearnerMoves(mon, learnedMoves);
+
+        for(i=0; i< n; i++)
+        {
+            for(j=0; sFieldMoves[j]!=FIELD_MOVE_END; j++)
+            {
+                if (learnedMoves[i] == sFieldMoves[j]) 
+                    return TRUE;
+            }
+        }
+    }
+    return FALSE;
+}
+
 static void SetPartyMonFieldSelectionActions(struct Pokemon *mons, u8 slotId)
 {
     u8 i, j;
@@ -2967,15 +2996,13 @@ static void SetPartyMonFieldSelectionActions(struct Pokemon *mons, u8 slotId)
     sPartyMenuInternal->numActions = 0;
     AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, CURSOR_OPTION_SUMMARY);
     // Add field moves to action list
-    for (i = 0; i < MAX_MON_MOVES; ++i)
+    for (j = 0; sFieldMoves[j] != FIELD_MOVE_END; ++j)
     {
-        for (j = 0; sFieldMoves[j] != FIELD_MOVE_END; ++j)
+        if (j < FIELD_MOVE_WATERFALL && FlagGet(FLAG_BADGE01_GET + j) == FALSE)
+            continue;
+        if (sPartyMenuInternal->numActions < 5 && CanMonLearnFieldMove(&mons[slotId], j))
         {
-            if (GetMonData(&mons[slotId], i + MON_DATA_MOVE1) == sFieldMoves[j])
-            {
-                AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, j + CURSOR_OPTION_FIELD_MOVES);
-                break;
-            }
+            AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, CURSOR_OPTION_FIELD_MOVES + j);
         }
     }
     if (GetMonData(&mons[1], MON_DATA_SPECIES) != SPECIES_NONE)
