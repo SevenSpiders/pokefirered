@@ -39,6 +39,15 @@
 
 extern const u8 *const gBattleScriptsForMoveEffects[];
 
+const u8 gStatus1FromStatus [] = {
+    [STATUS_SLEEP]     = STATUS1_SLEEP,
+    [STATUS_POISON]    = STATUS1_POISON,
+    [STATUS_BURN]      = STATUS1_BURN,
+    [STATUS_FREEZE]    = STATUS1_FREEZE,
+    [STATUS_PARALYSIS] = STATUS1_PARALYSIS,
+    [STATUS_TOXIC]     = STATUS1_POISON,
+};
+
 #define DEFENDER_IS_PROTECTED ((gProtectStructs[gBattlerTarget].protected) && (gBattleMoves[gCurrentMove].flags & FLAG_PROTECT_AFFECTED))
 
 #define LEVEL_UP_BANNER_START 416
@@ -2254,7 +2263,7 @@ static bool32 TryEffect_Freeze(bool32 noSunCanFreeze)
 
     CancelMultiTurnMoves(gEffectBattler);
     return TRUE;
-}
+} // TryEffect_Freeze
 
 static bool32 TryEffect_Paralysis(bool8 primary, u8 certain)
 {
@@ -2285,7 +2294,7 @@ static bool32 TryEffect_Paralysis(bool8 primary, u8 certain)
     if (!BattleMon_CanAddStatus(&gBattleMons[gEffectBattler], STATUS_PARALYSIS))
         return FALSE;
     return TRUE;
-}
+} // TryEffect_Paralysis
 
 static bool32 TryEffect_Toxic(bool8 primary, u8 certain)
 {
@@ -2335,7 +2344,7 @@ static bool32 TryEffect_Toxic(bool8 primary, u8 certain)
         gMoveResultFlags |= MOVE_RESULT_DOESNT_AFFECT_FOE;
     }
     return FALSE;
-}
+} // TryEffect_Toxic
 
 void SetMoveEffect(bool8 primary, u8 certain)
 {
@@ -2377,40 +2386,41 @@ void SetMoveEffect(bool8 primary, u8 certain)
 
     if (gBattleCommunication[MOVE_EFFECT_BYTE] <= PRIMARY_STATUS_MOVE_EFFECT)
     {
-        switch (sStatusFlagsForMoveEffects[gBattleCommunication[MOVE_EFFECT_BYTE]])
+        switch (sStatusTypeFromMoveEffect[gBattleCommunication[MOVE_EFFECT_BYTE]])
         {
-            case STATUS1_SLEEP:
+            case STATUS_SLEEP:
                 statusChanged = TryEffect_Sleep();
                 break;
-            case STATUS1_POISON:
+            case STATUS_POISON:
                 statusChanged = TryEffect_Poison(primary, certain);
                 break;
-            case STATUS1_BURN:
+            case STATUS_BURN:
                 statusChanged = TryEffect_Burn(primary, certain);
                 break;
-            case STATUS1_FREEZE:
+            case STATUS_FREEZE:
                 statusChanged = TryEffect_Freeze(noSunCanFreeze);
                 break;
-            case STATUS1_PARALYSIS:
+            case STATUS_PARALYSIS:
                 statusChanged = TryEffect_Paralysis(primary, certain);
                 break;
-            case STATUS1_TOXIC_POISON:
+            case STATUS_TOXIC:
                 statusChanged = TryEffect_Toxic(primary, certain);
                 break;
         }
         if (statusChanged == TRUE)
         {
+            u16 status = sStatusTypeFromMoveEffect[gBattleCommunication[MOVE_EFFECT_BYTE]];
+            u16 status1 = gStatus1FromStatus[GET_STATUS_TYPE(status)];
             BattleScriptPush(gBattlescriptCurrInstr + 1);
 
-            if (sStatusFlagsForMoveEffects[gBattleCommunication[MOVE_EFFECT_BYTE]] == STATUS1_SLEEP)
-                gBattleMons[gEffectBattler].status1 |= STATUS1_SLEEP_TURN((Random() & 3) + 2); // 2-5 turns
-            else
-                gBattleMons[gEffectBattler].status1 |= sStatusFlagsForMoveEffects[gBattleCommunication[MOVE_EFFECT_BYTE]];
-            BattleMon_AddStatus(&gBattleMons[gEffectBattler], sStatusTypeFromMoveEffect[gBattleCommunication[MOVE_EFFECT_BYTE]]);
+            if (status == STATUS_SLEEP) 
+                status = ENCODE_STATUS(STATUS_SLEEP, (Random() & 3) + 2);
+            BattleMon_AddStatus(&gBattleMons[gEffectBattler], status);
             gBattlescriptCurrInstr = sMoveEffectBS_Ptrs[gBattleCommunication[MOVE_EFFECT_BYTE]];
 
             gActiveBattler = gEffectBattler;
-            BtlController_EmitSetMonData(BUFFER_A, REQUEST_STATUS_BATTLE, 0, sizeof(gBattleMons[gEffectBattler].status1), &gBattleMons[gEffectBattler].status1);
+            // BtlController_EmitSetMonData(BUFFER_A, REQUEST_STATUS_BATTLE, 0, sizeof(gBattleMons[gEffectBattler].status1), &gBattleMons[gEffectBattler].status1);
+            BtlController_EmitSetMonData(BUFFER_A, REQUEST_STATUS_BATTLE, 0, 2, &status1);
             MarkBattlerForControllerExec(gActiveBattler);
 
             if (gHitMarker & HITMARKER_STATUS_ABILITY_EFFECT)
@@ -2440,7 +2450,7 @@ void SetMoveEffect(bool8 primary, u8 certain)
             gBattlescriptCurrInstr++;
         }
         return;
-    }
+    } // if PRIMARY_STATUS_MOVE_EFFECT
     else
     {
         if (gBattleMons[gEffectBattler].status2 & sStatusFlagsForMoveEffects[gBattleCommunication[MOVE_EFFECT_BYTE]])
