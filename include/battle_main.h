@@ -102,6 +102,8 @@ bool8 BattleMon_HasStatusType(BattlePokemon *mon, u16 statusType);
 bool8 BattleMon_HasAnyStatus1(BattlePokemon *mon);
 bool8 BattleMon_CanAddStatus(BattlePokemon *mon, u16 statusType);
 bool8 BattleMon_AddStatus(BattlePokemon *mon, u16 status);
+bool8 BattleMon_TryAddStatus(BattlePokemon *mon, u16 statusType);
 bool8 BattleMon_RemoveStatusType(BattlePokemon *mon, u16 statusType);
+bool8 BattleMon_IsSemiInvulnerable(BattlePokemon *mon);
 
 #endif // GUARD_BATTLE_MAIN_H

@@ -927,7 +927,7 @@ void BtlController_EmitStatusIconUpdate(u8 bufferId, u32 status1, u32 status2)
     PrepareBufferDataTransfer(bufferId, sBattleBuffersTransferData, 9);
 }
 
-void BtlController_EmitStatusAnimation(u8 bufferId, bool8 status2, u32 status)
+void BtlController_EmitStatusAnimation(u8 bufferId, bool8 status2, u32 status) // TODO
 {
     sBattleBuffersTransferData[0] = CONTROLLER_STATUSANIMATION;
     sBattleBuffersTransferData[1] = status2;

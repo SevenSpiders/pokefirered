@@ -99,6 +99,8 @@
 #define STATUS_FLINCHED         8
 #define STATUS_UPROAR           9
 #define STATUS_BIDE             10
+#define STATUS_CHARGING         42 // STATUS2_MULTIPLE_TURNS
+#define STATUS_THRASH           43 // STATUS_LOCK_CONFUSE
 #define STATUS_WRAPPED          11
 #define STATUS_INFATUATION      12
 #define STATUS_FOCUS            13
@@ -110,9 +112,10 @@
 #define STATUS_NO_ESCAPE        19
 #define STATUS_NIGHTMARE        20
 #define STATUS_CURSED           21
-#define STATUS_FORSIGHT         22
+#define STATUS_FORESIGHT        22
 #define STATUS_DEFENSE_CURL     23
 #define STATUS_TORMENT          24
+//status3
 #define STATUS_LEECHSEED        25
 #define STATUS_ALWAYS_HITS      26
 #define STATUS_PERISH_SONG      27
@@ -130,8 +133,6 @@
 #define STATUS_UNDERWATER       39
 #define STATUS_INTIMIDATE       40
 #define STATUS_TRACE            41
-#define STATUS_CHARGING         42
-#define STATUS_THRASH           43
 #define STATUS_END              43
 
 // last 8bits = 256 types

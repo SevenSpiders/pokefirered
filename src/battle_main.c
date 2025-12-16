@@ -4614,10 +4614,25 @@ bool8 BattleMon_AddStatus(BattlePokemon *mon, u16 status)
     return TRUE;
 }
 
+bool8 BattleMon_TryAddStatus(BattlePokemon *mon, u16 status)
+{
+    if (!BattleMon_CanAddStatus(mon, GET_STATUS_TYPE(status)))
+        return FALSE;
+    return BattleMon_AddStatus(mon, status);
+}
+
 bool8 BattleMon_RemoveStatusType(BattlePokemon *mon, u16 statusType)
 {
     u32 i = BattleMon_GetStatusIndex(mon, statusType);
     if (i >= MAX_MON_STATUSES) return FALSE;
     mon->statuses[i] = STATUS_NONE;
     return TRUE;
+}
+
+bool8 BattleMon_IsSemiInvulnerable(BattlePokemon *mon)
+{
+    if(BattleMon_HasStatusType(mon, STATUS_IN_AIR)) return TRUE;
+    if(BattleMon_HasStatusType(mon, STATUS_UNDERWATER)) return TRUE;
+    if(BattleMon_HasStatusType(mon, STATUS_UNDERGROUND)) return TRUE;
+    return FALSE;
 }
