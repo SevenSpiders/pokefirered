@@ -36,9 +36,9 @@
 
 // Values for signaling to/from the link partner
 enum {
-    STATUS_NONE,
-    STATUS_READY,
-    STATUS_CANCEL,
+    TRADE_STATUS_NONE,
+    TRADE_STATUS_READY,
+    TRADE_STATUS_CANCEL,
 };
 
 enum {
@@ -2343,13 +2343,13 @@ static void HandleLinkDataReceive(void)
         if (gBlockRecvBuffer[0][0] == LINKCMD_CONFIRM_FINISH_TRADE)
             SetMainCallback2(CB2_TryLinkTradeEvolution);
         if (gBlockRecvBuffer[0][0] == LINKCMD_READY_FINISH_TRADE)
-            sTradeAnim->playerFinishStatus = STATUS_READY;
+            sTradeAnim->playerFinishStatus = TRADE_STATUS_READY;
         ResetBlockReceivedFlag(0);
     }
     if (recvStatus & (1 << 1))
     {
         if (gBlockRecvBuffer[1][0] == LINKCMD_READY_FINISH_TRADE)
-            sTradeAnim->partnerFinishStatus = STATUS_READY;
+            sTradeAnim->partnerFinishStatus = TRADE_STATUS_READY;
         ResetBlockReceivedFlag(1);
     }
 }
@@ -2548,13 +2548,13 @@ static void CB2_WaitTradeComplete(void)
     u8 mpId = TradeGetMultiplayerId();
     HandleLinkDataReceive();
     if (mpId == 0
-        && sTradeAnim->playerFinishStatus == STATUS_READY
-        && sTradeAnim->partnerFinishStatus == STATUS_READY)
+        && sTradeAnim->playerFinishStatus == TRADE_STATUS_READY
+        && sTradeAnim->partnerFinishStatus == TRADE_STATUS_READY)
     {
         sTradeAnim->linkData[0] = LINKCMD_CONFIRM_FINISH_TRADE;
         SendBlock(BitmaskAllOtherLinkPlayers(), sTradeAnim->linkData, sizeof(sTradeAnim->linkData));
-        sTradeAnim->playerFinishStatus = STATUS_CANCEL;
-        sTradeAnim->partnerFinishStatus = STATUS_CANCEL;
+        sTradeAnim->playerFinishStatus = TRADE_STATUS_CANCEL;
+        sTradeAnim->partnerFinishStatus = TRADE_STATUS_CANCEL;
     }
     RunTasks();
     AnimateSprites();

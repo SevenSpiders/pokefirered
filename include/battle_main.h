@@ -96,5 +96,10 @@ void RunBattleScriptCommands(void);
 bool8 TryRunFromBattle(u8 battler);
 void BattleMons_Init(void);
 void BattleMons_Switch(u8 a, u8 b);
+u32 BattleMon_GetStatusIndex(BattlePokemon *mon, u16 statusType);
+bool8 BattleMon_HasStatusType(BattlePokemon *mon, u16 statusType);
+bool8 BattleMon_HasAnyStatus1(BattlePokemon *mon, u16 statusType);
+bool8 BattleMon_AddStatus(BattlePokemon *mon, u16 status);
+bool8 BattleMon_RemoveStatusType(BattlePokemon *mon, u16 statusType);
 
 #endif // GUARD_BATTLE_MAIN_H

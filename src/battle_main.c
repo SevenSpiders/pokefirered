@@ -4558,3 +4558,52 @@ void BattleMons_Switch(u8 indexA, u8 indexB)
     gBattleMons[indexA] = gBattleMons[indexB];
     gBattleMons[indexB] = temp;
 }
+
+u32 BattleMon_GetStatusIndex(BattlePokemon *mon, u16 statusType)
+{
+    u32 i;
+
+    for (i=0; i<MAX_MON_STATUSES; i++)
+    {
+        if (GET_STATUS_TYPE(mon->statuses[i]) == statusType)
+        {
+            return i;
+        }
+    }
+    return MAX_MON_STATUSES; // failed to find
+}
+
+bool8 BattleMon_HasStatusType(BattlePokemon *mon, u16 statusType)
+{
+    return BattleMon_GetStatusIndex(mon, statusType) < MAX_MON_STATUSES;
+}
+
+bool8 BattleMon_HasAnyStatus1(BattlePokemon *mon, u16 statusType)
+{
+    u32 i;
+
+    for (i=0; i<MAX_MON_STATUSES; i++)
+    {
+        if (GET_STATUS_TYPE(mon->statuses[i]) <= STATUS_TOXIC && mon->statuses[i] > 0)
+        {
+            return TRUE;
+        }
+    }
+    return FALSE;
+}
+
+bool8 BattleMon_AddStatus(BattlePokemon *mon, u16 status)
+{
+    u32 i = BattleMon_GetStatusIndex(mon, GET_STATUS_TYPE(status));
+    if (i >= MAX_MON_STATUSES) return FALSE;
+    mon->statuses[i] = status;
+    return TRUE;
+}
+
+bool8 BattleMon_RemoveStatusType(BattlePokemon *mon, u16 statusType)
+{
+    u32 i = BattleMon_GetStatusIndex(mon, statusType);
+    if (i >= MAX_MON_STATUSES) return FALSE;
+    mon->statuses[i] = STATUS_NONE;
+    return TRUE;
+}

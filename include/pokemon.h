@@ -5,6 +5,8 @@
 #include "sprite.h"
 #include "constants/pokemon.h"
 
+#define MAX_MON_STATUSES 10
+
 struct PokemonSubstruct0
 {
     u16 species;
@@ -204,6 +206,7 @@ typedef struct BattlePokemon
     /*0x50*/ u32 status2;
     /*0x54*/ u32 otId;
     u8 partyIndex;
+    u16 statuses[MAX_MON_STATUSES];
 } BattlePokemon;
 
 struct SpeciesInfo
