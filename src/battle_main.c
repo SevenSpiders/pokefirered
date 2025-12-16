@@ -4578,7 +4578,7 @@ bool8 BattleMon_HasStatusType(BattlePokemon *mon, u16 statusType)
     return BattleMon_GetStatusIndex(mon, statusType) < MAX_MON_STATUSES;
 }
 
-bool8 BattleMon_HasAnyStatus1(BattlePokemon *mon, u16 statusType)
+bool8 BattleMon_HasAnyStatus1(BattlePokemon *mon)
 {
     u32 i;
 

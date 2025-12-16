@@ -87,6 +87,7 @@
 
 // NEW status
 #define STATUS_NONE             0
+#define STATUS_ANY_STATUS1      0
 #define STATUS_SLEEP            1
 #define STATUS_POISON           2
 #define STATUS_BURN             3

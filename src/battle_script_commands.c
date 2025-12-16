@@ -88,7 +88,8 @@ static void Cmd_clearstatusfromeffect(void);
 static void Cmd_tryfaintmon(void);
 static void Cmd_dofaintanimation(void);
 static void Cmd_cleareffectsonfaint(void);
-static void Cmd_jumpifstatus1(void);
+static void Cmd_jumpifstatus(void); // takes in any status
+// static void Cmd_jumpifstatus1(void);
 static void Cmd_jumpifstatus2(void);
 static void Cmd_jumpifability(void);
 static void Cmd_jumpifsideaffecting(void);
@@ -339,7 +340,7 @@ void (* const gBattleScriptingCommandsTable[])(void) =
     Cmd_tryfaintmon,                             //0x19
     Cmd_dofaintanimation,                        //0x1A
     Cmd_cleareffectsonfaint,                     //0x1B
-    Cmd_jumpifstatus1,                            //0x1C
+    Cmd_jumpifstatus,                            //0x1C
     Cmd_jumpifstatus2,                           //0x1D
     Cmd_jumpifability,                           //0x1E
     Cmd_jumpifsideaffecting,                     //0x1F
@@ -2942,22 +2943,20 @@ static void Cmd_cleareffectsonfaint(void)
     }
 }
 
-static void Cmd_jumpifstatus1(void)
+static void Cmd_jumpifstatus(void)
 {
-    u32 i;
     u8 battlerId = GetBattlerForBattleScript(gBattlescriptCurrInstr[1]);
-    u32 flags = T2_READ_32(gBattlescriptCurrInstr + 2);
+    u32 status = T2_READ_32(gBattlescriptCurrInstr + 2);
     const u8 *jumpPtr = T2_READ_PTR(gBattlescriptCurrInstr + 6);
 
-    // if (gBattleMons[battlerId].status1 & flags && gBattleMons[battlerId].hp != 0)
-    //     gBattlescriptCurrInstr = jumpPtr;
-    // else
-    //     gBattlescriptCurrInstr += 10;
-
-    for(i=1; i <= STATUS_MAX_STATUS1; i++)
+    if (gBattleMons[battlerId].hp != 0)
     {
-        if (gBattleMons[battlerId].hp == 0) break;
-        if ( BattleMon_HasStatusType(&gBattleMons[battlerId], i))
+        if (status == STATUS_ANY_STATUS1 && BattleMon_HasAnyStatus1(&gBattleMons[battlerId]))
+        {
+            gBattlescriptCurrInstr = jumpPtr;
+            return;
+        }
+        else if (BattleMon_HasStatusType(&gBattleMons[battlerId], status))
         {
             gBattlescriptCurrInstr = jumpPtr;
             return;
@@ -2965,6 +2964,30 @@ static void Cmd_jumpifstatus1(void)
     }
     gBattlescriptCurrInstr += 10;
 }
+
+// static void Cmd_jumpifstatus1(void)
+// {
+//     u32 i;
+//     u8 battlerId = GetBattlerForBattleScript(gBattlescriptCurrInstr[1]);
+//     u32 flags = T2_READ_32(gBattlescriptCurrInstr + 2);
+//     const u8 *jumpPtr = T2_READ_PTR(gBattlescriptCurrInstr + 6);
+
+//     // if (gBattleMons[battlerId].status1 & flags && gBattleMons[battlerId].hp != 0)
+//     //     gBattlescriptCurrInstr = jumpPtr;
+//     // else
+//     //     gBattlescriptCurrInstr += 10;
+
+//     for(i=1; i <= STATUS_MAX_STATUS1; i++)
+//     {
+//         if (gBattleMons[battlerId].hp == 0) break;
+//         if ( BattleMon_HasStatusType(&gBattleMons[battlerId], i))
+//         {
+//             gBattlescriptCurrInstr = jumpPtr;
+//             return;
+//         }
+//     }
+//     gBattlescriptCurrInstr += 10;
+// }
 
 static void Cmd_jumpifstatus2(void) // only ever uses single flags -> simple substitute
 {
