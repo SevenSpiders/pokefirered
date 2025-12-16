@@ -4584,7 +4584,7 @@ bool8 BattleMon_HasAnyStatus1(BattlePokemon *mon, u16 statusType)
 
     for (i=0; i<MAX_MON_STATUSES; i++)
     {
-        if (GET_STATUS_TYPE(mon->statuses[i]) <= STATUS_TOXIC && mon->statuses[i] > 0)
+        if (GET_STATUS_TYPE(mon->statuses[i]) <= STATUS_MAX_STATUS1 && mon->statuses[i] > 0)
         {
             return TRUE;
         }

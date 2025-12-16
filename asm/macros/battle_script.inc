@@ -133,7 +133,7 @@
 	.byte \battler
 	.endm
 
-	.macro jumpifstatus battler:req, status1:req, ptr:req
+	.macro jumpifstatus1 battler:req, status1:req, ptr:req
 	.byte 0x1c
 	.byte \battler
 	.4byte \status1

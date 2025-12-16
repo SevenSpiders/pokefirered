@@ -93,6 +93,7 @@
 #define STATUS_FREEZE           4
 #define STATUS_PARALYSIS        5
 #define STATUS_TOXIC            6
+#define STATUS_MAX_STATUS1      6 // 1-6 are status1
 #define STATUS_CONFUSED         7
 #define STATUS_FLINCHED         8
 #define STATUS_UPROAR           9

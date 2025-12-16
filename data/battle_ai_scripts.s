@@ -565,7 +565,7 @@ AI_CBM_Imprison::
 	end
 
 AI_CBM_Refresh::
-	if_not_status AI_USER, STATUS1_POISON | STATUS1_BURN | STATUS1_PARALYSIS | STATUS1_TOXIC_POISON, Score_Minus10
+	if_not_status AI_USER, STATUS1_ANY, Score_Minus10
 	end
 
 AI_CBM_MudSport::
@@ -2404,7 +2404,7 @@ AI_CV_Hail_End::
 
 @ BUG: Facade score is increased if the target is statused, but should be if the user is. Replace AI_TARGET with AI_USER
 AI_CV_Facade::
-	if_not_status AI_TARGET, STATUS1_POISON | STATUS1_BURN | STATUS1_PARALYSIS | STATUS1_TOXIC_POISON, AI_CV_Facade_End
+	if_not_status AI_TARGET, STATUS1_ANY, AI_CV_Facade_End
 	score +1
 
 AI_CV_Facade_End::
