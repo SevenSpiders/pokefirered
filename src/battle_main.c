@@ -4573,6 +4573,20 @@ u32 BattleMon_GetStatusIndex(BattlePokemon *mon, u16 statusType)
     return MAX_MON_STATUSES; // failed to find
 }
 
+// u32 BattleMon_NextFreeStatus(BattlePokemon *mon)
+// {
+//     return BattleMon_GetStatusIndex(mon, STATUS_NONE);
+// }
+
+bool8 BattleMon_CanAddStatus(BattlePokemon *mon, u16 statusType)
+{
+    if (BattleMon_HasStatusType(mon, statusType)) 
+        return FALSE;
+    if (BattleMon_GetStatusIndex(mon, STATUS_NONE) >= MAX_MON_STATUSES)
+        return FALSE;
+    return TRUE;
+}
+
 bool8 BattleMon_HasStatusType(BattlePokemon *mon, u16 statusType)
 {
     return BattleMon_GetStatusIndex(mon, statusType) < MAX_MON_STATUSES;
