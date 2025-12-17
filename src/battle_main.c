@@ -2343,11 +2343,11 @@ void SwitchInClearSetData(void)
     //         gBattleMons[gActiveBattler].statStages[i] = DEFAULT_STAT_STAGE;
     //     for (i = 0; i < gBattlersCount; i++)
     //     {
-    //         if (BattleMon_HasStatusType(i, STATUS_NO_ESCAPE) && gDisableStructs[i].battlerPreventingEscape == gActiveBattler)
-    //             BattleMon_RemoveStatusType(i, STATUS_NO_ESCAPE);
-    //         if (BattleMon_HasStatusType(i, STATUS_ALWAYS_HITS) && gDisableStructs[i].battlerWithSureHit == gActiveBattler)
+    //         if (BattleMon_HasStatus(i, STATUS_NO_ESCAPE) && gDisableStructs[i].battlerPreventingEscape == gActiveBattler)
+    //             BattleMon_RemoveStatus(i, STATUS_NO_ESCAPE);
+    //         if (BattleMon_HasStatus(i, STATUS_ALWAYS_HITS) && gDisableStructs[i].battlerWithSureHit == gActiveBattler)
     //         {
-    //             BattleMon_RemoveStatusType(i, STATUS_ALWAYS_HITS);
+    //             BattleMon_RemoveStatus(i, STATUS_ALWAYS_HITS);
     //             gDisableStructs[i].battlerWithSureHit = 0;
     //         }
     //     }
@@ -2376,9 +2376,9 @@ void SwitchInClearSetData(void)
     // for (i = 0; i < gBattlersCount; i++)
     // {
     //     if (BattleMon_HasStatus(i, ENCODE_STATUS(STATUS_INFATUATION, gActiveBattler)))
-    //         BattleMon_RemoveStatusType(i, STATUS_INFATUATION);
-    //     if (BattleMon_HasStatusType(i, STATUS_WRAPPED) && *(gBattleStruct->wrappedBy + i) == gActiveBattler)
-    //         BattleMon_RemoveStatusType(i, STATUS_WRAPPED);
+    //         BattleMon_RemoveStatus(i, STATUS_INFATUATION);
+    //     if (BattleMon_HasStatus(i, STATUS_WRAPPED) && *(gBattleStruct->wrappedBy + i) == gActiveBattler)
+    //         BattleMon_RemoveStatus(i, STATUS_WRAPPED);
     // }
 
     // gActionSelectionCursor[gActiveBattler] = 0;
@@ -2443,17 +2443,17 @@ void FaintClearSetData(void)
 
     for (i = 0; i < gBattlersCount; i++)
     {
-        if (BattleMon_HasStatusType(i, STATUS_NO_ESCAPE) && gDisableStructs[i].battlerPreventingEscape == gActiveBattler)
-            BattleMon_RemoveStatusType(i, STATUS_NO_ESCAPE);
+        if (BattleMon_HasStatus(i, STATUS_NO_ESCAPE) && gDisableStructs[i].battlerPreventingEscape == gActiveBattler)
+            BattleMon_RemoveStatus(i, STATUS_NO_ESCAPE);
         status = BattleMon_GetStatusPtr(i, STATUS_INFATUATION);
         if (status != 0)
         {
             u32 infatuatedWith = GET_STATUS_DATA(*status);
             if (infatuatedWith == gActiveBattler)
-                BattleMon_RemoveStatusType(i, STATUS_INFATUATION);
+                BattleMon_RemoveStatus(i, STATUS_INFATUATION);
         }
-        if (BattleMon_HasStatusType(i, STATUS_WRAPPED) && *(gBattleStruct->wrappedBy + i) == gActiveBattler)
-            BattleMon_RemoveStatusType(i, STATUS_WRAPPED);
+        if (BattleMon_HasStatus(i, STATUS_WRAPPED) && *(gBattleStruct->wrappedBy + i) == gActiveBattler)
+            BattleMon_RemoveStatus(i, STATUS_WRAPPED);
     }
 
     gActionSelectionCursor[gActiveBattler] = 0;
@@ -2910,7 +2910,7 @@ static void TryDoEventsBeforeFirstTurn(void)
     for (i = 0; i < BATTLE_COMMUNICATION_ENTRIES_COUNT; i++)
         gBattleCommunication[i] = 0;
     for (i = 0; i < gBattlersCount; i++)
-        BattleMon_RemoveStatusType(i, STATUS_FLINCHED);
+        BattleMon_RemoveStatus(i, STATUS_FLINCHED);
     *(&gBattleStruct->turnEffectsTracker) = 0;
     *(&gBattleStruct->turnEffectsBattlerId) = 0;
     *(&gBattleStruct->wishPerishSongState) = 0;
@@ -2933,8 +2933,8 @@ static void HandleEndTurn_ContinueBattle(void)
             gBattleCommunication[i] = 0;
         for (i = 0; i < gBattlersCount; i++)
         {
-            BattleMon_RemoveStatusType(i, STATUS_FLINCHED);
-            if ((gBattleMons[i].status1 & STATUS1_SLEEP) && BattleMon_HasStatusType(i, STATUS_SLEEP))
+            BattleMon_RemoveStatus(i, STATUS_FLINCHED);
+            if ((gBattleMons[i].status1 & STATUS1_SLEEP) && BattleMon_HasStatus(i, STATUS_SLEEP))
                 CancelMultiTurnMoves(i);
         }
         gBattleStruct->turnEffectsTracker = 0;
@@ -3040,9 +3040,9 @@ u8 IsRunningFromBattleImpossible(void)
         gBattleCommunication[MULTISTRING_CHOOSER] = 2;
         return BATTLE_RUN_FAILURE;
     }
-    if (BattleMon_HasStatusType(gActiveBattler, STATUS_NO_ESCAPE)
-    || BattleMon_HasStatusType(gActiveBattler, STATUS_WRAPPED)
-     || BattleMon_HasStatusType(gActiveBattler, STATUS_ROOTED))
+    if (BattleMon_HasStatus(gActiveBattler, STATUS_NO_ESCAPE)
+    || BattleMon_HasStatus(gActiveBattler, STATUS_WRAPPED)
+     || BattleMon_HasStatus(gActiveBattler, STATUS_ROOTED))
     {
         gBattleCommunication[MULTISTRING_CHOOSER] = 0;
         return BATTLE_RUN_FORBIDDEN;
@@ -3125,8 +3125,8 @@ static void HandleTurnActionSelectionState(void)
                 }
                 else
                 {
-                    if (BattleMon_HasStatusType(gActiveBattler, STATUS_MULTI_TURN)
-                     || BattleMon_HasStatusType(gActiveBattler, STATUS_RECHARGE))
+                    if (BattleMon_HasStatus(gActiveBattler, STATUS_MULTI_TURN)
+                     || BattleMon_HasStatus(gActiveBattler, STATUS_RECHARGE))
                     {
                         gChosenActionByBattler[gActiveBattler] = B_ACTION_USE_MOVE;
                         gBattleCommunication[gActiveBattler] = STATE_WAIT_ACTION_CONFIRMED_STANDBY;
@@ -3646,12 +3646,12 @@ static void TurnValuesCleanUp(bool8 var0)
             {
                 --gDisableStructs[gActiveBattler].rechargeTimer;
                 if (gDisableStructs[gActiveBattler].rechargeTimer == 0)
-                    BattleMon_RemoveStatusType(gActiveBattler, STATUS_RECHARGE);
+                    BattleMon_RemoveStatus(gActiveBattler, STATUS_RECHARGE);
             }
         }
 
         if (gDisableStructs[gActiveBattler].substituteHP == 0)
-            BattleMon_RemoveStatusType(gActiveBattler, STATUS_SUBSTITUTE);
+            BattleMon_RemoveStatus(gActiveBattler, STATUS_SUBSTITUTE);
     }
     gSideTimers[0].followmeTimer = 0;
     gSideTimers[1].followmeTimer = 0;
@@ -3678,7 +3678,7 @@ static void CheckFocusPunch_ClearVarsBeforeTurnStarts(void)
             gActiveBattler = gBattlerAttacker = gBattleStruct->focusPunchBattlerId;
             ++gBattleStruct->focusPunchBattlerId;
             if (gChosenMoveByBattler[gActiveBattler] == MOVE_FOCUS_PUNCH
-             && !(gBattleMons[gActiveBattler].status1 & STATUS1_SLEEP)
+             && !(BattleMon_HasStatus(gActiveBattler, STATUS_SLEEP))
              && !(gDisableStructs[gBattlerAttacker].truantCounter)
              && !(gProtectStructs[gActiveBattler].noValidMoves))
             {
@@ -3989,7 +3989,7 @@ static void HandleAction_UseMove(void)
         gHitMarker |= HITMARKER_NO_PPDEDUCT;
         *(gBattleStruct->moveTarget + gBattlerAttacker) = GetMoveTarget(MOVE_STRUGGLE, NO_TARGET_OVERRIDE);
     }
-    else if (BattleMon_HasStatusType(gBattlerAttacker, STATUS_MULTI_TURN) || BattleMon_HasStatusType(gBattlerAttacker, STATUS_RECHARGE))
+    else if (BattleMon_HasStatus(gBattlerAttacker, STATUS_MULTI_TURN) || BattleMon_HasStatus(gBattlerAttacker, STATUS_RECHARGE))
     {
         gCurrentMove = gChosenMove = gLockedMoves[gBattlerAttacker];
     }
@@ -4610,7 +4610,7 @@ u32 BattleMon_GetStatusIndex(u32 battlerId, u16 statusType)
 
 bool8 BattleMon_CanAddStatus(u32 battlerId, u16 statusType)
 {
-    if (BattleMon_HasStatusType(battlerId, statusType)) 
+    if (BattleMon_HasStatus(battlerId, statusType)) 
         return FALSE;
     if (BattleMon_GetStatusIndex(battlerId, STATUS_NONE) >= MAX_MON_STATUSES)
         return FALSE;
@@ -4631,21 +4631,7 @@ u16 *BattleMon_GetStatusPtr(u32 battlerId, u16 statusType)
     return 0;
 }
 
-bool8 BattleMon_HasStatus(u32 battlerId, u16 status)
-{
-    u32 i;
-
-    for (i=0; i<MAX_MON_STATUSES; i++)
-    {
-        if (gBattleMons[battlerId].statuses[i] == status)
-        {
-            return TRUE;
-        }
-    }
-    return FALSE;
-}
-
-bool8 BattleMon_HasStatusType(u32 battlerId, u16 statusType)
+bool8 BattleMon_HasStatus(u32 battlerId, u16 statusType)
 {
     return BattleMon_GetStatusIndex(battlerId, statusType) < MAX_MON_STATUSES;
 }
@@ -4679,11 +4665,27 @@ bool8 BattleMon_TryAddStatus(u32 battlerId, u16 status)
     return BattleMon_AddStatus(battlerId, status);
 }
 
-bool8 BattleMon_RemoveStatusType(u32 battlerId, u16 statusType)
+bool8 BattleMon_RemoveStatus(u32 battlerId, u16 statusType)
 {
     u32 i = BattleMon_GetStatusIndex(battlerId, statusType);
     if (i >= MAX_MON_STATUSES) return FALSE;
     gBattleMons[battlerId].statuses[i] = STATUS_NONE;
+    return TRUE;
+}
+
+bool8 BattleMon_RemoveAnyStatus1(u32 battlerId)
+{
+    u32 i;
+
+    for (i=0; i<MAX_MON_STATUSES; i++)
+    {
+        u16 s = GET_STATUS_TYPE(gBattleMons[battlerId].statuses[i]);
+        if (s == STATUS_POISON || s == STATUS_TOXIC || s == STATUS_SLEEP || s == STATUS_PARALYSIS 
+            || s == STATUS_FREEZE || s == STATUS_BURN)
+        {
+            gBattleMons[battlerId].statuses[i] = STATUS_NONE;
+        }
+    }
     return TRUE;
 }
 

@@ -606,7 +606,7 @@ static void Cmd_if_status(void)
 
     if (status == STATUS_ANY_STATUS1 && BattleMon_HasAnyStatus1(battlerId))
         sAIScriptPtr = T1_READ_PTR(sAIScriptPtr + 6);
-    else if (BattleMon_HasStatusType(battlerId, status))
+    else if (BattleMon_HasStatus(battlerId, status))
         sAIScriptPtr = T1_READ_PTR(sAIScriptPtr + 6);
     else
         sAIScriptPtr += 10;
@@ -626,7 +626,7 @@ static void Cmd_if_not_status(void)
 
     if (status == STATUS_ANY_STATUS1 && !BattleMon_HasAnyStatus1(battlerId))
         sAIScriptPtr = T1_READ_PTR(sAIScriptPtr + 6);
-    else if (!BattleMon_HasStatusType(battlerId, status))
+    else if (!BattleMon_HasStatus(battlerId, status))
         sAIScriptPtr = T1_READ_PTR(sAIScriptPtr + 6);
     else
         sAIScriptPtr += 10;
@@ -644,7 +644,7 @@ static void Cmd_if_status2(void)
 
     status = T1_READ_32(sAIScriptPtr + 2);
 
-    if (BattleMon_HasStatusType(battlerId, status))
+    if (BattleMon_HasStatus(battlerId, status))
         sAIScriptPtr = T1_READ_PTR(sAIScriptPtr + 6);
     else
         sAIScriptPtr += 10;
@@ -662,7 +662,7 @@ static void Cmd_if_not_status2(void)
 
     status = T1_READ_32(sAIScriptPtr + 2);
 
-    if (!BattleMon_HasStatusType(battlerId, status))
+    if (!BattleMon_HasStatus(battlerId, status))
         sAIScriptPtr = T1_READ_PTR(sAIScriptPtr + 6);
     else
         sAIScriptPtr += 10;

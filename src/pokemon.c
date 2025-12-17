@@ -4068,15 +4068,15 @@ bool8 PokemonUseItemEffects(struct Pokemon *mon, u16 item, u8 partyIndex, u8 mov
             // Cure infatuation
             if ((itemEffect[cmdIndex] & ITEM0_INFATUATION)
                 && gMain.inBattle && battleMonId != MAX_BATTLERS_COUNT 
-                && BattleMon_HasStatusType(battleMonId, STATUS_INFATUATION))
+                && BattleMon_HasStatus(battleMonId, STATUS_INFATUATION))
             {
-                BattleMon_RemoveStatusType(battleMonId, STATUS_INFATUATION);
+                BattleMon_RemoveStatus(battleMonId, STATUS_INFATUATION);
                 retVal = FALSE;
             }
 
             // Dire Hit
             if ((itemEffect[cmdIndex] & ITEM0_DIRE_HIT)
-             && !BattleMon_HasStatusType(gActiveBattler, STATUS_FOCUS))
+             && !BattleMon_HasStatus(gActiveBattler, STATUS_FOCUS))
             {
                 BattleMon_AddStatus(gActiveBattler, STATUS_FOCUS);
                 retVal = FALSE;
@@ -4164,7 +4164,7 @@ bool8 PokemonUseItemEffects(struct Pokemon *mon, u16 item, u8 partyIndex, u8 mov
              && HealStatusConditions(mon, partyIndex, STATUS1_SLEEP, battleMonId) == 0)
             {
                 if (battleMonId != MAX_BATTLERS_COUNT)
-                    BattleMon_RemoveStatusType(battleMonId, STATUS_NIGHTMARE);
+                    BattleMon_RemoveStatus(battleMonId, STATUS_NIGHTMARE);
                 retVal = FALSE;
             }
             if ((itemEffect[cmdIndex] & ITEM3_POISON) && HealStatusConditions(mon, partyIndex, STATUS_POISON, battleMonId) == 0)
@@ -4177,9 +4177,9 @@ bool8 PokemonUseItemEffects(struct Pokemon *mon, u16 item, u8 partyIndex, u8 mov
                 retVal = FALSE;
             if ((itemEffect[cmdIndex] & ITEM3_CONFUSION)  // heal confusion
              && gMain.inBattle && battleMonId != MAX_BATTLERS_COUNT 
-             && BattleMon_HasStatusType(battleMonId, STATUS_CONFUSED))
+             && BattleMon_HasStatus(battleMonId, STATUS_CONFUSED))
             {
-                BattleMon_RemoveStatusType(battleMonId, STATUS_CONFUSED);
+                BattleMon_RemoveStatus(battleMonId, STATUS_CONFUSED);
                 retVal = FALSE;
             }
             break;
@@ -4507,7 +4507,7 @@ static bool8 HealStatusConditions(struct Pokemon *mon, u32 unused, u32 status, u
         statusMon &= ~gStatus1FromStatus[status];
         SetMonData(mon, MON_DATA_STATUS, &statusMon);
         if (gMain.inBattle && battleId != MAX_BATTLERS_COUNT)
-            BattleMon_RemoveStatusType(battleId, status);
+            BattleMon_RemoveStatus(battleId, status);
         return FALSE;
     }
     else
@@ -4594,12 +4594,12 @@ bool8 PokemonItemUseNoEffect(struct Pokemon *mon, u16 item, u8 partyIndex, u8 mo
         // status healing effects
         case 0:
             // Cure infatuation
-            if (itemEffect[cmdIndex] & ITEM0_INFATUATION && gMain.inBattle && battlerId != MAX_BATTLERS_COUNT && BattleMon_HasStatusType(battlerId, STATUS_INFATUATION))
+            if (itemEffect[cmdIndex] & ITEM0_INFATUATION && gMain.inBattle && battlerId != MAX_BATTLERS_COUNT && BattleMon_HasStatus(battlerId, STATUS_INFATUATION))
                 retVal = FALSE;
 
             // Dire Hit
             if (itemEffect[cmdIndex] & ITEM0_DIRE_HIT 
-                && !BattleMon_HasStatusType(gActiveBattler,STATUS_FOCUS));
+                && !BattleMon_HasStatus(gActiveBattler,STATUS_FOCUS));
                 retVal = FALSE;
 
             // X Attack
@@ -4659,7 +4659,7 @@ bool8 PokemonItemUseNoEffect(struct Pokemon *mon, u16 item, u8 partyIndex, u8 mo
             if ((itemEffect[cmdIndex] & ITEM3_PARALYSIS) && PartyMonHasStatus(mon, partyIndex, STATUS1_PARALYSIS, battlerId))
                 retVal = FALSE;
             if (itemEffect[cmdIndex] & ITEM3_CONFUSION // heal confusion
-             && gMain.inBattle && battlerId != MAX_BATTLERS_COUNT && (BattleMon_HasStatusType(battlerId, STATUS_CONFUSED)))
+             && gMain.inBattle && battlerId != MAX_BATTLERS_COUNT && (BattleMon_HasStatus(battlerId, STATUS_CONFUSED)))
                 retVal = FALSE;
             break;
 

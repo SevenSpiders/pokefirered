@@ -145,7 +145,7 @@ static bool8 FindMonThatAbsorbsOpponentsMove(void)
 
 static bool8 ShouldSwitchIfNaturalCure(void)
 {
-    if (!(gBattleMons[gActiveBattler].status1 & STATUS1_SLEEP)
+    if (!(BattleMon_HasStatus(gActiveBattler, STATUS_SLEEP))
      || (gBattleMons[gActiveBattler].ability != ABILITY_NATURAL_CURE)
      || (gBattleMons[gActiveBattler].hp < gBattleMons[gActiveBattler].maxHP / 2))
         return FALSE;
@@ -604,7 +604,7 @@ static bool8 ShouldUseItem(void)
             break;
         case AI_ITEM_CURE_CONDITION:
             *(gBattleStruct->AI_itemFlags + gActiveBattler / 2) = 0;
-            if (itemEffects[3] & ITEM3_SLEEP && BattleMon_HasStatusType(gActiveBattler, STATUS_SLEEP))
+            if (itemEffects[3] & ITEM3_SLEEP && BattleMon_HasStatus(gActiveBattler, STATUS_SLEEP))
             {
                 *(gBattleStruct->AI_itemFlags + gActiveBattler / 2) |= 0x20;
                 shouldUse = TRUE;
@@ -614,22 +614,22 @@ static bool8 ShouldUseItem(void)
                 *(gBattleStruct->AI_itemFlags + gActiveBattler / 2) |= 0x10;
                 shouldUse = TRUE;
             }
-            if (itemEffects[3] & ITEM3_BURN && BattleMon_HasStatusType(gActiveBattler, STATUS_BURN))
+            if (itemEffects[3] & ITEM3_BURN && BattleMon_HasStatus(gActiveBattler, STATUS_BURN))
             {
                 *(gBattleStruct->AI_itemFlags + gActiveBattler / 2) |= 0x8;
                 shouldUse = TRUE;
             }
-            if (itemEffects[3] & ITEM3_FREEZE && BattleMon_HasStatusType(gActiveBattler, STATUS_FREEZE))
+            if (itemEffects[3] & ITEM3_FREEZE && BattleMon_HasStatus(gActiveBattler, STATUS_FREEZE))
             {
                 *(gBattleStruct->AI_itemFlags + gActiveBattler / 2) |= 0x4;
                 shouldUse = TRUE;
             }
-            if (itemEffects[3] & ITEM3_PARALYSIS && BattleMon_HasStatusType(gActiveBattler, STATUS_PARALYSIS))
+            if (itemEffects[3] & ITEM3_PARALYSIS && BattleMon_HasStatus(gActiveBattler, STATUS_PARALYSIS))
             {
                 *(gBattleStruct->AI_itemFlags + gActiveBattler / 2) |= 0x2;
                 shouldUse = TRUE;
             }
-            if (itemEffects[3] & ITEM3_CONFUSION && BattleMon_HasStatusType(gActiveBattler, STATUS_CONFUSED))
+            if (itemEffects[3] & ITEM3_CONFUSION && BattleMon_HasStatus(gActiveBattler, STATUS_CONFUSED))
             {
                 *(gBattleStruct->AI_itemFlags + gActiveBattler / 2) |= 0x1;
                 shouldUse = TRUE;
