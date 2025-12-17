@@ -588,25 +588,6 @@ static const struct StatFractions sAccuracyStageRatios[] =
 // The chance is 1/N for each stage.
 static const u16 sCriticalHitChance[] = {16, 8, 4, 3, 2};
 
-static const u32 sStatusFlagsForMoveEffects[NUM_MOVE_EFFECTS] =
-{
-    [MOVE_EFFECT_SLEEP]          = STATUS1_SLEEP,
-    [MOVE_EFFECT_POISON]         = STATUS1_POISON,
-    [MOVE_EFFECT_BURN]           = STATUS1_BURN,
-    [MOVE_EFFECT_FREEZE]         = STATUS1_FREEZE,
-    [MOVE_EFFECT_PARALYSIS]      = STATUS1_PARALYSIS,
-    [MOVE_EFFECT_TOXIC]          = STATUS1_TOXIC_POISON,
-    [MOVE_EFFECT_CONFUSION]      = STATUS2_CONFUSION,
-    [MOVE_EFFECT_FLINCH]         = STATUS2_FLINCHED,
-    [MOVE_EFFECT_UPROAR]         = STATUS2_UPROAR,
-    [MOVE_EFFECT_CHARGING]       = STATUS2_MULTIPLETURNS,
-    [MOVE_EFFECT_WRAP]           = STATUS2_WRAPPED,
-    [MOVE_EFFECT_RECHARGE]       = STATUS2_RECHARGE,
-    [MOVE_EFFECT_PREVENT_ESCAPE] = STATUS2_ESCAPE_PREVENTION,
-    [MOVE_EFFECT_NIGHTMARE]      = STATUS2_NIGHTMARE,
-    [MOVE_EFFECT_THRASH]         = STATUS2_LOCK_CONFUSE,
-};
-
 static const u32 sStatusTypeFromMoveEffect[NUM_MOVE_EFFECTS] =
 {
     [MOVE_EFFECT_SLEEP]          = STATUS_SLEEP,
@@ -2372,7 +2353,6 @@ void SetMoveEffect(bool8 primary, u8 certain)
         && gBattleCommunication[MOVE_EFFECT_BYTE] != MOVE_EFFECT_STEAL_ITEM)
         INCREMENT_RETURN
 
-    // if (gBattleMons[gEffectBattler].status2 & STATUS2_SUBSTITUTE && affectsUser != MOVE_EFFECT_AFFECTS_USER)
     if (BattleMon_HasStatusType(gEffectBattler, STATUS_SUBSTITUTE) && affectsUser != MOVE_EFFECT_AFFECTS_USER)
         INCREMENT_RETURN
 
@@ -2444,7 +2424,6 @@ void SetMoveEffect(bool8 primary, u8 certain)
     } // if <= PRIMARY_STATUS_MOVE_EFFECT
     else
     {
-        // if (gBattleMons[gEffectBattler].status2 & sStatusFlagsForMoveEffects[gBattleCommunication[MOVE_EFFECT_BYTE]])
         if (!BattleMon_CanAddStatus(gEffectBattler, sStatusTypeFromMoveEffect[gBattleCommunication[MOVE_EFFECT_BYTE]]))
         {
             gBattlescriptCurrInstr++;
@@ -2485,7 +2464,6 @@ void SetMoveEffect(bool8 primary, u8 certain)
                 else
                 {
                     if (GetBattlerTurnOrderNum(gEffectBattler) > gCurrentTurnActionNumber)
-                        // gBattleMons[gEffectBattler].status2 |= sStatusFlagsForMoveEffects[gBattleCommunication[MOVE_EFFECT_BYTE]];
                         BattleMon_AddStatus(gEffectBattler, STATUS_FLINCHED);
                     gBattlescriptCurrInstr++;
                 }
@@ -2884,10 +2862,6 @@ static void Cmd_clearstatusfromeffect(void)
 {
     gActiveBattler = GetBattlerForBattleScript(gBattlescriptCurrInstr[1]);
 
-    // if (gBattleCommunication[MOVE_EFFECT_BYTE] <= PRIMARY_STATUS_MOVE_EFFECT)
-    //     gBattleMons[gActiveBattler].status1 &= (~sStatusFlagsForMoveEffects[gBattleCommunication[MOVE_EFFECT_BYTE]]);
-    // else
-    //     gBattleMons[gActiveBattler].status2 &= (~sStatusFlagsForMoveEffects[gBattleCommunication[MOVE_EFFECT_BYTE]]);
     BattleMon_RemoveStatusType(gActiveBattler, sStatusTypeFromMoveEffect[gBattleCommunication[MOVE_EFFECT_BYTE]]);
 
     gBattleCommunication[MOVE_EFFECT_BYTE] = 0;
@@ -6612,7 +6586,6 @@ bool8 UproarWakeUpCheck(u8 battlerId)
 
     for (i = 0; i < gBattlersCount; i++)
     {
-        // if (!(gBattleMons[i].status2 & STATUS2_UPROAR) || gBattleMons[battlerId].ability == ABILITY_SOUNDPROOF)
         if (!BattleMon_HasStatusType(i, STATUS_UPROAR) || gBattleMons[battlerId].ability == ABILITY_SOUNDPROOF)
             continue;
 
@@ -8143,8 +8116,6 @@ static void Cmd_healpartystatus(void)
         {
             if (gBattleMons[gActiveBattler].ability != ABILITY_SOUNDPROOF)
             {
-                // gBattleMons[gActiveBattler].status1 = 0;
-                // gBattleMons[gActiveBattler].status2 &= ~STATUS2_NIGHTMARE;
                 BattleMon_RemoveStatusType(gActiveBattler, STATUS_SLEEP);
                 BattleMon_RemoveStatusType(gActiveBattler, STATUS_POISON);
                 BattleMon_RemoveStatusType(gActiveBattler, STATUS_BURN);
@@ -9431,7 +9402,6 @@ static void Cmd_docastformchangeanimation(void)
 {
     gActiveBattler = gBattleScripting.battler;
 
-    // if (gBattleMons[gActiveBattler].status2 & STATUS2_SUBSTITUTE)
     if (BattleMon_HasStatusType(gActiveBattler, STATUS_SUBSTITUTE))
         *(&gBattleStruct->formToChangeInto) |= CASTFORM_SUBSTITUTE;
 

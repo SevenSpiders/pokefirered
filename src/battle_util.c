@@ -909,7 +909,7 @@ u8 DoBattlerEndTurnEffects(void)
                 gBattleStruct->turnEffectsTracker++;
                 break;
             case ENDTURN_UPROAR:  // uproar
-                if (BattleMon_HasStatusType(gActiveBattler, STATUS2_UPROAR))
+                if (BattleMon_HasStatusType(gActiveBattler, STATUS_UPROAR))
                 {
                     for (gBattlerAttacker = 0; gBattlerAttacker < gBattlersCount; gBattlerAttacker++)
                     {

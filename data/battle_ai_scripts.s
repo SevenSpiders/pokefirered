@@ -217,7 +217,7 @@ AI_CBM_Sleep::
 	get_ability AI_TARGET
 	if_equal ABILITY_INSOMNIA, Score_Minus10
 	if_equal ABILITY_VITAL_SPIRIT, Score_Minus10
-	if_status AI_TARGET, STATUS1_ANY, Score_Minus10
+	if_status AI_TARGET, STATUS_ANY_STATUS1, Score_Minus10
 @	if_side_affecting AI_TARGET, SIDE_STATUS_SAFEGUARD, Score_Minus10  @ Improvement in Emerald
 	end
 
@@ -235,8 +235,8 @@ AI_CBM_Explosion_End::
 	end
 
 AI_CBM_Nightmare::
-	if_status2 AI_TARGET, STATUS2_NIGHTMARE, Score_Minus10
-	if_not_status AI_TARGET, STATUS1_SLEEP, Score_Minus8
+	if_status2 AI_TARGET, STATUS_NIGHTMARE, Score_Minus10
+	if_not_status AI_TARGET, STATUS_SLEEP, Score_Minus8
 	end
 
 AI_CBM_DreamEater::
@@ -350,7 +350,7 @@ AI_CBM_Poison::
 	if_equal TYPE_POISON, Score_Minus10
 	get_ability AI_TARGET
 	if_equal ABILITY_IMMUNITY, Score_Minus10
-	if_status AI_TARGET, STATUS1_ANY, Score_Minus10
+	if_status AI_TARGET, STATUS_ANY_STATUS1, Score_Minus10
 @	if_side_affecting AI_TARGET, SIDE_STATUS_SAFEGUARD, Score_Minus10  @ Improvement in Emerald
 	end
 

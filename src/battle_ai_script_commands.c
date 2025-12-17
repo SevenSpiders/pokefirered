@@ -157,10 +157,10 @@ static const BattleAICmdFunc sBattleAICmdTable[] =
     Cmd_if_hp_not_equal,                  // 0x8
     Cmd_if_status,                        // 0x9
     Cmd_if_not_status,                    // 0xA
-    Cmd_if_status2,                       // 0xB
-    Cmd_if_not_status2,                   // 0xC
-    Cmd_if_status3,                       // 0xD
-    Cmd_if_not_status3,                   // 0xE
+    Cmd_if_status,                        // 0xB // was status2
+    Cmd_if_not_status,                    // 0xC // was status2
+    Cmd_if_status,                        // 0xD // was status3
+    Cmd_if_not_status,                    // 0xE // was status3
     Cmd_if_side_affecting,                // 0xF
     Cmd_if_not_side_affecting,            // 0x10
     Cmd_if_less_than,                     // 0x11
@@ -604,7 +604,9 @@ static void Cmd_if_status(void)
 
     status = T1_READ_32(sAIScriptPtr + 2);
 
-    if (gBattleMons[battlerId].status1 & status)
+    if (status == STATUS_ANY_STATUS1 && BattleMon_HasAnyStatus1(battlerId))
+        sAIScriptPtr = T1_READ_PTR(sAIScriptPtr + 6);
+    else if (BattleMon_HasStatusType(battlerId, status))
         sAIScriptPtr = T1_READ_PTR(sAIScriptPtr + 6);
     else
         sAIScriptPtr += 10;
@@ -622,7 +624,9 @@ static void Cmd_if_not_status(void)
 
     status = T1_READ_32(sAIScriptPtr + 2);
 
-    if (!(gBattleMons[battlerId].status1 & status))
+    if (status == STATUS_ANY_STATUS1 && !BattleMon_HasAnyStatus1(battlerId))
+        sAIScriptPtr = T1_READ_PTR(sAIScriptPtr + 6);
+    else if (!BattleMon_HasStatusType(battlerId, status))
         sAIScriptPtr = T1_READ_PTR(sAIScriptPtr + 6);
     else
         sAIScriptPtr += 10;

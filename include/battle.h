@@ -285,6 +285,7 @@ extern u8 gBattlerTarget;
 extern u8 gAbsentBattlerFlags;
 
 extern struct BattlePokemon gBattleMons[PARTY_SIZE*2];
+extern const u8 gStatus1FromStatus [STATUS_MAX_STATUS1+1];
 
 struct UsedMoves
 {

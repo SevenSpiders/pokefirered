@@ -43,6 +43,15 @@
 #include "constants/songs.h"
 #include "constants/trainers.h"
 
+const u8 gStatus1FromStatus [] = {
+    [STATUS_SLEEP]     = STATUS1_SLEEP,
+    [STATUS_POISON]    = STATUS1_PSN_ANY,
+    [STATUS_BURN]      = STATUS1_BURN,
+    [STATUS_FREEZE]    = STATUS1_FREEZE,
+    [STATUS_PARALYSIS] = STATUS1_PARALYSIS,
+    [STATUS_TOXIC]     = STATUS1_PSN_ANY,
+};
+
 static void SpriteCB_UnusedDebugSprite(struct Sprite *sprite);
 static void HandleAction_UseMove(void);
 static void HandleAction_Switch(void);
@@ -2430,19 +2439,19 @@ void FaintClearSetData(void)
 {
     s32 i;
     u8 *ptr;
-
-    // for (i = 0; i < NUM_BATTLE_STATS; i++)
-    //     gBattleMons[gActiveBattler].statStages[i] = DEFAULT_STAT_STAGE;
-
-    // gBattleMons[gActiveBattler].status2 = 0;
-    // gStatuses3[gActiveBattler] = 0;
+    u16 *status;
 
     for (i = 0; i < gBattlersCount; i++)
     {
         if (BattleMon_HasStatusType(i, STATUS_NO_ESCAPE) && gDisableStructs[i].battlerPreventingEscape == gActiveBattler)
             BattleMon_RemoveStatusType(i, STATUS_NO_ESCAPE);
-        if (BattleMon_HasStatus(i, ENCODE_STATUS(STATUS_INFATUATION, gActiveBattler)))
-            BattleMon_RemoveStatusType(i, STATUS_INFATUATION);
+        status = BattleMon_GetStatusPtr(i, STATUS_INFATUATION);
+        if (status != 0)
+        {
+            u32 infatuatedWith = GET_STATUS_DATA(*status);
+            if (infatuatedWith == gActiveBattler)
+                BattleMon_RemoveStatusType(i, STATUS_INFATUATION);
+        }
         if (BattleMon_HasStatusType(i, STATUS_WRAPPED) && *(gBattleStruct->wrappedBy + i) == gActiveBattler)
             BattleMon_RemoveStatusType(i, STATUS_WRAPPED);
     }

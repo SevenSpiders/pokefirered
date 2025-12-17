@@ -209,14 +209,7 @@
 #define STATUS3_TRACE                   (1 << 20)
 #define STATUS3_SEMI_INVULNERABLE       (STATUS3_UNDERGROUND | STATUS3_ON_AIR | STATUS3_UNDERWATER)
 
-const u8 gStatus1FromStatus [] = {
-    [STATUS_SLEEP]     = STATUS1_SLEEP,
-    [STATUS_POISON]    = STATUS1_PSN_ANY,
-    [STATUS_BURN]      = STATUS1_BURN,
-    [STATUS_FREEZE]    = STATUS1_FREEZE,
-    [STATUS_PARALYSIS] = STATUS1_PARALYSIS,
-    [STATUS_TOXIC]     = STATUS1_PSN_ANY,
-};
+
 
 // Not really sure what a "hitmarker" is.
 #define HITMARKER_WAKE_UP_CLEAR         (1 << 4) // Cleared when waking up. Never set or checked.
