@@ -4067,17 +4067,18 @@ bool8 PokemonUseItemEffects(struct Pokemon *mon, u16 item, u8 partyIndex, u8 mov
         case 0:
             // Cure infatuation
             if ((itemEffect[cmdIndex] & ITEM0_INFATUATION)
-                && gMain.inBattle && battleMonId != MAX_BATTLERS_COUNT && (gBattleMons[battleMonId].status2 & STATUS2_INFATUATION))
+                && gMain.inBattle && battleMonId != MAX_BATTLERS_COUNT 
+                && BattleMon_HasStatusType(battleMonId, STATUS_INFATUATION))
             {
-                gBattleMons[battleMonId].status2 &= ~STATUS2_INFATUATION;
+                BattleMon_RemoveStatusType(battleMonId, STATUS_INFATUATION);
                 retVal = FALSE;
             }
 
             // Dire Hit
             if ((itemEffect[cmdIndex] & ITEM0_DIRE_HIT)
-             && !(gBattleMons[gActiveBattler].status2 & STATUS2_FOCUS_ENERGY))
+             && !BattleMon_HasStatusType(gActiveBattler, STATUS_FOCUS))
             {
-                gBattleMons[gActiveBattler].status2 |= STATUS2_FOCUS_ENERGY;
+                BattleMon_AddStatus(gActiveBattler, STATUS_FOCUS);
                 retVal = FALSE;
             }
 
@@ -4163,7 +4164,7 @@ bool8 PokemonUseItemEffects(struct Pokemon *mon, u16 item, u8 partyIndex, u8 mov
              && HealStatusConditions(mon, partyIndex, STATUS1_SLEEP, battleMonId) == 0)
             {
                 if (battleMonId != MAX_BATTLERS_COUNT)
-                    gBattleMons[battleMonId].status2 &= ~STATUS2_NIGHTMARE;
+                    BattleMon_RemoveStatusType(battleMonId, STATUS_NIGHTMARE);
                 retVal = FALSE;
             }
             if ((itemEffect[cmdIndex] & ITEM3_POISON) && HealStatusConditions(mon, partyIndex, STATUS1_PSN_ANY | STATUS1_TOXIC_COUNTER, battleMonId) == 0)
@@ -4175,9 +4176,10 @@ bool8 PokemonUseItemEffects(struct Pokemon *mon, u16 item, u8 partyIndex, u8 mov
             if ((itemEffect[cmdIndex] & ITEM3_PARALYSIS) && HealStatusConditions(mon, partyIndex, STATUS1_PARALYSIS, battleMonId) == 0)
                 retVal = FALSE;
             if ((itemEffect[cmdIndex] & ITEM3_CONFUSION)  // heal confusion
-             && gMain.inBattle && battleMonId != MAX_BATTLERS_COUNT && (gBattleMons[battleMonId].status2 & STATUS2_CONFUSION))
+             && gMain.inBattle && battleMonId != MAX_BATTLERS_COUNT 
+             && BattleMon_HasStatusType(battleMonId, STATUS_CONFUSED))
             {
-                gBattleMons[battleMonId].status2 &= ~STATUS2_CONFUSION;
+                BattleMon_RemoveStatusType(battleMonId, STATUS_CONFUSED);
                 retVal = FALSE;
             }
             break;
@@ -4592,11 +4594,12 @@ bool8 PokemonItemUseNoEffect(struct Pokemon *mon, u16 item, u8 partyIndex, u8 mo
         // status healing effects
         case 0:
             // Cure infatuation
-            if (itemEffect[cmdIndex] & ITEM0_INFATUATION && gMain.inBattle && battlerId != MAX_BATTLERS_COUNT && gBattleMons[battlerId].status2 & STATUS2_INFATUATION)
+            if (itemEffect[cmdIndex] & ITEM0_INFATUATION && gMain.inBattle && battlerId != MAX_BATTLERS_COUNT && BattleMon_HasStatusType(battlerId, STATUS_INFATUATION))
                 retVal = FALSE;
 
             // Dire Hit
-            if (itemEffect[cmdIndex] & ITEM0_DIRE_HIT && !(gBattleMons[gActiveBattler].status2 & STATUS2_FOCUS_ENERGY))
+            if (itemEffect[cmdIndex] & ITEM0_DIRE_HIT 
+                && !BattleMon_HasStatusType(gActiveBattler,STATUS_FOCUS));
                 retVal = FALSE;
 
             // X Attack
@@ -4656,7 +4659,7 @@ bool8 PokemonItemUseNoEffect(struct Pokemon *mon, u16 item, u8 partyIndex, u8 mo
             if ((itemEffect[cmdIndex] & ITEM3_PARALYSIS) && PartyMonHasStatus(mon, partyIndex, STATUS1_PARALYSIS, battlerId))
                 retVal = FALSE;
             if (itemEffect[cmdIndex] & ITEM3_CONFUSION // heal confusion
-             && gMain.inBattle && battlerId != MAX_BATTLERS_COUNT && (gBattleMons[battlerId].status2 & STATUS2_CONFUSION))
+             && gMain.inBattle && battlerId != MAX_BATTLERS_COUNT && (BattleMon_HasStatusType(battlerId, STATUS_CONFUSED)))
                 retVal = FALSE;
             break;
 

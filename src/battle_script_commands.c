@@ -1395,7 +1395,6 @@ static void CheckWonderGuardAndLevitate(void)
     {
         if (TYPE_EFFECT_ATK_TYPE(i) == TYPE_FORESIGHT)
         {
-            // if (gBattleMons[gBattlerTarget].status2 & STATUS2_FORESIGHT)
             if (BattleMon_HasStatusType(gBattlerTarget, STATUS_FORESIGHT))
                 break;
             i += 3;
@@ -1511,7 +1510,6 @@ u8 TypeCalc(u16 move, u8 attacker, u8 defender)
         {
             if (TYPE_EFFECT_ATK_TYPE(i) == TYPE_FORESIGHT)
             {
-                // if (gBattleMons[defender].status2 & STATUS2_FORESIGHT)
                 if (BattleMon_HasStatusType(defender, STATUS_FORESIGHT))
                     break;
                 i += 3;
@@ -1630,7 +1628,6 @@ static void Cmd_adjustnormaldamage(void)
         RecordItemEffectBattle(gBattlerTarget, holdEffect);
         gSpecialStatuses[gBattlerTarget].focusBanded = 1;
     }
-    // if (!(gBattleMons[gBattlerTarget].status2 & STATUS2_SUBSTITUTE)
     if (!BattleMon_HasStatusType(gBattlerTarget, STATUS_SUBSTITUTE)
      && (gBattleMoves[gCurrentMove].effect == EFFECT_FALSE_SWIPE || gProtectStructs[gBattlerTarget].endured || gSpecialStatuses[gBattlerTarget].focusBanded)
      && gBattleMons[gBattlerTarget].hp <= gBattleMoveDamage)
@@ -1674,7 +1671,6 @@ static void Cmd_adjustnormaldamage2(void)
         RecordItemEffectBattle(gBattlerTarget, holdEffect);
         gSpecialStatuses[gBattlerTarget].focusBanded = 1;
     }
-    // if (!(gBattleMons[gBattlerTarget].status2 & STATUS2_SUBSTITUTE)
     if (!BattleMon_HasStatusType(gBattlerTarget, STATUS_SUBSTITUTE)
      && (gProtectStructs[gBattlerTarget].endured || gSpecialStatuses[gBattlerTarget].focusBanded)
      && gBattleMons[gBattlerTarget].hp <= gBattleMoveDamage)
@@ -2149,7 +2145,6 @@ static bool32 TryEffect_Sleep()
     if (gBattleMons[gEffectBattler].ability != ABILITY_SOUNDPROOF)
     {
         for (gActiveBattler = 0;
-            // gActiveBattler < gBattlersCount && !(gBattleMons[gActiveBattler].status2 & STATUS2_UPROAR);
             gActiveBattler < gBattlersCount && !BattleMon_HasStatusType(gActiveBattler, STATUS_UPROAR);
             gActiveBattler++)
         {}

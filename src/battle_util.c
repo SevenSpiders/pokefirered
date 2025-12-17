@@ -2787,7 +2787,7 @@ u8 ItemBattleEffects(u8 caseID, u8 battlerId, bool8 moveTurn)
                 }
                 break;
             case HOLD_EFFECT_CURE_CONFUSION:
-                if (gBattleMons[battlerId].status2 & STATUS2_CONFUSION)
+                if (BattleMon_HasStatusType(battlerId, STATUS_CONFUSED))
                 {
                     BattleMon_RemoveStatusType(battlerId, STATUS_CONFUSED);
                     BattleScriptExecute(BattleScript_BerryCureConfusionEnd2);
@@ -2795,7 +2795,7 @@ u8 ItemBattleEffects(u8 caseID, u8 battlerId, bool8 moveTurn)
                 }
                 break;
             case HOLD_EFFECT_CURE_STATUS:
-                if (gBattleMons[battlerId].status1 & STATUS1_ANY || gBattleMons[battlerId].status2 & STATUS2_CONFUSION)
+                if (gBattleMons[battlerId].status1 & STATUS1_ANY || BattleMon_HasStatusType(battlerId, STATUS_CONFUSED))
                 {
                     i = 0;
                     if (gBattleMons[battlerId].status1 & STATUS1_PSN_ANY)
@@ -2824,7 +2824,7 @@ u8 ItemBattleEffects(u8 caseID, u8 battlerId, bool8 moveTurn)
                         StringCopy(gBattleTextBuff1, gStatusConditionString_IceJpn);
                         i++;
                     }
-                    if (gBattleMons[battlerId].status2 & STATUS2_CONFUSION)
+                    if (BattleMon_HasStatusType(battlerId, STATUS_CONFUSED))
                     {
                         StringCopy(gBattleTextBuff1, gStatusConditionString_ConfusionJpn);
                         i++;
@@ -2840,7 +2840,7 @@ u8 ItemBattleEffects(u8 caseID, u8 battlerId, bool8 moveTurn)
                 }
                 break;
             case HOLD_EFFECT_CURE_ATTRACT:
-                if (gBattleMons[battlerId].status2 & STATUS2_INFATUATION)
+                if (BattleMon_HasStatusType(battlerId, STATUS_INFATUATION))
                 {
                     BattleMon_RemoveStatusType(battlerId, STATUS_INFATUATION);
                     StringCopy(gBattleTextBuff1, gStatusConditionString_LoveJpn);
@@ -2934,7 +2934,7 @@ u8 ItemBattleEffects(u8 caseID, u8 battlerId, bool8 moveTurn)
                 }
                 break;
             case HOLD_EFFECT_CURE_CONFUSION:
-                if (gBattleMons[battlerId].status2 & STATUS2_CONFUSION)
+                if (BattleMon_HasStatusType(battlerId, STATUS_CONFUSED))
                 {
                     BattleMon_RemoveStatusType(battlerId, STATUS_CONFUSED);
                     BattleScriptPushCursor();
@@ -2943,7 +2943,7 @@ u8 ItemBattleEffects(u8 caseID, u8 battlerId, bool8 moveTurn)
                 }
                 break;
             case HOLD_EFFECT_CURE_ATTRACT:
-                if (gBattleMons[battlerId].status2 & STATUS2_INFATUATION)
+                if (BattleMon_HasStatusType(battlerId, STATUS_INFATUATION))
                 {
                     BattleMon_RemoveStatusType(battlerId, STATUS_INFATUATION);
                     StringCopy(gBattleTextBuff1, gStatusConditionString_LoveJpn);
@@ -2954,7 +2954,7 @@ u8 ItemBattleEffects(u8 caseID, u8 battlerId, bool8 moveTurn)
                 }
                 break;
             case HOLD_EFFECT_CURE_STATUS:
-                if (gBattleMons[battlerId].status1 & STATUS1_ANY || gBattleMons[battlerId].status2 & STATUS2_CONFUSION)
+                if (gBattleMons[battlerId].status1 & STATUS1_ANY || BattleMon_HasStatusType(battlerId, STATUS_CONFUSED))
                 {
                     if (gBattleMons[battlerId].status1 & STATUS1_PSN_ANY)
                         StringCopy(gBattleTextBuff1, gStatusConditionString_PoisonJpn);
@@ -2974,7 +2974,7 @@ u8 ItemBattleEffects(u8 caseID, u8 battlerId, bool8 moveTurn)
                     if (BattleMon_HasStatusType(battlerId, STATUS_FREEZE))
                         StringCopy(gBattleTextBuff1, gStatusConditionString_IceJpn);
 
-                    if (gBattleMons[battlerId].status2 & STATUS2_CONFUSION)
+                    if (BattleMon_HasStatusType(battlerId, STATUS_CONFUSED))
                         StringCopy(gBattleTextBuff1, gStatusConditionString_ConfusionJpn);
 
                     gBattleMons[battlerId].status1 = 0;
@@ -3200,7 +3200,7 @@ u8 IsMonDisobedient(void)
 
     // is not obedient
     if (gCurrentMove == MOVE_RAGE)
-        gBattleMons[gBattlerAttacker].status2 &= ~STATUS2_RAGE;
+        BattleMon_RemoveStatusType(gBattlerAttacker, STATUS_RAGE);
     if (gBattleMons[gBattlerAttacker].status1 & STATUS1_SLEEP && (gCurrentMove == MOVE_SNORE || gCurrentMove == MOVE_SLEEP_TALK))
     {
         gBattlescriptCurrInstr = BattleScript_IgnoresWhileAsleep;
@@ -3245,7 +3245,7 @@ u8 IsMonDisobedient(void)
             int i;
             for (i = 0; i < gBattlersCount; i++)
             {
-                if (gBattleMons[i].status2 & STATUS2_UPROAR)
+                if (BattleMon_HasStatusType(i, STATUS_UPROAR))
                     break;
             }
             if (i == gBattlersCount)
