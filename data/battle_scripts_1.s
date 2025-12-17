@@ -288,7 +288,7 @@ BattleScript_EffectSleep::
 	attackcanceler
 	attackstring
 	ppreduce
-	jumpifstatus2 BS_TARGET, STATUS2_SUBSTITUTE, BattleScript_ButItFailed
+	jumpifstatus2 BS_TARGET, STATUS_SUBSTITUTE, BattleScript_ButItFailed
 	jumpifstatus BS_TARGET, STATUS_SLEEP, BattleScript_AlreadyAsleep
 	jumpifcantmakeasleep BattleScript_CantMakeAsleep
 	jumpifstatus BS_TARGET, STATUS_ANY_STATUS1, BattleScript_ButItFailed
@@ -426,7 +426,7 @@ BattleScript_PreserveMissedBitDoMoveAnim:
 
 BattleScript_EffectDreamEater::
 	attackcanceler
-	jumpifstatus2 BS_TARGET, STATUS2_SUBSTITUTE, BattleScript_DreamEaterNoEffect
+	jumpifstatus2 BS_TARGET, STATUS_SUBSTITUTE, BattleScript_DreamEaterNoEffect
 	jumpifstatus BS_TARGET, STATUS_SLEEP, BattleScript_DreamEaterWorked
 BattleScript_DreamEaterNoEffect:
 	attackstring
@@ -535,7 +535,7 @@ BattleScript_EffectEvasionDown::
 	setstatchanger STAT_EVASION, 1, TRUE
 BattleScript_EffectStatDown::
 	attackcanceler
-	jumpifstatus2 BS_TARGET, STATUS2_SUBSTITUTE, BattleScript_ButItFailedAtkStringPpReduce
+	jumpifstatus2 BS_TARGET, STATUS_SUBSTITUTE, BattleScript_ButItFailedAtkStringPpReduce
 	accuracycheck BattleScript_PrintMoveMissed, ACC_CURR_MOVE
 	attackstring
 	ppreduce
@@ -586,7 +586,7 @@ BattleScript_EffectRampage::
 	attackcanceler
 	accuracycheck BattleScript_PrintMoveMissed, ACC_CURR_MOVE
 	attackstring
-	jumpifstatus2 BS_ATTACKER, STATUS2_MULTIPLETURNS, BattleScript_EffectRampage2
+	jumpifstatus2 BS_ATTACKER, STATUS_MULTI_TURN, BattleScript_EffectRampage2
 	ppreduce
 BattleScript_EffectRampage2:
 	confuseifrepeatingattackends
@@ -689,7 +689,7 @@ BattleScript_EffectToxic::
 	attackstring
 	ppreduce
 	jumpifability BS_TARGET, ABILITY_IMMUNITY, BattleScript_ImmunityProtected
-	jumpifstatus2 BS_TARGET, STATUS2_SUBSTITUTE, BattleScript_ButItFailed
+	jumpifstatus2 BS_TARGET, STATUS_SUBSTITUTE, BattleScript_ButItFailed
 	jumpifstatus BS_TARGET, STATUS_POISON, BattleScript_AlreadyPoisoned
 	jumpifstatus BS_TARGET, STATUS_TOXIC, BattleScript_AlreadyPoisoned
 	jumpifstatus BS_TARGET, STATUS_ANY_STATUS1, BattleScript_ButItFailed
@@ -775,7 +775,7 @@ BattleScript_KOFail::
 	goto BattleScript_MoveEnd
 
 BattleScript_EffectRazorWind::
-	jumpifstatus2 BS_ATTACKER, STATUS2_MULTIPLETURNS, BattleScript_TwoTurnMovesSecondTurn
+	jumpifstatus2 BS_ATTACKER, STATUS_MULTI_TURN, BattleScript_TwoTurnMovesSecondTurn
 	jumpifword CMP_COMMON_BITS, gHitMarker, HITMARKER_NO_ATTACKSTRING, BattleScript_TwoTurnMovesSecondTurn
 	setbyte sTWOTURN_STRINGID, B_MSG_TURN1_RAZOR_WIND
 	call BattleScriptFirstChargingTurn
@@ -885,7 +885,7 @@ BattleScript_EffectFocusEnergy::
 	attackcanceler
 	attackstring
 	ppreduce
-	jumpifstatus2 BS_ATTACKER, STATUS2_FOCUS_ENERGY, BattleScript_ButItFailed
+	jumpifstatus2 BS_ATTACKER, STATUS_FOCUS, BattleScript_ButItFailed
 	setfocusenergy
 	attackanimation
 	waitanimation
@@ -904,8 +904,8 @@ BattleScript_EffectConfuse::
 	attackstring
 	ppreduce
 	jumpifability BS_TARGET, ABILITY_OWN_TEMPO, BattleScript_OwnTempoPrevents
-	jumpifstatus2 BS_TARGET, STATUS2_SUBSTITUTE, BattleScript_ButItFailed
-	jumpifstatus2 BS_TARGET, STATUS2_CONFUSION, BattleScript_AlreadyConfused
+	jumpifstatus2 BS_TARGET, STATUS_SUBSTITUTE, BattleScript_ButItFailed
+	jumpifstatus2 BS_TARGET, STATUS_CONFUSED, BattleScript_AlreadyConfused
 	accuracycheck BattleScript_ButItFailed, ACC_CURR_MOVE
 	jumpifsideaffecting BS_TARGET, SIDE_STATUS_SAFEGUARD, BattleScript_SafeguardProtected
 	attackanimation
@@ -986,7 +986,7 @@ BattleScript_EffectPoison::
 	attackstring
 	ppreduce
 	jumpifability BS_TARGET, ABILITY_IMMUNITY, BattleScript_ImmunityProtected
-	jumpifstatus2 BS_TARGET, STATUS2_SUBSTITUTE, BattleScript_ButItFailed
+	jumpifstatus2 BS_TARGET, STATUS_SUBSTITUTE, BattleScript_ButItFailed
 	jumpifstatus BS_TARGET, STATUS_POISON, BattleScript_AlreadyPoisoned
 	jumpifstatus BS_TARGET, STATUS_TOXIC, BattleScript_AlreadyPoisoned
 	jumpiftype BS_TARGET, TYPE_POISON, BattleScript_NotAffected
@@ -1007,7 +1007,7 @@ BattleScript_EffectParalyze::
 	attackstring
 	ppreduce
 	jumpifability BS_TARGET, ABILITY_LIMBER, BattleScript_LimberProtected
-	jumpifstatus2 BS_TARGET, STATUS2_SUBSTITUTE, BattleScript_ButItFailed
+	jumpifstatus2 BS_TARGET, STATUS_SUBSTITUTE, BattleScript_ButItFailed
 	typecalc
 	jumpifmovehadnoeffect BattleScript_ButItFailed
 	jumpifstatus BS_TARGET, STATUS_PARALYSIS, BattleScript_AlreadyParalyzed
@@ -1059,7 +1059,7 @@ BattleScript_EffectAccuracyDownHit::
 	goto BattleScript_EffectHit
 
 BattleScript_EffectSkyAttack::
-	jumpifstatus2 BS_ATTACKER, STATUS2_MULTIPLETURNS, BattleScript_TwoTurnMovesSecondTurn
+	jumpifstatus2 BS_ATTACKER, STATUS_MULTI_TURN, BattleScript_TwoTurnMovesSecondTurn
 	jumpifword CMP_COMMON_BITS, gHitMarker, HITMARKER_NO_ATTACKSTRING, BattleScript_TwoTurnMovesSecondTurn
 	setbyte sTWOTURN_STRINGID, B_MSG_TURN1_SKY_ATTACK
 	call BattleScriptFirstChargingTurn
@@ -1084,7 +1084,7 @@ BattleScript_EffectSubstitute::
 	ppreduce
 	attackstring
 	waitstate
-	jumpifstatus2 BS_ATTACKER, STATUS2_SUBSTITUTE, BattleScript_AlreadyHasSubstitute
+	jumpifstatus2 BS_ATTACKER, STATUS_SUBSTITUTE, BattleScript_AlreadyHasSubstitute
 	setsubstitute
 	jumpifbyte CMP_NOT_EQUAL, cMULTISTRING_CHOOSER, B_MSG_SUBSTITUTE_FAILED, BattleScript_SubstituteAnim
 	pause B_WAIT_TIME_SHORT
@@ -1131,7 +1131,7 @@ BattleScript_EffectMimic::
 	attackcanceler
 	attackstring
 	ppreduce
-	jumpifstatus2 BS_TARGET, STATUS2_SUBSTITUTE, BattleScript_ButItFailed
+	jumpifstatus2 BS_TARGET, STATUS_SUBSTITUTE, BattleScript_ButItFailed
 	accuracycheck BattleScript_ButItFailed, NO_ACC_CALC_CHECK_LOCK_ON
 	mimicattackcopy BattleScript_ButItFailed
 	attackanimation
@@ -1155,7 +1155,7 @@ BattleScript_EffectLeechSeed::
 	attackstring
 	pause B_WAIT_TIME_SHORT
 	ppreduce
-	jumpifstatus2 BS_TARGET, STATUS2_SUBSTITUTE, BattleScript_ButItFailed
+	jumpifstatus2 BS_TARGET, STATUS_SUBSTITUTE, BattleScript_ButItFailed
 	accuracycheck BattleScript_DoLeechSeed, ACC_CURR_MOVE
 BattleScript_DoLeechSeed::
 	setseeded
@@ -1283,7 +1283,7 @@ BattleScript_EffectLockOn::
 	attackcanceler
 	attackstring
 	ppreduce
-	jumpifstatus2 BS_TARGET, STATUS2_SUBSTITUTE, BattleScript_ButItFailed
+	jumpifstatus2 BS_TARGET, STATUS_SUBSTITUTE, BattleScript_ButItFailed
 	accuracycheck BattleScript_ButItFailed, ACC_CURR_MOVE
 	setalwayshitflag
 	attackanimation
@@ -1296,7 +1296,7 @@ BattleScript_EffectSketch::
 	attackcanceler
 	attackstring
 	ppreduce
-	jumpifstatus2 BS_TARGET, STATUS2_SUBSTITUTE, BattleScript_ButItFailed
+	jumpifstatus2 BS_TARGET, STATUS_SUBSTITUTE, BattleScript_ButItFailed
 	copymovepermanently BattleScript_ButItFailed
 	attackanimation
 	waitanimation
@@ -1442,8 +1442,8 @@ BattleScript_EffectMeanLook::
 	attackstring
 	ppreduce
 	accuracycheck BattleScript_ButItFailed, NO_ACC_CALC
-	jumpifstatus2 BS_TARGET, STATUS2_ESCAPE_PREVENTION, BattleScript_ButItFailed
-	jumpifstatus2 BS_TARGET, STATUS2_SUBSTITUTE, BattleScript_ButItFailed
+	jumpifstatus2 BS_TARGET, STATUS_NO_ESCAPE, BattleScript_ButItFailed
+	jumpifstatus2 BS_TARGET, STATUS_SUBSTITUTE, BattleScript_ButItFailed
 	attackanimation
 	waitanimation
 	setmoveeffect MOVE_EFFECT_PREVENT_ESCAPE
@@ -1456,8 +1456,8 @@ BattleScript_EffectNightmare::
 	attackcanceler
 	attackstring
 	ppreduce
-	jumpifstatus2 BS_TARGET, STATUS2_SUBSTITUTE, BattleScript_ButItFailed
-	jumpifstatus2 BS_TARGET, STATUS2_NIGHTMARE, BattleScript_ButItFailed
+	jumpifstatus2 BS_TARGET, STATUS_SUBSTITUTE, BattleScript_ButItFailed
+	jumpifstatus2 BS_TARGET, STATUS_NIGHTMARE, BattleScript_ButItFailed
 	jumpifstatus BS_TARGET, STATUS_SLEEP, BattleScript_NightmareWorked
 	goto BattleScript_ButItFailed
 BattleScript_NightmareWorked::
@@ -1511,7 +1511,7 @@ BattleScript_DoGhostCurse::
 	attackcanceler
 	attackstring
 	ppreduce
-	jumpifstatus2 BS_TARGET, STATUS2_SUBSTITUTE, BattleScript_ButItFailed
+	jumpifstatus2 BS_TARGET, STATUS_SUBSTITUTE, BattleScript_ButItFailed
 	accuracycheck BattleScript_ButItFailed, NO_ACC_CALC_CHECK_LOCK_ON
 	cursetarget BattleScript_ButItFailed
 	orword gHitMarker, HITMARKER_IGNORE_SUBSTITUTE
@@ -1592,7 +1592,7 @@ BattleScript_EffectSandstorm::
 BattleScript_EffectRollout::
 	attackcanceler
 	attackstring
-	jumpifstatus2 BS_ATTACKER, STATUS2_MULTIPLETURNS, BattleScript_RolloutCheckAccuracy
+	jumpifstatus2 BS_ATTACKER, STATUS_MULTI_TURN, BattleScript_RolloutCheckAccuracy
 	ppreduce
 BattleScript_RolloutCheckAccuracy::
 	accuracycheck BattleScript_RolloutHit, ACC_CURR_MOVE
@@ -1603,7 +1603,7 @@ BattleScript_RolloutHit::
 
 BattleScript_EffectSwagger::
 	attackcanceler
-	jumpifstatus2 BS_TARGET, STATUS2_SUBSTITUTE, BattleScript_MakeMoveMissed
+	jumpifstatus2 BS_TARGET, STATUS_SUBSTITUTE, BattleScript_MakeMoveMissed
 	accuracycheck BattleScript_PrintMoveMissed, ACC_CURR_MOVE
 	attackstring
 	ppreduce
@@ -1805,7 +1805,7 @@ BattleScript_EffectMirrorCoat::
 	goto BattleScript_HitFromAtkAnimation
 
 BattleScript_EffectSkullBash::
-	jumpifstatus2 BS_ATTACKER, STATUS2_MULTIPLETURNS, BattleScript_TwoTurnMovesSecondTurn
+	jumpifstatus2 BS_ATTACKER, STATUS_MULTI_TURN, BattleScript_TwoTurnMovesSecondTurn
 	jumpifword CMP_COMMON_BITS, gHitMarker, HITMARKER_NO_ATTACKSTRING, BattleScript_TwoTurnMovesSecondTurn
 	setbyte sTWOTURN_STRINGID, B_MSG_TURN1_SKULL_BASH
 	call BattleScriptFirstChargingTurn
@@ -1901,7 +1901,7 @@ BattleScript_EffectSolarBeam::
 	jumpifabilitypresent ABILITY_AIR_LOCK, BattleScript_SolarBeamDecideTurn
 	jumpifhalfword CMP_COMMON_BITS, gBattleWeather, B_WEATHER_SUN, BattleScript_SolarBeamOnFirstTurn
 BattleScript_SolarBeamDecideTurn::
-	jumpifstatus2 BS_ATTACKER, STATUS2_MULTIPLETURNS, BattleScript_TwoTurnMovesSecondTurn
+	jumpifstatus2 BS_ATTACKER, STATUS_MULTI_TURN, BattleScript_TwoTurnMovesSecondTurn
 	jumpifword CMP_COMMON_BITS, gHitMarker, HITMARKER_NO_ATTACKSTRING, BattleScript_TwoTurnMovesSecondTurn
 	setbyte sTWOTURN_STRINGID, B_MSG_TURN1_SOLAR_BEAM
 	call BattleScriptFirstChargingTurn
@@ -1967,7 +1967,7 @@ BattleScript_BeatUpEnd::
 	end
 
 BattleScript_EffectSemiInvulnerable::
-	jumpifstatus2 BS_ATTACKER, STATUS2_MULTIPLETURNS, BattleScript_SecondTurnSemiInvulnerable
+	jumpifstatus2 BS_ATTACKER, STATUS_MULTI_TURN, BattleScript_SecondTurnSemiInvulnerable
 	jumpifword CMP_COMMON_BITS, gHitMarker, HITMARKER_NO_ATTACKSTRING, BattleScript_SecondTurnSemiInvulnerable
 	jumpifmove MOVE_FLY, BattleScript_FirstTurnFly
 	jumpifmove MOVE_DIVE, BattleScript_FirstTurnDive
@@ -2070,7 +2070,7 @@ BattleScript_EffectUproar::
 	accuracycheck BattleScript_PrintMoveMissed, ACC_CURR_MOVE
 	setmoveeffect MOVE_EFFECT_UPROAR | MOVE_EFFECT_AFFECTS_USER
 	attackstring
-	jumpifstatus2 BS_ATTACKER, STATUS2_MULTIPLETURNS, BattleScript_UproarHit
+	jumpifstatus2 BS_ATTACKER, STATUS_MULTI_TURN, BattleScript_UproarHit
 	ppreduce
 BattleScript_UproarHit::
 	nop
@@ -2146,7 +2146,7 @@ BattleScript_EffectTorment::
 
 BattleScript_EffectFlatter::
 	attackcanceler
-	jumpifstatus2 BS_TARGET, STATUS2_SUBSTITUTE, BattleScript_MakeMoveMissed
+	jumpifstatus2 BS_TARGET, STATUS_SUBSTITUTE, BattleScript_MakeMoveMissed
 	accuracycheck BattleScript_PrintMoveMissed, ACC_CURR_MOVE
 	attackstring
 	ppreduce
@@ -2171,7 +2171,7 @@ BattleScript_EffectWillOWisp::
 	attackcanceler
 	attackstring
 	ppreduce
-	jumpifstatus2 BS_TARGET, STATUS2_SUBSTITUTE, BattleScript_ButItFailed
+	jumpifstatus2 BS_TARGET, STATUS_SUBSTITUTE, BattleScript_ButItFailed
 	jumpifstatus BS_TARGET, STATUS_BURN, BattleScript_AlreadyBurned
 	jumpiftype BS_TARGET, TYPE_FIRE, BattleScript_NotAffected
 	jumpifability BS_TARGET, ABILITY_WATER_VEIL, BattleScript_WaterVeilPrevents
@@ -2205,7 +2205,7 @@ BattleScript_EffectMemento::
 	setatkhptozero
 	attackanimation
 	waitanimation
-	jumpifstatus2 BS_TARGET, STATUS2_SUBSTITUTE, BattleScript_EffectMementoPrintNoEffect
+	jumpifstatus2 BS_TARGET, STATUS_SUBSTITUTE, BattleScript_EffectMementoPrintNoEffect
 	setbyte sSTAT_ANIM_PLAYED, FALSE
 	playstatchangeanimation BS_TARGET, BIT_ATK | BIT_SPATK, STAT_CHANGE_NEGATIVE | STAT_CHANGE_BY_TWO | STAT_CHANGE_MULTIPLE_STATS
 	playstatchangeanimation BS_TARGET, BIT_ATK, STAT_CHANGE_NEGATIVE | STAT_CHANGE_BY_TWO
@@ -2261,7 +2261,7 @@ BattleScript_EffectFocusPunch::
 	goto BattleScript_MoveEnd
 
 BattleScript_EffectSmellingsalt::
-	jumpifstatus2 BS_TARGET, STATUS2_SUBSTITUTE, BattleScript_EffectHit
+	jumpifstatus2 BS_TARGET, STATUS_SUBSTITUTE, BattleScript_EffectHit
 	setmoveeffect MOVE_EFFECT_REMOVE_PARALYSIS | MOVE_EFFECT_CERTAIN
 	jumpifstatus BS_TARGET, STATUS_PARALYSIS, BattleScript_SmellingsaltDoubleDmg
 	goto BattleScript_EffectHit
@@ -2327,7 +2327,7 @@ BattleScript_EffectTrick::
 	attackcanceler
 	attackstring
 	ppreduce
-	jumpifstatus2 BS_TARGET, STATUS2_SUBSTITUTE, BattleScript_ButItFailed
+	jumpifstatus2 BS_TARGET, STATUS_SUBSTITUTE, BattleScript_ButItFailed
 	accuracycheck BattleScript_ButItFailed, ACC_CURR_MOVE
 	tryswapitems BattleScript_ButItFailed
 	attackanimation
@@ -2449,7 +2449,7 @@ BattleScript_EffectYawn::
 	ppreduce
 	jumpifability BS_TARGET, ABILITY_VITAL_SPIRIT, BattleScript_PrintBankAbilityMadeIneffective
 	jumpifability BS_TARGET, ABILITY_INSOMNIA, BattleScript_PrintBankAbilityMadeIneffective
-	jumpifstatus2 BS_TARGET, STATUS2_SUBSTITUTE, BattleScript_ButItFailed
+	jumpifstatus2 BS_TARGET, STATUS_SUBSTITUTE, BattleScript_ButItFailed
 	jumpifsideaffecting BS_TARGET, SIDE_STATUS_SAFEGUARD, BattleScript_SafeguardProtected
 	accuracycheck BattleScript_ButItFailed, NO_ACC_CALC_CHECK_LOCK_ON
 	jumpifcantmakeasleep BattleScript_ButItFailed
@@ -2573,8 +2573,8 @@ BattleScript_TeeterDanceLoop::
 	setmoveeffect MOVE_EFFECT_CONFUSION
 	jumpifbyteequal gBattlerAttacker, gBattlerTarget, BattleScript_TeeterDanceLoopIncrement
 	jumpifability BS_TARGET, ABILITY_OWN_TEMPO, BattleScript_TeeterDanceOwnTempoPrevents
-	jumpifstatus2 BS_TARGET, STATUS2_SUBSTITUTE, BattleScript_TeeterDanceSubstitutePrevents
-	jumpifstatus2 BS_TARGET, STATUS2_CONFUSION, BattleScript_TeeterDanceAlreadyConfused
+	jumpifstatus2 BS_TARGET, STATUS_SUBSTITUTE, BattleScript_TeeterDanceSubstitutePrevents
+	jumpifstatus2 BS_TARGET, STATUS_CONFUSED, BattleScript_TeeterDanceAlreadyConfused
 	accuracycheck BattleScript_TeeterDanceMissed, ACC_CURR_MOVE
 	jumpifsideaffecting BS_TARGET, SIDE_STATUS_SAFEGUARD, BattleScript_TeeterDanceSafeguardProtected
 	attackanimation
@@ -3728,7 +3728,7 @@ BattleScript_PrintUproarOverTurns::
 	end2
 
 BattleScript_ThrashConfuses::
-	chosenstatus2animation BS_ATTACKER, STATUS2_CONFUSION
+	chosenstatus2animation BS_ATTACKER, STATUS_CONFUSED
 	printstring STRINGID_PKMNFATIGUECONFUSION
 	waitmessage B_WAIT_TIME_LONG
 	end2
@@ -3736,7 +3736,7 @@ BattleScript_ThrashConfuses::
 BattleScript_MoveUsedIsConfused::
 	printstring STRINGID_PKMNISCONFUSED
 	waitmessage B_WAIT_TIME_LONG
-	status2animation BS_ATTACKER, STATUS2_CONFUSION
+	status2animation BS_ATTACKER, STATUS_CONFUSED
 	jumpifbyte CMP_EQUAL, cMULTISTRING_CHOOSER, FALSE, BattleScript_MoveUsedIsConfusedRet
 BattleScript_DoSelfConfusionDmg::
 	cancelmultiturnmoves BS_ATTACKER
@@ -3780,7 +3780,7 @@ BattleScript_WrapEnds::
 BattleScript_MoveUsedIsInLove::
 	printstring STRINGID_PKMNINLOVE
 	waitmessage B_WAIT_TIME_LONG
-	status2animation BS_ATTACKER, STATUS2_INFATUATION
+	status2animation BS_ATTACKER, STATUS_INFATUATION
 	return
 
 BattleScript_MoveUsedIsInLoveCantAttack::
@@ -3791,13 +3791,13 @@ BattleScript_MoveUsedIsInLoveCantAttack::
 BattleScript_NightmareTurnDmg::
 	printstring STRINGID_PKMNLOCKEDINNIGHTMARE
 	waitmessage B_WAIT_TIME_LONG
-	status2animation BS_ATTACKER, STATUS2_NIGHTMARE
+	status2animation BS_ATTACKER, STATUS_NIGHTMARE
 	goto BattleScript_DoTurnDmg
 
 BattleScript_CurseTurnDmg::
 	printstring STRINGID_PKMNAFFLICTEDBYCURSE
 	waitmessage B_WAIT_TIME_LONG
-	status2animation BS_ATTACKER, STATUS2_CURSED
+	status2animation BS_ATTACKER, STATUS_CURSED
 	goto BattleScript_DoTurnDmg
 
 BattleScript_TargetPRLZHeal::
@@ -3891,7 +3891,7 @@ BattleScript_MoveEffectWrap::
 	return
 
 BattleScript_MoveEffectConfusion::
-	chosenstatus2animation BS_EFFECT_BATTLER, STATUS2_CONFUSION
+	chosenstatus2animation BS_EFFECT_BATTLER, STATUS_CONFUSED
 	printstring STRINGID_PKMNWASCONFUSED
 	waitmessage B_WAIT_TIME_LONG
 	return
@@ -3987,7 +3987,7 @@ BattleScript_IntimidateActivates::
 	setstatchanger STAT_ATK, 1, TRUE
 BattleScript_IntimidateActivationAnimLoop::
 	trygetintimidatetarget BattleScript_IntimidateEnd
-	jumpifstatus2 BS_TARGET, STATUS2_SUBSTITUTE, BattleScript_IntimidateFail
+	jumpifstatus2 BS_TARGET, STATUS_SUBSTITUTE, BattleScript_IntimidateFail
 	jumpifability BS_TARGET, ABILITY_CLEAR_BODY, BattleScript_IntimidateAbilityFail
 	jumpifability BS_TARGET, ABILITY_HYPER_CUTTER, BattleScript_IntimidateAbilityFail
 	jumpifability BS_TARGET, ABILITY_WHITE_SMOKE, BattleScript_IntimidateAbilityFail
@@ -4154,7 +4154,7 @@ BattleScript_RoughSkinActivates::
 	return
 
 BattleScript_CuteCharmActivates::
-	status2animation BS_ATTACKER, STATUS2_INFATUATION
+	status2animation BS_ATTACKER, STATUS_INFATUATION
 	printstring STRINGID_PKMNSXINFATUATEDY
 	waitmessage B_WAIT_TIME_LONG
 	return
