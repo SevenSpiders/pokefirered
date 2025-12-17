@@ -674,7 +674,7 @@ static void HandleMoveSwitching(void)
                 gBattleMons[gActiveBattler].moves[i] = moveInfo->moves[i];
                 gBattleMons[gActiveBattler].pp[i] = moveInfo->currentPp[i];
             }
-            if (!(gBattleMons[gActiveBattler].status2 & STATUS2_TRANSFORMED))
+            if (!BattleMon_HasStatusType(gActiveBattler, STATUS_TRANSFORMED))
             {
                 for (i = 0; i < MAX_MON_MOVES; ++i)
                 {

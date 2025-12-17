@@ -305,8 +305,7 @@ static bool8 ShouldSwitch(void)
     s32 i;
     s32 availableToSwitch;
 
-    if ((gBattleMons[gActiveBattler].status2 & (STATUS2_WRAPPED | STATUS2_ESCAPE_PREVENTION))
-     || (gStatuses3[gActiveBattler] & STATUS3_ROOTED)
+    if (!BattleMon_CanEscape(gActiveBattler)
      || AbilityBattleEffects(ABILITYEFFECT_CHECK_OTHER_SIDE, gActiveBattler, ABILITY_SHADOW_TAG, 0, 0)
      || AbilityBattleEffects(ABILITYEFFECT_CHECK_OTHER_SIDE, gActiveBattler, ABILITY_ARENA_TRAP, 0, 0))
         return FALSE; // misses the flying or levitate check
@@ -605,32 +604,32 @@ static bool8 ShouldUseItem(void)
             break;
         case AI_ITEM_CURE_CONDITION:
             *(gBattleStruct->AI_itemFlags + gActiveBattler / 2) = 0;
-            if (itemEffects[3] & ITEM3_SLEEP && gBattleMons[gActiveBattler].status1 & STATUS1_SLEEP)
+            if (itemEffects[3] & ITEM3_SLEEP && BattleMon_HasStatusType(gActiveBattler, STATUS_SLEEP))
             {
                 *(gBattleStruct->AI_itemFlags + gActiveBattler / 2) |= 0x20;
                 shouldUse = TRUE;
             }
-            if (itemEffects[3] & ITEM3_POISON && (gBattleMons[gActiveBattler].status1 & STATUS1_POISON || gBattleMons[gActiveBattler].status1 & STATUS1_TOXIC_POISON))
+            if (itemEffects[3] & ITEM3_POISON && BattleMon_HasPoisonOrToxic(gActiveBattler))
             {
                 *(gBattleStruct->AI_itemFlags + gActiveBattler / 2) |= 0x10;
                 shouldUse = TRUE;
             }
-            if (itemEffects[3] & ITEM3_BURN && gBattleMons[gActiveBattler].status1 & STATUS1_BURN)
+            if (itemEffects[3] & ITEM3_BURN && BattleMon_HasStatusType(gActiveBattler, STATUS_BURN))
             {
                 *(gBattleStruct->AI_itemFlags + gActiveBattler / 2) |= 0x8;
                 shouldUse = TRUE;
             }
-            if (itemEffects[3] & ITEM3_FREEZE && gBattleMons[gActiveBattler].status1 & STATUS1_FREEZE)
+            if (itemEffects[3] & ITEM3_FREEZE && BattleMon_HasStatusType(gActiveBattler, STATUS_FREEZE))
             {
                 *(gBattleStruct->AI_itemFlags + gActiveBattler / 2) |= 0x4;
                 shouldUse = TRUE;
             }
-            if (itemEffects[3] & ITEM3_PARALYSIS && gBattleMons[gActiveBattler].status1 & STATUS1_PARALYSIS)
+            if (itemEffects[3] & ITEM3_PARALYSIS && BattleMon_HasStatusType(gActiveBattler, STATUS_PARALYSIS))
             {
                 *(gBattleStruct->AI_itemFlags + gActiveBattler / 2) |= 0x2;
                 shouldUse = TRUE;
             }
-            if (itemEffects[3] & ITEM3_CONFUSION && gBattleMons[gActiveBattler].status2 & STATUS2_CONFUSION)
+            if (itemEffects[3] & ITEM3_CONFUSION && BattleMon_HasStatusType(gActiveBattler, STATUS_CONFUSED))
             {
                 *(gBattleStruct->AI_itemFlags + gActiveBattler / 2) |= 0x1;
                 shouldUse = TRUE;

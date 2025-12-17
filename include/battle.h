@@ -26,7 +26,7 @@
 
 // Used to exclude moves learned temporarily by Transform or Mimic
 #define MOVE_IS_PERMANENT(battler, moveSlot)                        \
-   (!(gBattleMons[battler].status2 & STATUS2_TRANSFORMED)           \
+   (!BattleMon_HasStatusType(battler, STATUS_TRANSFORMED)           \
  && !(gDisableStructs[battler].mimickedMoves & gBitTable[moveSlot]))
 
 // Battle Actions

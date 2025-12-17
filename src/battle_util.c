@@ -202,12 +202,15 @@ void MarkBattlerReceivedLinkData(u8 battlerId)
 
 void CancelMultiTurnMoves(u8 battler)
 {
-    gBattleMons[battler].status2 &= ~STATUS2_MULTIPLETURNS;
-    gBattleMons[battler].status2 &= ~STATUS2_LOCK_CONFUSE;
-    gBattleMons[battler].status2 &= ~STATUS2_UPROAR;
-    gBattleMons[battler].status2 &= ~STATUS2_BIDE;
+    BattleMon_RemoveStatusType(battler, STATUS_MULTI_TURN);
+    BattleMon_RemoveStatusType(battler, STATUS_THRASH);
+    BattleMon_RemoveStatusType(battler, STATUS_UPROAR);
+    BattleMon_RemoveStatusType(battler, STATUS_BIDE);
 
-    gStatuses3[battler] &= ~STATUS3_SEMI_INVULNERABLE;
+    // remove semiinvulnerable states
+    BattleMon_RemoveStatusType(battler, STATUS_IN_AIR);
+    BattleMon_RemoveStatusType(battler, STATUS_UNDERGROUND);
+    BattleMon_RemoveStatusType(battler, STATUS_UNDERWATER);
 
     gDisableStructs[battler].rolloutTimer = 0;
     gDisableStructs[battler].furyCutterCounter = 0;
@@ -314,7 +317,7 @@ u8 TrySetCantSelectMoveBattleScript(void)
         limitations = 1;
     }
 
-    if (move == gLastMoves[gActiveBattler] && move != MOVE_STRUGGLE && (gBattleMons[gActiveBattler].status2 & STATUS2_TORMENT))
+    if (move == gLastMoves[gActiveBattler] && move != MOVE_STRUGGLE && BattleMon_HasStatusType(gActiveBattler, STATUS_TORMENT))
     {
         CancelMultiTurnMoves(gActiveBattler);
         gSelectionBattleScripts[gActiveBattler] = BattleScript_SelectingTormentedMove;
@@ -383,7 +386,7 @@ u8 CheckMoveLimitations(u8 battlerId, u8 unusableMoves, u8 check)
         if (gBattleMons[battlerId].moves[i] == gDisableStructs[battlerId].disabledMove && check & MOVE_LIMITATION_DISABLED)
             unusableMoves |= gBitTable[i];
         // Torment
-        if (gBattleMons[battlerId].moves[i] == gLastMoves[battlerId] && check & MOVE_LIMITATION_TORMENTED && gBattleMons[battlerId].status2 & STATUS2_TORMENT)
+        if (gBattleMons[battlerId].moves[i] == gLastMoves[battlerId] && check & MOVE_LIMITATION_TORMENTED && BattleMon_HasStatusType(battlerId, STATUS_TORMENT))
             unusableMoves |= gBitTable[i];
         // Taunt
         if (gDisableStructs[battlerId].tauntTimer && check & MOVE_LIMITATION_TAUNT && gBattleMoves[gBattleMons[battlerId].moves[i]].power == 0)
@@ -839,7 +842,7 @@ u8 DoBattlerEndTurnEffects(void)
                 gBattleStruct->turnEffectsTracker++;
                 break;
             case ENDTURN_NIGHTMARES:  // spooky nightmares
-                if ((gBattleMons[gActiveBattler].status2 & STATUS2_NIGHTMARE) && gBattleMons[gActiveBattler].hp != 0)
+                if (BattleMon_HasStatusType(gActiveBattler, STATUS_NIGHTMARE) && gBattleMons[gActiveBattler].hp != 0)
                 {
                     // R/S does not perform this sleep check, which causes the nightmare effect to
                     // persist even after the affected Pokemon has been awakened by Shed Skin.
@@ -853,13 +856,13 @@ u8 DoBattlerEndTurnEffects(void)
                     }
                     else
                     {
-                        gBattleMons[gActiveBattler].status2 &= ~STATUS2_NIGHTMARE;
+                        BattleMon_RemoveStatusType(gActiveBattler, STATUS_NIGHTMARE);
                     }
                 }
                 gBattleStruct->turnEffectsTracker++;
                 break;
             case ENDTURN_CURSE:  // curse
-                if ((gBattleMons[gActiveBattler].status2 & STATUS2_CURSED) && gBattleMons[gActiveBattler].hp != 0)
+                if (BattleMon_HasStatusType(gActiveBattler, STATUS_CURSED) && gBattleMons[gActiveBattler].hp != 0)
                 {
                     gBattleMoveDamage = gBattleMons[gActiveBattler].maxHP / 4;
                     if (gBattleMoveDamage == 0)
@@ -870,11 +873,14 @@ u8 DoBattlerEndTurnEffects(void)
                 gBattleStruct->turnEffectsTracker++;
                 break;
             case ENDTURN_WRAP:  // wrap
-                if ((gBattleMons[gActiveBattler].status2 & STATUS2_WRAPPED) && gBattleMons[gActiveBattler].hp != 0)
+                if (BattleMon_HasStatusType(gActiveBattler, STATUS_WRAPPED) && gBattleMons[gActiveBattler].hp != 0)
                 {
-                    gBattleMons[gActiveBattler].status2 -= STATUS2_WRAPPED_TURN(1);
-                    if (gBattleMons[gActiveBattler].status2 & STATUS2_WRAPPED)  // damaged by wrap
+                    u16 *wrappedStatus = BattleMon_GetStatusPtr(gActiveBattler, STATUS_WRAPPED);
+                    u32 turnsLeft = GET_STATUS_DATA(*wrappedStatus);
+                    
+                    if (turnsLeft > 0)  // damaged by wrap
                     {
+                        *wrappedStatus = ENCODE_STATUS(STATUS_WRAPPED, turnsLeft - 1);
                         gBattleScripting.animArg1 = *(gBattleStruct->wrappedMove + gActiveBattler * 2 + 0);
                         gBattleScripting.animArg2 = *(gBattleStruct->wrappedMove + gActiveBattler * 2 + 1);
                         gBattleTextBuff1[0] = B_BUFF_PLACEHOLDER_BEGIN;
@@ -889,6 +895,7 @@ u8 DoBattlerEndTurnEffects(void)
                     }
                     else  // broke free
                     {
+                        BattleMon_RemoveStatusType(gActiveBattler, STATUS_WRAPPED);
                         gBattleTextBuff1[0] = B_BUFF_PLACEHOLDER_BEGIN;
                         gBattleTextBuff1[1] = B_BUFF_MOVE;
                         gBattleTextBuff1[2] = *(gBattleStruct->wrappedMove + gActiveBattler * 2 + 0);
@@ -902,15 +909,15 @@ u8 DoBattlerEndTurnEffects(void)
                 gBattleStruct->turnEffectsTracker++;
                 break;
             case ENDTURN_UPROAR:  // uproar
-                if (gBattleMons[gActiveBattler].status2 & STATUS2_UPROAR)
+                if (BattleMon_HasStatusType(gActiveBattler, STATUS2_UPROAR))
                 {
                     for (gBattlerAttacker = 0; gBattlerAttacker < gBattlersCount; gBattlerAttacker++)
                     {
                         if ((gBattleMons[gBattlerAttacker].status1 & STATUS1_SLEEP)
                          && gBattleMons[gBattlerAttacker].ability != ABILITY_SOUNDPROOF)
                         {
-                            gBattleMons[gBattlerAttacker].status1 &= ~STATUS1_SLEEP;
-                            gBattleMons[gBattlerAttacker].status2 &= ~STATUS2_NIGHTMARE;
+                            BattleMon_RemoveStatusType(gBattlerAttacker, STATUS_SLEEP);
+                            BattleMon_RemoveStatusType(gBattlerAttacker, STATUS_NIGHTMARE);
                             gBattleCommunication[MULTISTRING_CHOOSER] = 1;
                             BattleScriptExecute(BattleScript_MonWokeUpInUproar);
                             gActiveBattler = gBattlerAttacker;
@@ -926,20 +933,23 @@ u8 DoBattlerEndTurnEffects(void)
                     }
                     else
                     {
+                        u16 *statusUproar = BattleMon_GetStatusPtr(gActiveBattler, STATUS_UPROAR);
+                        u32 turnsLeft = GET_STATUS_DATA(*statusUproar);
                         gBattlerAttacker = gActiveBattler;
-                        gBattleMons[gActiveBattler].status2 -= STATUS2_UPROAR_TURN(1);
                         if (WasUnableToUseMove(gActiveBattler))
                         {
                             CancelMultiTurnMoves(gActiveBattler);
                             gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_UPROAR_ENDS;
                         }
-                        else if (gBattleMons[gActiveBattler].status2 & STATUS2_UPROAR)
+                        else if (turnsLeft > 0)
                         {
+                            *statusUproar = ENCODE_STATUS(STATUS_UPROAR, turnsLeft - 1);
                             gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_UPROAR_CONTINUES;
-                            gBattleMons[gActiveBattler].status2 |= STATUS2_MULTIPLETURNS;
+                            BattleMon_AddStatus(gActiveBattler, STATUS_MULTI_TURN);
                         }
                         else
                         {
+                            BattleMon_RemoveStatusType(gActiveBattler, STATUS_UPROAR);
                             gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_UPROAR_ENDS;
                             CancelMultiTurnMoves(gActiveBattler);
                         }
@@ -951,20 +961,22 @@ u8 DoBattlerEndTurnEffects(void)
                     gBattleStruct->turnEffectsTracker++;
                 break;
             case ENDTURN_THRASH:  // thrash
-                if (gBattleMons[gActiveBattler].status2 & STATUS2_LOCK_CONFUSE)
+                if (BattleMon_HasStatusType(gActiveBattler, STATUS_THRASH))
                 {
-                    gBattleMons[gActiveBattler].status2 -= STATUS2_LOCK_CONFUSE_TURN(1);
+                    u16 *statusThrash = BattleMon_GetStatusPtr(gActiveBattler, STATUS_THRASH);
+                    u32 turnsLeft = GET_STATUS_DATA(*statusThrash);
                     if (WasUnableToUseMove(gActiveBattler))
                         CancelMultiTurnMoves(gActiveBattler);
-                    else if (!(gBattleMons[gActiveBattler].status2 & STATUS2_LOCK_CONFUSE)
-                     && (gBattleMons[gActiveBattler].status2 & STATUS2_MULTIPLETURNS))
+                    else if (turnsLeft == 0 && BattleMon_HasStatusType(gActiveBattler, STATUS_MULTI_TURN))
                     {
-                        gBattleMons[gActiveBattler].status2 &= ~STATUS2_MULTIPLETURNS;
-                        if (!(gBattleMons[gActiveBattler].status2 & STATUS2_CONFUSION))
+                        BattleMon_RemoveStatusType(gActiveBattler, STATUS_MULTI_TURN);
+                        *statusThrash = STATUS_NONE;
+                        BattleMon_RemoveStatusType(gActiveBattler, STATUS_MULTI_TURN);
+                        if (!BattleMon_HasStatusType(gActiveBattler, STATUS_CONFUSED))
                         {
                             gBattleCommunication[MOVE_EFFECT_BYTE] = MOVE_EFFECT_CONFUSION | MOVE_EFFECT_AFFECTS_USER;
                             SetMoveEffect(TRUE, 0);
-                            if (gBattleMons[gActiveBattler].status2 & STATUS2_CONFUSION)
+                            if (BattleMon_HasStatusType(gActiveBattler, STATUS_CONFUSED))
                                 BattleScriptExecute(BattleScript_ThrashConfuses);
                             effect++;
                         }
@@ -1225,8 +1237,8 @@ void TryClearRageStatuses(void)
     s32 i;
     for (i = 0; i < gBattlersCount; i++)
     {
-        if ((gBattleMons[i].status2 & STATUS2_RAGE) && gChosenMoveByBattler[i] != MOVE_RAGE)
-            gBattleMons[i].status2 &= ~STATUS2_RAGE;
+        if (BattleMon_HasStatusType(i, STATUS_RAGE) && gChosenMoveByBattler[i] != MOVE_RAGE)
+            BattleMon_RemoveStatusType(i, STATUS_RAGE);
     }
 }
 
@@ -1259,8 +1271,8 @@ u8 AtkCanceller_UnableToUseMove(void)
         switch (gBattleStruct->atkCancellerTracker)
         {
         case CANCELLER_FLAGS: // flags clear
-            gBattleMons[gBattlerAttacker].status2 &= ~STATUS2_DESTINY_BOND;
-            gStatuses3[gBattlerAttacker] &= ~STATUS3_GRUDGE;
+            BattleMon_RemoveStatusType(gBattlerAttacker, STATUS_DESTINY_BOND);
+            BattleMon_RemoveStatusType(gBattlerAttacker, STATUS_GRUDGE);
             gBattleStruct->atkCancellerTracker++;
             break;
         case CANCELLER_ASLEEP: // check being asleep
@@ -1268,8 +1280,8 @@ u8 AtkCanceller_UnableToUseMove(void)
             {
                 if (UproarWakeUpCheck(gBattlerAttacker))
                 {
-                    gBattleMons[gBattlerAttacker].status1 &= ~STATUS1_SLEEP;
-                    gBattleMons[gBattlerAttacker].status2 &= ~STATUS2_NIGHTMARE;
+                    BattleMon_RemoveStatusType(gBattlerAttacker, STATUS_SLEEP);
+                    BattleMon_RemoveStatusType(gBattlerAttacker, STATUS_NIGHTMARE);
                     BattleScriptPushCursor();
                     gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_WOKE_UP_UPROAR;
                     gBattlescriptCurrInstr = BattleScript_MoveUsedWokeUp;
@@ -1297,7 +1309,7 @@ u8 AtkCanceller_UnableToUseMove(void)
                     }
                     else
                     {
-                        gBattleMons[gBattlerAttacker].status2 &= ~STATUS2_NIGHTMARE;
+                        BattleMon_RemoveStatusType(gBattlerAttacker, STATUS_NIGHTMARE);
                         BattleScriptPushCursor();
                         gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_WOKE_UP;
                         gBattlescriptCurrInstr = BattleScript_MoveUsedWokeUp;
@@ -1347,9 +1359,9 @@ u8 AtkCanceller_UnableToUseMove(void)
             gBattleStruct->atkCancellerTracker++;
             break;
         case CANCELLER_RECHARGE: // recharge
-            if (gBattleMons[gBattlerAttacker].status2 & STATUS2_RECHARGE)
+            if (BattleMon_HasStatusType(gBattlerAttacker, STATUS_RECHARGE))
             {
-                gBattleMons[gBattlerAttacker].status2 &= ~STATUS2_RECHARGE;
+                BattleMon_RemoveStatusType(gBattlerAttacker, STATUS_RECHARGE);
                 gDisableStructs[gBattlerAttacker].rechargeTimer = 0;
                 CancelMultiTurnMoves(gBattlerAttacker);
                 gBattlescriptCurrInstr = BattleScript_MoveUsedMustRecharge;
@@ -1359,9 +1371,9 @@ u8 AtkCanceller_UnableToUseMove(void)
             gBattleStruct->atkCancellerTracker++;
             break;
         case CANCELLER_FLINCH: // flinch
-            if (gBattleMons[gBattlerAttacker].status2 & STATUS2_FLINCHED)
+            if (BattleMon_HasStatusType(gBattlerAttacker, STATUS_FLINCHED))
             {
-                gBattleMons[gBattlerAttacker].status2 &= ~STATUS2_FLINCHED;
+                BattleMon_RemoveStatusType(gBattlerAttacker, STATUS_FLINCHED);
                 gProtectStructs[gBattlerAttacker].flinchImmobility = 1;
                 CancelMultiTurnMoves(gBattlerAttacker);
                 gBattlescriptCurrInstr = BattleScript_MoveUsedFlinched;
@@ -1405,11 +1417,13 @@ u8 AtkCanceller_UnableToUseMove(void)
             gBattleStruct->atkCancellerTracker++;
             break;
         case CANCELLER_CONFUSED: // confusion
-            if (gBattleMons[gBattlerAttacker].status2 & STATUS2_CONFUSION)
+            if (BattleMon_HasStatusType(gBattlerAttacker, STATUS_CONFUSED))
             {
-                gBattleMons[gBattlerAttacker].status2 -= STATUS2_CONFUSION_TURN(1);
-                if (gBattleMons[gBattlerAttacker].status2 & STATUS2_CONFUSION)
+                u16 *statusConfused = BattleMon_GetStatusPtr(gBattlerAttacker, STATUS_CONFUSED);
+                u32 turnsLeft = GET_STATUS_DATA(*statusConfused);
+                if (turnsLeft > 0)
                 {
+                    *statusConfused = ENCODE_STATUS(STATUS_CONFUSED, turnsLeft - 1);
                     if (Random() & 1)
                     {
                         // The MULTISTRING_CHOOSER is used here as a bool to signal
@@ -1429,6 +1443,7 @@ u8 AtkCanceller_UnableToUseMove(void)
                 }
                 else // snapped out of confusion
                 {
+                    *statusConfused = STATUS_NONE;
                     BattleScriptPushCursor();
                     gBattlescriptCurrInstr = BattleScript_MoveUsedIsConfusedNoMore;
                 }
@@ -1461,9 +1476,10 @@ u8 AtkCanceller_UnableToUseMove(void)
             gBattleStruct->atkCancellerTracker++;
             break;
         case CANCELLER_IN_LOVE: // infatuation
-            if (gBattleMons[gBattlerAttacker].status2 & STATUS2_INFATUATION)
+            if (BattleMon_HasStatusType(gBattlerAttacker, STATUS_INFATUATION))
             {
-                gBattleScripting.battler = CountTrailingZeroBits((gBattleMons[gBattlerAttacker].status2 & STATUS2_INFATUATION) >> 0x10);
+                u16 *statusInfatuated = BattleMon_GetStatusPtr(gBattlerAttacker, STATUS_INFATUATION);
+                gBattleScripting.battler = GET_STATUS_DATA(*statusInfatuated);
                 if (Random() & 1)
                 {
                     BattleScriptPushCursor();
@@ -1481,17 +1497,18 @@ u8 AtkCanceller_UnableToUseMove(void)
             gBattleStruct->atkCancellerTracker++;
             break;
         case CANCELLER_BIDE: // bide
-            if (gBattleMons[gBattlerAttacker].status2 & STATUS2_BIDE)
+            if (BattleMon_HasStatusType(gBattlerAttacker, STATUS_BIDE))
             {
-                gBattleMons[gBattlerAttacker].status2 -= STATUS2_BIDE_TURN(1);
-                if (gBattleMons[gBattlerAttacker].status2 & STATUS2_BIDE)
+                u16 *statusBide = BattleMon_GetStatusPtr(gBattlerAttacker, STATUS_BIDE);
+                u32 turnsLeft = GET_STATUS_DATA(*statusBide);
+                if (turnsLeft > 0)
                 {
+                    *statusBide = ENCODE_STATUS(STATUS_BIDE, turnsLeft - 1);
                     gBattlescriptCurrInstr = BattleScript_BideStoringEnergy;
                 }
                 else
                 {
-                    // This is removed in FRLG and Emerald for some reason
-                    //gBattleMons[gBattlerAttacker].status2 &= ~STATUS2_MULTIPLETURNS;
+                    *statusBide = STATUS_NONE;
                     if (gTakenDmg[gBattlerAttacker])
                     {
                         gCurrentMove = MOVE_BIDE;
@@ -1835,18 +1852,24 @@ u8 AbilityBattleEffects(u8 caseID, u8 battler, u8 ability, u8 special, u16 moveA
                 case ABILITY_SHED_SKIN:
                     if ((gBattleMons[battler].status1 & STATUS1_ANY) && (Random() % 3) == 0)
                     {
-                        if (gBattleMons[battler].status1 & (STATUS1_POISON | STATUS1_TOXIC_POISON))
+                        if (BattleMon_HasPoisonOrToxic(battler))
                             StringCopy(gBattleTextBuff1, gStatusConditionString_PoisonJpn);
-                        if (gBattleMons[battler].status1 & STATUS1_SLEEP)
+                        if (BattleMon_HasStatusType(battler, STATUS_SLEEP))
                             StringCopy(gBattleTextBuff1, gStatusConditionString_SleepJpn);
-                        if (gBattleMons[battler].status1 & STATUS1_PARALYSIS)
+                        if (BattleMon_HasStatusType(battler, STATUS_PARALYSIS))
                             StringCopy(gBattleTextBuff1, gStatusConditionString_ParalysisJpn);
-                        if (gBattleMons[battler].status1 & STATUS1_BURN)
+                        if (BattleMon_HasStatusType(battler, STATUS_BURN))
                             StringCopy(gBattleTextBuff1, gStatusConditionString_BurnJpn);
-                        if (gBattleMons[battler].status1 & STATUS1_FREEZE)
+                        if (BattleMon_HasStatusType(battler, STATUS_FREEZE))
                             StringCopy(gBattleTextBuff1, gStatusConditionString_IceJpn);
-                        gBattleMons[battler].status1 = 0;
-                        gBattleMons[battler].status2 &= ~STATUS2_NIGHTMARE;  // fix nightmare glitch
+                        BattleMon_RemoveStatusType(battler, STATUS_SLEEP);
+                        BattleMon_RemoveStatusType(battler, STATUS_POISON);
+                        BattleMon_RemoveStatusType(battler, STATUS_BURN);
+                        BattleMon_RemoveStatusType(battler, STATUS_FREEZE);
+                        BattleMon_RemoveStatusType(battler, STATUS_PARALYSIS);
+                        BattleMon_RemoveStatusType(battler, STATUS_TOXIC);
+
+                        BattleMon_RemoveStatusType(battler, STATUS_NIGHTMARE);
                         gBattleScripting.battler = gActiveBattler = battler;
                         BattleScriptPushCursorAndCallback(BattleScript_ShedSkinActivates);
                         BtlController_EmitSetMonData(BUFFER_A, REQUEST_STATUS_BATTLE, 0, 4, &gBattleMons[battler].status1);
@@ -1881,7 +1904,7 @@ u8 AbilityBattleEffects(u8 caseID, u8 battler, u8 ability, u8 special, u16 moveA
                 }
                 if (sSoundMovesTable[i] != SOUND_MOVES_END)
                 {
-                    if (gBattleMons[gBattlerAttacker].status2 & STATUS2_MULTIPLETURNS)
+                    if (BattleMon_HasStatusType(gBattlerAttacker, STATUS_MULTI_TURN))
                         gHitMarker |= HITMARKER_NO_PPDEDUCT;
                     gBattlescriptCurrInstr = BattleScript_SoundproofProtected;
                     effect = 1;
@@ -2072,11 +2095,11 @@ u8 AbilityBattleEffects(u8 caseID, u8 battler, u8 ability, u8 special, u16 moveA
                  && (Random() % 3) == 0
                  && gBattleMons[gBattlerAttacker].ability != ABILITY_OBLIVIOUS
                  && GetGenderFromSpeciesAndPersonality(speciesAtk, pidAtk) != GetGenderFromSpeciesAndPersonality(speciesDef, pidDef)
-                 && !(gBattleMons[gBattlerAttacker].status2 & STATUS2_INFATUATION)
+                 && !BattleMon_HasStatusType(gBattlerAttacker, STATUS_INFATUATION)
                  && GetGenderFromSpeciesAndPersonality(speciesAtk, pidAtk) != MON_GENDERLESS
                  && GetGenderFromSpeciesAndPersonality(speciesDef, pidDef) != MON_GENDERLESS)
                 {
-                    gBattleMons[gBattlerAttacker].status2 |= STATUS2_INFATUATED_WITH(gBattlerTarget);
+                    BattleMon_AddStatus(gBattlerAttacker, ENCODE_STATUS(STATUS_INFATUATION, gBattlerTarget));
                     BattleScriptPushCursor();
                     gBattlescriptCurrInstr = BattleScript_CuteCharmActivates;
                     effect++;
@@ -2097,7 +2120,7 @@ u8 AbilityBattleEffects(u8 caseID, u8 battler, u8 ability, u8 special, u16 moveA
                     }
                     break;
                 case ABILITY_OWN_TEMPO:
-                    if (gBattleMons[battler].status2 & STATUS2_CONFUSION)
+                    if (BattleMon_HasStatusType(battler, STATUS_CONFUSED))
                     {
                         StringCopy(gBattleTextBuff1, gStatusConditionString_ConfusionJpn);
                         effect = 2;
@@ -2112,9 +2135,9 @@ u8 AbilityBattleEffects(u8 caseID, u8 battler, u8 ability, u8 special, u16 moveA
                     break;
                 case ABILITY_INSOMNIA:
                 case ABILITY_VITAL_SPIRIT:
-                    if (gBattleMons[battler].status1 & STATUS1_SLEEP)
+                    if (BattleMon_HasStatusType(battler, STATUS_SLEEP))
                     {
-                        gBattleMons[battler].status2 &= ~STATUS2_NIGHTMARE;
+                        BattleMon_RemoveStatusType(battler, STATUS_NIGHTMARE);
                         StringCopy(gBattleTextBuff1, gStatusConditionString_SleepJpn);
                         effect = 1;
                     }
@@ -2134,7 +2157,7 @@ u8 AbilityBattleEffects(u8 caseID, u8 battler, u8 ability, u8 special, u16 moveA
                     }
                     break;
                 case ABILITY_OBLIVIOUS:
-                    if (gBattleMons[battler].status2 & STATUS2_INFATUATION)
+                    if (BattleMon_HasStatusType(battler, STATUS_INFATUATION))
                     {
                         StringCopy(gBattleTextBuff1, gStatusConditionString_LoveJpn);
                         effect = 3;
@@ -2149,10 +2172,10 @@ u8 AbilityBattleEffects(u8 caseID, u8 battler, u8 ability, u8 special, u16 moveA
                         gBattleMons[battler].status1 = 0;
                         break;
                     case 2: // get rid of confusion
-                        gBattleMons[battler].status2 &= ~STATUS2_CONFUSION;
+                        BattleMon_RemoveStatusType(battler, STATUS_CONFUSED);
                         break;
                     case 3: // get rid of infatuation
-                        gBattleMons[battler].status2 &= ~STATUS2_INFATUATION;
+                        BattleMon_RemoveStatusType(battler, STATUS_INFATUATION);
                         break;
                     }
 
@@ -2680,9 +2703,9 @@ u8 ItemBattleEffects(u8 caseID, u8 battlerId, bool8 moveTurn)
                 break;
             case HOLD_EFFECT_CRITICAL_UP:
                 if (gBattleMons[battlerId].hp <= gBattleMons[battlerId].maxHP / battlerHoldEffectParam && !moveTurn
-                    && !(gBattleMons[battlerId].status2 & STATUS2_FOCUS_ENERGY))
+                    && !BattleMon_HasStatusType(battlerId, STATUS_FOCUS))
                 {
-                    gBattleMons[battlerId].status2 |= STATUS2_FOCUS_ENERGY;
+                    BattleMon_AddStatus(battlerId, STATUS_FOCUS);
                     BattleScriptExecute(BattleScript_BerryFocusEnergyEnd2);
                     effect = ITEM_EFFECT_OTHER;
                 }
@@ -2755,7 +2778,7 @@ u8 ItemBattleEffects(u8 caseID, u8 battlerId, bool8 moveTurn)
                 }
                 break;
             case HOLD_EFFECT_CURE_SLP:
-                if (gBattleMons[battlerId].status1 & STATUS1_SLEEP)
+                if (BattleMon_HasStatusType(battlerId, STATUS_SLEEP))
                 {
                     gBattleMons[battlerId].status1 &= ~STATUS1_SLEEP;
                     gBattleMons[battlerId].status2 &= ~STATUS2_NIGHTMARE;
@@ -2780,7 +2803,7 @@ u8 ItemBattleEffects(u8 caseID, u8 battlerId, bool8 moveTurn)
                         StringCopy(gBattleTextBuff1, gStatusConditionString_PoisonJpn);
                         i++;
                     }
-                    if (gBattleMons[battlerId].status1 & STATUS1_SLEEP)
+                    if (BattleMon_HasStatusType(battlerId, STATUS_SLEEP))
                     {
                         gBattleMons[battlerId].status2 &= ~STATUS2_NIGHTMARE;
                         StringCopy(gBattleTextBuff1, gStatusConditionString_SleepJpn);
@@ -2901,7 +2924,7 @@ u8 ItemBattleEffects(u8 caseID, u8 battlerId, bool8 moveTurn)
                 }
                 break;
             case HOLD_EFFECT_CURE_SLP:
-                if (gBattleMons[battlerId].status1 & STATUS1_SLEEP)
+                if (BattleMon_HasStatusType(battlerId, STATUS_SLEEP))
                 {
                     gBattleMons[battlerId].status1 &= ~STATUS1_SLEEP;
                     gBattleMons[battlerId].status2 &= ~STATUS2_NIGHTMARE;
@@ -2936,7 +2959,7 @@ u8 ItemBattleEffects(u8 caseID, u8 battlerId, bool8 moveTurn)
                     if (gBattleMons[battlerId].status1 & STATUS1_PSN_ANY)
                         StringCopy(gBattleTextBuff1, gStatusConditionString_PoisonJpn);
 
-                    if (gBattleMons[battlerId].status1 & STATUS1_SLEEP)
+                    if (BattleMon_HasStatusType(battlerId, STATUS_SLEEP))
                     {
                         gBattleMons[battlerId].status2 &= ~STATUS2_NIGHTMARE;
                         StringCopy(gBattleTextBuff1, gStatusConditionString_SleepJpn);

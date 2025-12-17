@@ -627,7 +627,7 @@ static const u32 sStatusTypeFromMoveEffect[NUM_MOVE_EFFECTS] =
     [MOVE_EFFECT_CONFUSION]      = STATUS_CONFUSED, // STATUS2_CONFUSION
     [MOVE_EFFECT_FLINCH]         = STATUS_FLINCHED,
     [MOVE_EFFECT_UPROAR]         = STATUS_UPROAR,
-    [MOVE_EFFECT_CHARGING]       = STATUS_CHARGING, // STATUS2_MULTIPLETURNS
+    [MOVE_EFFECT_CHARGING]       = STATUS_MULTI_TURN, // STATUS2_MULTIPLETURNS
     [MOVE_EFFECT_WRAP]           = STATUS_WRAPPED,
     [MOVE_EFFECT_RECHARGE]       = STATUS_RECHARGE,
     [MOVE_EFFECT_PREVENT_ESCAPE] = STATUS_NO_ESCAPE, // STATUS2_ESCAPE_PREVENTION
@@ -866,8 +866,7 @@ static void Cmd_attackcanceler(void)
     if (AbilityBattleEffects(ABILITYEFFECT_MOVES_BLOCK, gBattlerTarget, 0, 0, 0))
         return;
     if (!gBattleMons[gBattlerAttacker].pp[gCurrMovePos] && gCurrentMove != MOVE_STRUGGLE && !(gHitMarker & (HITMARKER_ALLOW_NO_PP | HITMARKER_NO_ATTACKSTRING))
-    //  && !(gBattleMons[gBattlerAttacker].status2 & STATUS2_MULTIPLETURNS))
-     && !BattleMon_HasStatusType(gBattlerAttacker, STATUS_CHARGING)) // For moves like Rollout and Ice Ball
+     && !BattleMon_HasStatusType(gBattlerAttacker, STATUS_MULTI_TURN)) // For moves like Rollout and Ice Ball
     {
         gBattlescriptCurrInstr = BattleScript_NoPPForMove;
         gMoveResultFlags |= MOVE_RESULT_MISSED;
@@ -876,7 +875,7 @@ static void Cmd_attackcanceler(void)
 
     gHitMarker &= ~HITMARKER_ALLOW_NO_PP;
 
-    if (!(gHitMarker & HITMARKER_OBEYS) && !BattleMon_HasStatusType(gBattlerAttacker, STATUS_CHARGING)) //!(gBattleMons[gBattlerAttacker].status2 & STATUS2_MULTIPLETURNS))
+    if (!(gHitMarker & HITMARKER_OBEYS) && !BattleMon_HasStatusType(gBattlerAttacker, STATUS_MULTI_TURN))
     {
         i = IsMonDisobedient(); // why use the 'i' variable...?
         switch (i)
@@ -926,7 +925,7 @@ static void Cmd_attackcanceler(void)
     }
     else if (DEFENDER_IS_PROTECTED
      && (gCurrentMove != MOVE_CURSE || IS_BATTLER_OF_TYPE(gBattlerAttacker, TYPE_GHOST))
-     && ((!IsTwoTurnsMove(gCurrentMove) || BattleMon_HasStatusType(gBattlerAttacker, STATUS_CHARGING))))
+     && ((!IsTwoTurnsMove(gCurrentMove) || BattleMon_HasStatusType(gBattlerAttacker, STATUS_MULTI_TURN))))
     {
         CancelMultiTurnMoves(gBattlerAttacker);
         gMoveResultFlags |= MOVE_RESULT_MISSED;
@@ -1073,7 +1072,6 @@ static void Cmd_accuracycheck(void)
         if (AccuracyCalcHelper(move))
             return;
 
-        // if (gBattleMons[gBattlerTarget].status2 & STATUS2_FORESIGHT)
         if (BattleMon_HasStatusType(gBattlerTarget, STATUS_FORESIGHT))
         {
             u8 acc = gBattleMons[gBattlerAttacker].statStages[STAT_ACC];
@@ -1213,7 +1211,7 @@ static void Cmd_critcalc(void)
 
     gPotentialItemEffectBattler = gBattlerAttacker;
 
-    critChance  = 2 * BattleMon_HasStatusType(gBattlerAttacker, STATUS_FOCUS)  //((gBattleMons[gBattlerAttacker].status2 & STATUS2_FOCUS_ENERGY) != 0)
+    critChance  = 2 * BattleMon_HasStatusType(gBattlerAttacker, STATUS_FOCUS)
                 + (gBattleMoves[gCurrentMove].effect == EFFECT_HIGH_CRITICAL)
                 + (gBattleMoves[gCurrentMove].effect == EFFECT_SKY_ATTACK)
                 + (gBattleMoves[gCurrentMove].effect == EFFECT_BLAZE_KICK)
@@ -1338,7 +1336,6 @@ static void Cmd_typecalc(void)
         {
             if (TYPE_EFFECT_ATK_TYPE(i) == TYPE_FORESIGHT)
             {
-                // if (gBattleMons[gBattlerTarget].status2 & STATUS2_FORESIGHT)
                 if (BattleMon_HasStatusType(gBattlerTarget, STATUS_FORESIGHT))
                     break;
                 i += 3;
@@ -2512,7 +2509,7 @@ void SetMoveEffect(bool8 primary, u8 certain)
                 if (BattleMon_CanAddStatus(gEffectBattler, STATUS_UPROAR))
                 {
                     // gBattleMons[gEffectBattler].status2 |= STATUS2_MULTIPLETURNS;
-                    BattleMon_AddStatus(gEffectBattler, STATUS_CHARGING);
+                    BattleMon_AddStatus(gEffectBattler, STATUS_MULTI_TURN);
                     gLockedMoves[gEffectBattler] = gCurrentMove;
                     // gBattleMons[gEffectBattler].status2 |= STATUS2_UPROAR_TURN((Random() & 3) + 2); // 2-5 turns
                     BattleMon_AddStatus(gEffectBattler, ENCODE_STATUS(STATUS_UPROAR, (Random() & 3) + 2));
@@ -2549,7 +2546,7 @@ void SetMoveEffect(bool8 primary, u8 certain)
                 break;
             case MOVE_EFFECT_CHARGING:
                 // gBattleMons[gEffectBattler].status2 |= STATUS2_MULTIPLETURNS;
-                BattleMon_TryAddStatus(gEffectBattler, STATUS_CHARGING);
+                BattleMon_TryAddStatus(gEffectBattler, STATUS_MULTI_TURN);
                 gLockedMoves[gEffectBattler] = gCurrentMove;
                 gProtectStructs[gEffectBattler].chargingTurn = 1;
                 gBattlescriptCurrInstr++;
@@ -2805,7 +2802,7 @@ void SetMoveEffect(bool8 primary, u8 certain)
                 else
                 {
                     // gBattleMons[gEffectBattler].status2 |= STATUS2_MULTIPLETURNS;
-                    BattleMon_TryAddStatus(gEffectBattler, STATUS_CHARGING);
+                    BattleMon_TryAddStatus(gEffectBattler, STATUS_MULTI_TURN);
                     gLockedMoves[gEffectBattler] = gCurrentMove;
                     // gBattleMons[gEffectBattler].status2 |= STATUS2_LOCK_CONFUSE_TURN((Random() & 1) + 2); // thrash for 2-3 turns
                     BattleMon_TryAddStatus(gEffectBattler, ENCODE_STATUS(STATUS_THRASH, (Random() & 1) + 2));
@@ -4597,8 +4594,8 @@ static void Cmd_switchindataupdate(void)
         return;
 
     gActiveBattler = GetBattlerForBattleScript(gBattlescriptCurrInstr[1]);
+    SwitchInClearSetData();
     gBattleScripting.battler = gActiveBattler;
-
     PREPARE_MON_NICK_BUFFER(gBattleTextBuff1, gActiveBattler, gBattlerPartyIndexes[gActiveBattler]);
 
     gBattlescriptCurrInstr += 2;
@@ -6947,7 +6944,7 @@ static void Cmd_normalisebuffs(void)
 static void Cmd_setbide(void)
 {
     // gBattleMons[gBattlerAttacker].status2 |= STATUS2_MULTIPLETURNS;
-    BattleMon_TryAddStatus(gBattlerAttacker, STATUS_CHARGING);
+    BattleMon_TryAddStatus(gBattlerAttacker, STATUS_MULTI_TURN);
     gLockedMoves[gBattlerAttacker] = gCurrentMove;
     gTakenDmg[gBattlerAttacker] = 0;
     // gBattleMons[gBattlerAttacker].status2 |= STATUS2_BIDE_TURN(2);
@@ -7827,7 +7824,7 @@ static void Cmd_settypetorandomresistance(void)
     }
     else if (IsTwoTurnsMove(gLastLandedMoves[gBattlerAttacker])
             // && gBattleMons[gLastHitBy[gBattlerAttacker]].status2 & STATUS2_MULTIPLETURNS)
-            && BattleMon_HasStatusType(gLastHitBy[gBattlerAttacker], STATUS_CHARGING))
+            && BattleMon_HasStatusType(gLastHitBy[gBattlerAttacker], STATUS_MULTI_TURN))
     {
         gBattlescriptCurrInstr = T1_READ_PTR(gBattlescriptCurrInstr + 1);
     }
@@ -8324,16 +8321,16 @@ static void Cmd_rolloutdamagecalculation(void)
         s32 i;
 
         // if (!(gBattleMons[gBattlerAttacker].status2 & STATUS2_MULTIPLETURNS)) // first hit
-        if (!BattleMon_HasStatusType(gBattlerAttacker, STATUS_CHARGING)) // first hit
+        if (!BattleMon_HasStatusType(gBattlerAttacker, STATUS_MULTI_TURN)) // first hit
         {
             gDisableStructs[gBattlerAttacker].rolloutTimer = 5;
             gDisableStructs[gBattlerAttacker].rolloutTimerStartValue = 5;
-            BattleMon_AddStatus(gBattlerAttacker, STATUS_CHARGING);
+            BattleMon_AddStatus(gBattlerAttacker, STATUS_MULTI_TURN);
             gLockedMoves[gBattlerAttacker] = gCurrentMove;
         }
         if (--gDisableStructs[gBattlerAttacker].rolloutTimer == 0) // last hit
         {
-            BattleMon_RemoveStatusType(gBattlerAttacker, STATUS_CHARGING);
+            BattleMon_RemoveStatusType(gBattlerAttacker, STATUS_MULTI_TURN);
         }
 
         gDynamicBasePower = gBattleMoves[gCurrentMove].power;

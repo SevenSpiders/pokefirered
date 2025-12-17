@@ -96,8 +96,10 @@ void RunBattleScriptCommands(void);
 bool8 TryRunFromBattle(u8 battler);
 void BattleMons_Init(void);
 void BattleMons_Switch(u8 a, u8 b);
+u16* BattleMon_GetStatusPtr(u32 battlerId, u16 statusType);
 u32 BattleMon_GetStatusIndex(u32 battlerId, u16 statusType);
 // u32 BattleMon_NextFreeStatus(u32 battlerId);
+bool8 BattleMon_HasStatus(u32 battlerId, u16 status);
 bool8 BattleMon_HasStatusType(u32 battlerId, u16 statusType);
 bool8 BattleMon_HasAnyStatus1(u32 battlerId);
 bool8 BattleMon_CanAddStatus(u32 battlerId, u16 statusType);
@@ -105,5 +107,7 @@ bool8 BattleMon_AddStatus(u32 battlerId, u16 status);
 bool8 BattleMon_TryAddStatus(u32 battlerId, u16 statusType);
 bool8 BattleMon_RemoveStatusType(u32 battlerId, u16 statusType);
 bool8 BattleMon_IsSemiInvulnerable(u32 battlerId);
+bool8 BattleMon_CanEscape(u32 battlerId);
+bool8 BattleMon_HasPoisonOrToxic(u32 battlerId);
 
 #endif // GUARD_BATTLE_MAIN_H
