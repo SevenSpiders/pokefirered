@@ -96,14 +96,14 @@ void RunBattleScriptCommands(void);
 bool8 TryRunFromBattle(u8 battler);
 void BattleMons_Init(void);
 void BattleMons_Switch(u8 a, u8 b);
-u32 BattleMon_GetStatusIndex(BattlePokemon *mon, u16 statusType);
-// u32 BattleMon_NextFreeStatus(BattlePokemon *mon);
-bool8 BattleMon_HasStatusType(BattlePokemon *mon, u16 statusType);
-bool8 BattleMon_HasAnyStatus1(BattlePokemon *mon);
-bool8 BattleMon_CanAddStatus(BattlePokemon *mon, u16 statusType);
-bool8 BattleMon_AddStatus(BattlePokemon *mon, u16 status);
-bool8 BattleMon_TryAddStatus(BattlePokemon *mon, u16 statusType);
-bool8 BattleMon_RemoveStatusType(BattlePokemon *mon, u16 statusType);
-bool8 BattleMon_IsSemiInvulnerable(BattlePokemon *mon);
+u32 BattleMon_GetStatusIndex(u32 battlerId, u16 statusType);
+// u32 BattleMon_NextFreeStatus(u32 battlerId);
+bool8 BattleMon_HasStatusType(u32 battlerId, u16 statusType);
+bool8 BattleMon_HasAnyStatus1(u32 battlerId);
+bool8 BattleMon_CanAddStatus(u32 battlerId, u16 statusType);
+bool8 BattleMon_AddStatus(u32 battlerId, u16 status);
+bool8 BattleMon_TryAddStatus(u32 battlerId, u16 statusType);
+bool8 BattleMon_RemoveStatusType(u32 battlerId, u16 statusType);
+bool8 BattleMon_IsSemiInvulnerable(u32 battlerId);
 
 #endif // GUARD_BATTLE_MAIN_H

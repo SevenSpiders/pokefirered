@@ -4559,13 +4559,13 @@ void BattleMons_Switch(u8 indexA, u8 indexB)
     gBattleMons[indexB] = temp;
 }
 
-u32 BattleMon_GetStatusIndex(BattlePokemon *mon, u16 statusType)
+u32 BattleMon_GetStatusIndex(u32 battlerId, u16 statusType)
 {
     u32 i;
 
     for (i=0; i<MAX_MON_STATUSES; i++)
     {
-        if (GET_STATUS_TYPE(mon->statuses[i]) == statusType)
+        if (GET_STATUS_TYPE(gBattleMons[battlerId].statuses[i]) == statusType)
         {
             return i;
         }
@@ -4578,27 +4578,27 @@ u32 BattleMon_GetStatusIndex(BattlePokemon *mon, u16 statusType)
 //     return BattleMon_GetStatusIndex(mon, STATUS_NONE);
 // }
 
-bool8 BattleMon_CanAddStatus(BattlePokemon *mon, u16 statusType)
+bool8 BattleMon_CanAddStatus(u32 battlerId, u16 statusType)
 {
-    if (BattleMon_HasStatusType(mon, statusType)) 
+    if (BattleMon_HasStatusType(battlerId, statusType)) 
         return FALSE;
-    if (BattleMon_GetStatusIndex(mon, STATUS_NONE) >= MAX_MON_STATUSES)
+    if (BattleMon_GetStatusIndex(battlerId, STATUS_NONE) >= MAX_MON_STATUSES)
         return FALSE;
     return TRUE;
 }
 
-bool8 BattleMon_HasStatusType(BattlePokemon *mon, u16 statusType)
+bool8 BattleMon_HasStatusType(u32 battlerId, u16 statusType)
 {
-    return BattleMon_GetStatusIndex(mon, statusType) < MAX_MON_STATUSES;
+    return BattleMon_GetStatusIndex(battlerId, statusType) < MAX_MON_STATUSES;
 }
 
-bool8 BattleMon_HasAnyStatus1(BattlePokemon *mon)
+bool8 BattleMon_HasAnyStatus1(u32 battlerId)
 {
     u32 i;
 
     for (i=0; i<MAX_MON_STATUSES; i++)
     {
-        if (GET_STATUS_TYPE(mon->statuses[i]) <= STATUS_MAX_STATUS1 && mon->statuses[i] > 0)
+        if (GET_STATUS_TYPE(gBattleMons[battlerId].statuses[i]) <= STATUS_MAX_STATUS1 && gBattleMons[battlerId].statuses[i] > 0)
         {
             return TRUE;
         }
@@ -4606,33 +4606,33 @@ bool8 BattleMon_HasAnyStatus1(BattlePokemon *mon)
     return FALSE;
 }
 
-bool8 BattleMon_AddStatus(BattlePokemon *mon, u16 status)
+bool8 BattleMon_AddStatus(u32 battlerId, u16 status)
 {
-    u32 i = BattleMon_GetStatusIndex(mon, GET_STATUS_TYPE(status));
+    u32 i = BattleMon_GetStatusIndex(battlerId, GET_STATUS_TYPE(status));
     if (i >= MAX_MON_STATUSES) return FALSE;
-    mon->statuses[i] = status;
+    gBattleMons[battlerId].statuses[i] = status;
     return TRUE;
 }
 
-bool8 BattleMon_TryAddStatus(BattlePokemon *mon, u16 status)
+bool8 BattleMon_TryAddStatus(u32 battlerId, u16 status)
 {
-    if (!BattleMon_CanAddStatus(mon, GET_STATUS_TYPE(status)))
+    if (!BattleMon_CanAddStatus(battlerId, GET_STATUS_TYPE(status)))
         return FALSE;
-    return BattleMon_AddStatus(mon, status);
+    return BattleMon_AddStatus(battlerId, status);
 }
 
-bool8 BattleMon_RemoveStatusType(BattlePokemon *mon, u16 statusType)
+bool8 BattleMon_RemoveStatusType(u32 battlerId, u16 statusType)
 {
-    u32 i = BattleMon_GetStatusIndex(mon, statusType);
+    u32 i = BattleMon_GetStatusIndex(battlerId, statusType);
     if (i >= MAX_MON_STATUSES) return FALSE;
-    mon->statuses[i] = STATUS_NONE;
+    gBattleMons[battlerId].statuses[i] = STATUS_NONE;
     return TRUE;
 }
 
-bool8 BattleMon_IsSemiInvulnerable(BattlePokemon *mon)
+bool8 BattleMon_IsSemiInvulnerable(u32 battlerId)
 {
-    if(BattleMon_HasStatusType(mon, STATUS_IN_AIR)) return TRUE;
-    if(BattleMon_HasStatusType(mon, STATUS_UNDERWATER)) return TRUE;
-    if(BattleMon_HasStatusType(mon, STATUS_UNDERGROUND)) return TRUE;
+    if(BattleMon_HasStatusType(battlerId, STATUS_IN_AIR)) return TRUE;
+    if(BattleMon_HasStatusType(battlerId, STATUS_UNDERWATER)) return TRUE;
+    if(BattleMon_HasStatusType(battlerId, STATUS_UNDERGROUND)) return TRUE;
     return FALSE;
 }
