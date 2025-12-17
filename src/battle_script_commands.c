@@ -39,15 +39,6 @@
 
 extern const u8 *const gBattleScriptsForMoveEffects[];
 
-const u8 gStatus1FromStatus [] = {
-    [STATUS_SLEEP]     = STATUS1_SLEEP,
-    [STATUS_POISON]    = STATUS1_POISON,
-    [STATUS_BURN]      = STATUS1_BURN,
-    [STATUS_FREEZE]    = STATUS1_FREEZE,
-    [STATUS_PARALYSIS] = STATUS1_PARALYSIS,
-    [STATUS_TOXIC]     = STATUS1_POISON,
-};
-
 #define DEFENDER_IS_PROTECTED ((gProtectStructs[gBattlerTarget].protected) && (gBattleMoves[gCurrentMove].flags & FLAG_PROTECT_AFFECTED))
 
 #define LEVEL_UP_BANNER_START 416

@@ -4167,13 +4167,13 @@ bool8 PokemonUseItemEffects(struct Pokemon *mon, u16 item, u8 partyIndex, u8 mov
                     BattleMon_RemoveStatusType(battleMonId, STATUS_NIGHTMARE);
                 retVal = FALSE;
             }
-            if ((itemEffect[cmdIndex] & ITEM3_POISON) && HealStatusConditions(mon, partyIndex, STATUS1_PSN_ANY | STATUS1_TOXIC_COUNTER, battleMonId) == 0)
+            if ((itemEffect[cmdIndex] & ITEM3_POISON) && HealStatusConditions(mon, partyIndex, STATUS_POISON, battleMonId) == 0)
                 retVal = FALSE;
-            if ((itemEffect[cmdIndex] & ITEM3_BURN) && HealStatusConditions(mon, partyIndex, STATUS1_BURN, battleMonId) == 0)
+            if ((itemEffect[cmdIndex] & ITEM3_BURN) && HealStatusConditions(mon, partyIndex, STATUS_BURN, battleMonId) == 0)
                 retVal = FALSE;
-            if ((itemEffect[cmdIndex] & ITEM3_FREEZE) && HealStatusConditions(mon, partyIndex, STATUS1_FREEZE, battleMonId) == 0)
+            if ((itemEffect[cmdIndex] & ITEM3_FREEZE) && HealStatusConditions(mon, partyIndex, STATUS_FREEZE, battleMonId) == 0)
                 retVal = FALSE;
-            if ((itemEffect[cmdIndex] & ITEM3_PARALYSIS) && HealStatusConditions(mon, partyIndex, STATUS1_PARALYSIS, battleMonId) == 0)
+            if ((itemEffect[cmdIndex] & ITEM3_PARALYSIS) && HealStatusConditions(mon, partyIndex, STATUS_PARALYSIS, battleMonId) == 0)
                 retVal = FALSE;
             if ((itemEffect[cmdIndex] & ITEM3_CONFUSION)  // heal confusion
              && gMain.inBattle && battleMonId != MAX_BATTLERS_COUNT 
@@ -4498,16 +4498,16 @@ bool8 PokemonUseItemEffects(struct Pokemon *mon, u16 item, u8 partyIndex, u8 mov
     return retVal;
 }
 
-static bool8 HealStatusConditions(struct Pokemon *mon, u32 unused, u32 healMask, u8 battleId)
+static bool8 HealStatusConditions(struct Pokemon *mon, u32 unused, u32 status, u8 battleId)
 {
-    u32 status = GetMonData(mon, MON_DATA_STATUS, NULL);
+    u32 statusMon = GetMonData(mon, MON_DATA_STATUS, NULL);
 
-    if (status & healMask)
+    if (statusMon & gStatus1FromStatus[status])
     {
-        status &= ~healMask;
-        SetMonData(mon, MON_DATA_STATUS, &status);
+        statusMon &= ~gStatus1FromStatus[status];
+        SetMonData(mon, MON_DATA_STATUS, &statusMon);
         if (gMain.inBattle && battleId != MAX_BATTLERS_COUNT)
-            gBattleMons[battleId].status1 &= ~healMask;
+            BattleMon_RemoveStatusType(battleId, status);
         return FALSE;
     }
     else
