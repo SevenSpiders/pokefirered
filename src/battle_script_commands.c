@@ -2299,7 +2299,7 @@ static bool32 TryEffect_Toxic(bool8 primary, u8 certain)
         gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_STATUS_HAD_NO_EFFECT;
         return TRY_EFFECT_FAILED;
     }
-    if (gBattleMons[gEffectBattler].status1)
+    if (BattleMon_CanAddStatus(gEffectBattler, STATUS_POISON))
         return FALSE;
     if (!IS_BATTLER_OF_TYPE(gEffectBattler, TYPE_POISON) && !IS_BATTLER_OF_TYPE(gEffectBattler, TYPE_STEEL))
     {
@@ -2307,8 +2307,9 @@ static bool32 TryEffect_Toxic(bool8 primary, u8 certain)
             return FALSE;
 
         // It's redundant, because at this point we know the status1 value is 0.
-        gBattleMons[gEffectBattler].status1 &= ~STATUS1_TOXIC_POISON;
-        gBattleMons[gEffectBattler].status1 &= ~STATUS1_POISON;
+        BattleMon_RemoveStatus(gEffectBattler, STATUS_POISON);
+        BattleMon_RemoveStatus(gEffectBattler, STATUS_TOXIC);
+
         return TRUE;
     }
     else
@@ -2382,16 +2383,17 @@ void SetMoveEffect(bool8 primary, u8 certain)
         if (statusChanged == TRUE)
         {
             u16 status = sStatusTypeFromMoveEffect[gBattleCommunication[MOVE_EFFECT_BYTE]];
-            u16 status1 = gStatus1FromStatus[GET_STATUS_TYPE(status)];
+            u16 status1;
             BattleScriptPush(gBattlescriptCurrInstr + 1);
 
             if (status == STATUS_SLEEP) 
                 status = ENCODE_STATUS(STATUS_SLEEP, (Random() & 3) + 2);
             BattleMon_AddStatus(gEffectBattler, status);
+            status1 = BattleMon_GetStatus1Flags(gEffectBattler);
             gBattlescriptCurrInstr = sMoveEffectBS_Ptrs[gBattleCommunication[MOVE_EFFECT_BYTE]];
 
             gActiveBattler = gEffectBattler;
-            BtlController_EmitSetMonData(BUFFER_A, REQUEST_STATUS_BATTLE, 0, 2, &status1);
+            BtlController_EmitSetMonData(BUFFER_A, REQUEST_STATUS_BATTLE, 0, 4, &status1);
             MarkBattlerForControllerExec(gActiveBattler);
 
             if (gHitMarker & HITMARKER_STATUS_ABILITY_EFFECT)
@@ -2498,13 +2500,13 @@ void SetMoveEffect(bool8 primary, u8 certain)
                 gBattlescriptCurrInstr = sMoveEffectBS_Ptrs[gBattleCommunication[MOVE_EFFECT_BYTE]];
                 break;
             case MOVE_EFFECT_TRI_ATTACK:
-                if (gBattleMons[gEffectBattler].status1)
+                if (BattleMon_HasAnyStatus1(gEffectBattler))
                 {
                     gBattlescriptCurrInstr++;
                 }
                 else
                 {
-                    gBattleCommunication[MOVE_EFFECT_BYTE] = Random() % 3 + 3;
+                    gBattleCommunication[MOVE_EFFECT_BYTE] = Random() % 3 + 3; // set to random status1
                     SetMoveEffect(FALSE, 0);
                 }
                 break;
@@ -2729,16 +2731,17 @@ void SetMoveEffect(bool8 primary, u8 certain)
                 gBattlescriptCurrInstr = BattleScript_RapidSpinAway;
                 break;
             case MOVE_EFFECT_REMOVE_PARALYSIS: // Smelling salts
-                if (!(gBattleMons[gBattlerTarget].status1 & STATUS1_PARALYSIS))
+                if (!BattleMon_HasStatus(gBattlerTarget, STATUS_PARALYSIS))
                 {
                     gBattlescriptCurrInstr++;
                 }
                 else
                 {
-                    gBattleMons[gBattlerTarget].status1 &= ~STATUS1_PARALYSIS;
-
+                    u32 statusFlags;
+                    BattleMon_RemoveStatus(gBattlerTarget, STATUS_PARALYSIS);
+                    statusFlags = BattleMon_GetStatus1Flags(gBattlerTarget);
                     gActiveBattler = gBattlerTarget;
-                    BtlController_EmitSetMonData(BUFFER_A, REQUEST_STATUS_BATTLE, 0, sizeof(gBattleMons[gActiveBattler].status1), &gBattleMons[gActiveBattler].status1);
+                    BtlController_EmitSetMonData(BUFFER_A, REQUEST_STATUS_BATTLE, 0, 4, &statusFlags);
                     MarkBattlerForControllerExec(gActiveBattler);
 
                     BattleScriptPush(gBattlescriptCurrInstr + 1);
@@ -2972,10 +2975,11 @@ static void Cmd_cleareffectsonfaint(void)
 {
     if (gBattleControllerExecFlags == 0)
     {
+        u32 statusFlags = BattleMon_GetStatus1Flags(gActiveBattler);
         gActiveBattler = GetBattlerForBattleScript(gBattlescriptCurrInstr[1]);
 
         BattleMon_RemoveAnyStatus1(gActiveBattler);
-        BtlController_EmitSetMonData(BUFFER_A, REQUEST_STATUS_BATTLE, 0, sizeof(gBattleMons[gActiveBattler].status1), &gBattleMons[gActiveBattler].status1);
+        BtlController_EmitSetMonData(BUFFER_A, REQUEST_STATUS_BATTLE, 0, 4, &statusFlags);
         MarkBattlerForControllerExec(gActiveBattler);
 
         FaintClearSetData(); // Effects like attractions, trapping, etc.
@@ -4185,9 +4189,11 @@ static void Cmd_moveend(void)
                 && !(gMoveResultFlags & MOVE_RESULT_NO_EFFECT)
                 && moveType == TYPE_FIRE)
             {
+                u32 statusFlags;
                 gBattleMons[gBattlerTarget].status1 &= ~STATUS1_FREEZE;
                 gActiveBattler = gBattlerTarget;
-                BtlController_EmitSetMonData(BUFFER_A, REQUEST_STATUS_BATTLE, 0, sizeof(gBattleMons[gBattlerTarget].status1), &gBattleMons[gBattlerTarget].status1);
+                statusFlags = BattleMon_GetStatus1Flags(gBattlerTarget);
+                BtlController_EmitSetMonData(BUFFER_A, REQUEST_STATUS_BATTLE, 0, 4, &statusFlags);
                 MarkBattlerForControllerExec(gActiveBattler);
                 BattleScriptPushCursor();
                 gBattlescriptCurrInstr = BattleScript_DefrostedViaFireMove;
@@ -6556,13 +6562,15 @@ static void Cmd_trysetrest(void)
     }
     else
     {
+        u32 statusFlags;
         if (gBattleMons[gBattlerTarget].status1 & ((u8)(~STATUS1_SLEEP)))
             gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_REST_STATUSED;
         else
             gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_REST;
 
-        gBattleMons[gBattlerTarget].status1 = STATUS1_SLEEP_TURN(3);
-        BtlController_EmitSetMonData(BUFFER_A, REQUEST_STATUS_BATTLE, 0, sizeof(gBattleMons[gActiveBattler].status1), &gBattleMons[gActiveBattler].status1);
+        BattleMon_AddStatus(gBattlerTarget, ENCODE_STATUS(STATUS_SLEEP, 3));
+        statusFlags = BattleMon_GetStatus1Flags(gBattlerTarget);
+        BtlController_EmitSetMonData(BUFFER_A, REQUEST_STATUS_BATTLE, 0, 4, &statusFlags);
         MarkBattlerForControllerExec(gActiveBattler);
         gBattlescriptCurrInstr += 5;
     }
@@ -8815,10 +8823,12 @@ static void Cmd_cureifburnedparalysedorpoisoned(void)
 {
     if (BattleMon_HasAnyStatus1(gBattlerAttacker))
     {
+        u32 statusFlags;
         BattleMon_RemoveAnyStatus1(gBattlerAttacker);
+        statusFlags = BattleMon_GetStatus1Flags(gBattlerAttacker);
         gBattlescriptCurrInstr += 5;
         gActiveBattler = gBattlerAttacker;
-        BtlController_EmitSetMonData(BUFFER_A, REQUEST_STATUS_BATTLE, 0, sizeof(gBattleMons[gActiveBattler].status1), &gBattleMons[gActiveBattler].status1);
+        BtlController_EmitSetMonData(BUFFER_A, REQUEST_STATUS_BATTLE, 0, 4, &statusFlags);
         MarkBattlerForControllerExec(gActiveBattler);
     }
     else
@@ -9283,16 +9293,15 @@ static void Cmd_trygetintimidatetarget(void)
 
 static void Cmd_switchoutabilities(void)
 {
+    u32 statusFlags;
     gActiveBattler = GetBattlerForBattleScript(gBattlescriptCurrInstr[1]);
 
     switch (gBattleMons[gActiveBattler].ability)
     {
     case ABILITY_NATURAL_CURE:
         BattleMon_RemoveAnyStatus1(gActiveBattler);
-        BtlController_EmitSetMonData(BUFFER_A, REQUEST_STATUS_BATTLE,
-                                     gBitTable[*(gBattleStruct->battlerPartyIndexes + gActiveBattler)],
-                                     sizeof(gBattleMons[gActiveBattler].status1),
-                                     &gBattleMons[gActiveBattler].status1);
+        statusFlags = BattleMon_GetStatus1Flags(gActiveBattler);
+        BtlController_EmitSetMonData(BUFFER_A, REQUEST_STATUS_BATTLE, gBitTable[*(gBattleStruct->battlerPartyIndexes + gActiveBattler)], 4,&statusFlags);
         MarkBattlerForControllerExec(gActiveBattler);
         break;
     }

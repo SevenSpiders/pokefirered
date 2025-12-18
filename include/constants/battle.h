@@ -99,8 +99,8 @@
 #define STATUS_FLINCHED         8
 #define STATUS_UPROAR           9
 #define STATUS_BIDE             10
-#define STATUS_MULTI_TURN         42 // STATUS2_MULTIPLE_TURNS
-#define STATUS_THRASH           43 // STATUS_LOCK_CONFUSE
+#define STATUS_MULTI_TURN       42
+#define STATUS_THRASH           43
 #define STATUS_WRAPPED          11
 #define STATUS_INFATUATION      12
 #define STATUS_FOCUS            13

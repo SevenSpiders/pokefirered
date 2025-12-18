@@ -748,7 +748,7 @@ u8 DoBattlerEndTurnEffects(void)
 {
     u8 effect = 0;
     u16 *statusPtr;
-    u32 statusData;
+    u32 statusData, statusFlags;
 
     gHitMarker |= (HITMARKER_GRUDGE | HITMARKER_SKIP_DMG_TRACK);
     while (gBattleStruct->turnEffectsBattlerId < gBattlersCount && gBattleStruct->turnEffectsTracker <= ENDTURN_BATTLER_COUNT)
@@ -924,10 +924,11 @@ u8 DoBattlerEndTurnEffects(void)
                         {
                             BattleMon_RemoveStatus(gBattlerAttacker, STATUS_SLEEP);
                             BattleMon_RemoveStatus(gBattlerAttacker, STATUS_NIGHTMARE);
+                            statusFlags = BattleMon_GetStatus1Flags(gBattlerAttacker);
                             gBattleCommunication[MULTISTRING_CHOOSER] = 1;
                             BattleScriptExecute(BattleScript_MonWokeUpInUproar);
                             gActiveBattler = gBattlerAttacker;
-                            BtlController_EmitSetMonData(BUFFER_A, REQUEST_STATUS_BATTLE, 0, 4, &gBattleMons[gActiveBattler].status1);
+                            BtlController_EmitSetMonData(BUFFER_A, REQUEST_STATUS_BATTLE, 0, 4, &statusFlags);
                             MarkBattlerForControllerExec(gActiveBattler);
                             break;
                         }
@@ -1063,7 +1064,8 @@ u8 DoBattlerEndTurnEffects(void)
                         CancelMultiTurnMoves(gActiveBattler);
                         *statusYawn = STATUS_NONE;
                         BattleMon_AddStatus(gActiveBattler, ENCODE_STATUS(STATUS_SLEEP, (Random() & 3) + 2)); // 2-5 turns of sleep
-                        BtlController_EmitSetMonData(BUFFER_A, REQUEST_STATUS_BATTLE, 0, 4, &gBattleMons[gActiveBattler].status1);
+                        statusFlags = BattleMon_GetStatus1Flags(gActiveBattler);
+                        BtlController_EmitSetMonData(BUFFER_A, REQUEST_STATUS_BATTLE, 0, 4, &statusFlags);
                         MarkBattlerForControllerExec(gActiveBattler);
                         gEffectBattler = gActiveBattler;
                         BattleScriptExecute(BattleScript_YawnMakesAsleep);
@@ -1567,10 +1569,11 @@ u8 AtkCanceller_UnableToUseMove(void)
 
     } while (gBattleStruct->atkCancellerTracker != CANCELLER_END && effect == 0);
 
-    if (effect == 2)
+    if (effect == 2) //Thawing
     {
+        u32 statusFlags = BattleMon_GetStatus1Flags(gBattlerAttacker);
         gActiveBattler = gBattlerAttacker;
-        BtlController_EmitSetMonData(BUFFER_A, REQUEST_STATUS_BATTLE, 0, 4, &gBattleMons[gActiveBattler].status1);
+        BtlController_EmitSetMonData(BUFFER_A, REQUEST_STATUS_BATTLE, 0, 4, &statusFlags);
         MarkBattlerForControllerExec(gActiveBattler);
     }
     return effect;
@@ -1866,8 +1869,9 @@ u8 AbilityBattleEffects(u8 caseID, u8 battler, u8 ability, u8 special, u16 moveA
                     }
                     break;
                 case ABILITY_SHED_SKIN:
-                    if ((gBattleMons[battler].status1 & STATUS1_ANY) && (Random() % 3) == 0)
+                    if (BattleMon_HasAnyStatus1(battler) && (Random() % 3) == 0)
                     {
+                        u32 statusFlags = 0;
                         if (BattleMon_HasPoisonOrToxic(battler))
                             StringCopy(gBattleTextBuff1, gStatusConditionString_PoisonJpn);
                         if (BattleMon_HasStatus(battler, STATUS_SLEEP))
@@ -1878,17 +1882,12 @@ u8 AbilityBattleEffects(u8 caseID, u8 battler, u8 ability, u8 special, u16 moveA
                             StringCopy(gBattleTextBuff1, gStatusConditionString_BurnJpn);
                         if (BattleMon_HasStatus(battler, STATUS_FREEZE))
                             StringCopy(gBattleTextBuff1, gStatusConditionString_IceJpn);
-                        BattleMon_RemoveStatus(battler, STATUS_SLEEP);
-                        BattleMon_RemoveStatus(battler, STATUS_POISON);
-                        BattleMon_RemoveStatus(battler, STATUS_BURN);
-                        BattleMon_RemoveStatus(battler, STATUS_FREEZE);
-                        BattleMon_RemoveStatus(battler, STATUS_PARALYSIS);
-                        BattleMon_RemoveStatus(battler, STATUS_TOXIC);
+                        BattleMon_RemoveAnyStatus1(battler);
 
                         BattleMon_RemoveStatus(battler, STATUS_NIGHTMARE);
                         gBattleScripting.battler = gActiveBattler = battler;
                         BattleScriptPushCursorAndCallback(BattleScript_ShedSkinActivates);
-                        BtlController_EmitSetMonData(BUFFER_A, REQUEST_STATUS_BATTLE, 0, 4, &gBattleMons[battler].status1);
+                        BtlController_EmitSetMonData(BUFFER_A, REQUEST_STATUS_BATTLE, 0, 4, &statusFlags);
                         MarkBattlerForControllerExec(gActiveBattler);
                         effect++;
                     }
@@ -2182,6 +2181,7 @@ u8 AbilityBattleEffects(u8 caseID, u8 battler, u8 ability, u8 special, u16 moveA
                 }
                 if (effect != 0)
                 {
+                    u32 statusFlags;
                     switch (effect)
                     {
                     case 1: // status cleared
@@ -2194,12 +2194,13 @@ u8 AbilityBattleEffects(u8 caseID, u8 battler, u8 ability, u8 special, u16 moveA
                         BattleMon_RemoveStatus(battler, STATUS_INFATUATION);
                         break;
                     }
-
+                    
+                    statusFlags = BattleMon_GetStatus1Flags(battler);
                     BattleScriptPushCursor();
                     gBattlescriptCurrInstr = BattleScript_AbilityCuredStatus;
                     gBattleScripting.battler = battler;
                     gActiveBattler = battler;
-                    BtlController_EmitSetMonData(BUFFER_A, REQUEST_STATUS_BATTLE, 0, 4, &gBattleMons[gActiveBattler].status1);
+                    BtlController_EmitSetMonData(BUFFER_A, REQUEST_STATUS_BATTLE, 0, 4, &statusFlags);
                     MarkBattlerForControllerExec(gActiveBattler);
                     return effect;
                 }
@@ -2868,13 +2869,14 @@ u8 ItemBattleEffects(u8 caseID, u8 battlerId, bool8 moveTurn)
             }
             if (effect != 0)
             {
+                u32 statusFlags = BattleMon_GetStatus1Flags(battlerId);
                 gBattleScripting.battler = battlerId;
                 gPotentialItemEffectBattler = battlerId;
                 gActiveBattler = gBattlerAttacker = battlerId;
                 switch (effect)
                 {
                 case ITEM_STATUS_CHANGE:
-                    BtlController_EmitSetMonData(BUFFER_A, REQUEST_STATUS_BATTLE, 0, 4, &gBattleMons[battlerId].status1);
+                    BtlController_EmitSetMonData(BUFFER_A, REQUEST_STATUS_BATTLE, 0, 4, &statusFlags);
                     MarkBattlerForControllerExec(gActiveBattler);
                     break;
                 case ITEM_PP_CHANGE:
@@ -3022,10 +3024,11 @@ u8 ItemBattleEffects(u8 caseID, u8 battlerId, bool8 moveTurn)
             }
             if (effect != 0)
             {
+                u32 statusFlags = BattleMon_GetStatus1Flags(battlerId);
                 gBattleScripting.battler = battlerId;
                 gPotentialItemEffectBattler = battlerId;
                 gActiveBattler = battlerId;
-                BtlController_EmitSetMonData(BUFFER_A, REQUEST_STATUS_BATTLE, 0, 4, &gBattleMons[gActiveBattler].status1);
+                BtlController_EmitSetMonData(BUFFER_A, REQUEST_STATUS_BATTLE, 0, 4, &statusFlags);
                 MarkBattlerForControllerExec(gActiveBattler);
                 break;
             }

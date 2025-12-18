@@ -43,7 +43,8 @@
 #include "constants/songs.h"
 #include "constants/trainers.h"
 
-const u8 gStatus1FromStatus [] = {
+const u8 gStatus1FromStatus [STATUS_MAX_STATUS1+1] = {
+    // [STATUS_NONE]      = 0,
     [STATUS_SLEEP]     = STATUS1_SLEEP,
     [STATUS_POISON]    = STATUS1_PSN_ANY,
     [STATUS_BURN]      = STATUS1_BURN,
@@ -4749,4 +4750,20 @@ bool8 BattleMon_HasPoisonOrToxic(u32 battlerId)
         }
     }
     return FALSE;
+}
+
+u32 BattleMon_GetStatus1Flags(u32 battlerId)
+{
+    u32 i, status;
+    u8 flags = 0;
+
+    for (i=0; i<STATUS_MAX_STATUS1; i++)
+    {
+        status = GET_STATUS_TYPE(gBattleMons[battlerId].statuses[i]);
+        if (status != STATUS_NONE)
+        {
+            flags |= gStatus1FromStatus[status];
+        }
+    }
+    return flags;
 }

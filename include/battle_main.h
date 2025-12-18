@@ -110,5 +110,6 @@ bool8 BattleMon_RemoveAnyStatus1(u32 battlerId);
 bool8 BattleMon_IsSemiInvulnerable(u32 battlerId);
 bool8 BattleMon_CanEscape(u32 battlerId);
 bool8 BattleMon_HasPoisonOrToxic(u32 battlerId);
+u32 BattleMon_GetStatus1Flags(u32 battlerId); // for BtlController_EmitSetMonData
 
 #endif // GUARD_BATTLE_MAIN_H
