@@ -16,8 +16,9 @@ static bool8 ShouldUseItem(void);
 
 static bool8 ShouldSwitchIfPerishSong(void)
 {
-    if (BattleMon_HasStatus(gActiveBattler, STATUS_PERISH_SONG)
-     && gDisableStructs[gActiveBattler].perishSongTimer == 0)
+    u16 *statusPerish = BattleMon_GetStatusPtr(gActiveBattler, STATUS_PERISH_SONG);
+    u32 turnsLeft = GET_STATUS_DATA(*statusPerish);
+    if (statusPerish != 0 && turnsLeft == 0)
     {
         *(gBattleStruct->AI_monToSwitchIntoId + (GetBattlerPosition(gActiveBattler) >> 1)) = PARTY_SIZE;
         BtlController_EmitTwoReturnValues(1, B_ACTION_SWITCH, 0);

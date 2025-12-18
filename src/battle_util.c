@@ -1091,6 +1091,8 @@ u8 DoBattlerEndTurnEffects(void)
 
 bool8 HandleWishPerishSongOnTurnEnd(void)
 {
+    u16 *statusPerish;
+    u32 turnsLeft;
     gHitMarker |= (HITMARKER_GRUDGE | HITMARKER_SKIP_DMG_TRACK);
 
     switch (gBattleStruct->wishPerishSongState)
@@ -1141,18 +1143,20 @@ bool8 HandleWishPerishSongOnTurnEnd(void)
                 continue;
             }
             gBattleStruct->wishPerishSongBattlerId++;
-            if (BattleMon_HasStatus(gActiveBattler, STATUS_PERISH_SONG))
+            statusPerish = BattleMon_GetStatusPtr(gActiveBattler, STATUS_PERISH_SONG);
+            if (statusPerish != 0)
             {
-                PREPARE_BYTE_NUMBER_BUFFER(gBattleTextBuff1, 1, gDisableStructs[gActiveBattler].perishSongTimer);
-                if (gDisableStructs[gActiveBattler].perishSongTimer == 0)
+                turnsLeft = GET_STATUS_DATA(*statusPerish);
+                PREPARE_BYTE_NUMBER_BUFFER(gBattleTextBuff1, 1, turnsLeft);
+                if (turnsLeft == 0)
                 {
-                    BattleMon_RemoveStatus(gActiveBattler, STATUS_PERISH_SONG);
+                    *statusPerish = STATUS_NONE;
                     gBattleMoveDamage = gBattleMons[gActiveBattler].hp;
                     gBattlescriptCurrInstr = BattleScript_PerishSongTakesLife;
                 }
                 else
                 {
-                    gDisableStructs[gActiveBattler].perishSongTimer--;
+                    *statusPerish = ENCODE_STATUS(STATUS_PERISH_SONG, turnsLeft - 1);
                     gBattlescriptCurrInstr = BattleScript_PerishSongCountGoesDown;
                 }
                 BattleScriptExecute(gBattlescriptCurrInstr);
