@@ -5553,8 +5553,9 @@ static void Cmd_jumptocalledmove(void)
     gBattlescriptCurrInstr = gBattleScriptsForMoveEffects[gBattleMoves[gCurrentMove].effect];
 }
 
-static void Cmd_statusanimation(void)
+static void Cmd_statusanimation(void) // should only use status2animation
 {
+    DebugPrintf("SHOULD NO LONGER BE USED");
     if (gBattleControllerExecFlags == 0)
     {
         gActiveBattler = GetBattlerForBattleScript(gBattlescriptCurrInstr[1]);
@@ -5562,7 +5563,7 @@ static void Cmd_statusanimation(void)
             && gDisableStructs[gActiveBattler].substituteHP == 0
             && !(gHitMarker & HITMARKER_NO_ANIMATIONS))
         {
-            BtlController_EmitStatusAnimation(BUFFER_A, FALSE, gBattleMons[gActiveBattler].status1);
+            BtlController_EmitStatusAnimation(BUFFER_A, gBattleMons[gActiveBattler].status1);
             MarkBattlerForControllerExec(gActiveBattler);
         }
         gBattlescriptCurrInstr += 2;
@@ -5582,8 +5583,8 @@ static void Cmd_status2animation(void)
             && !(gHitMarker & HITMARKER_NO_ANIMATIONS))
         {
             if (!BattleMon_HasStatus(gActiveBattler, statusToAnimate))
-                DebugPrintf("should not animate???");
-            BtlController_EmitStatusAnimation(BUFFER_A, TRUE, statusToAnimate);
+                DebugPrintf("should not animate??? %d", statusToAnimate);
+            BtlController_EmitStatusAnimation(BUFFER_A,statusToAnimate);
             MarkBattlerForControllerExec(gActiveBattler);
         }
         gBattlescriptCurrInstr += 6;
@@ -5602,7 +5603,7 @@ static void Cmd_chosenstatusanimation(void)
             && gDisableStructs[gActiveBattler].substituteHP == 0
             && !(gHitMarker & HITMARKER_NO_ANIMATIONS))
         {
-            BtlController_EmitStatusAnimation(BUFFER_A, gBattlescriptCurrInstr[2], wantedStatus);
+            BtlController_EmitStatusAnimation(BUFFER_A, wantedStatus);
             MarkBattlerForControllerExec(gActiveBattler);
         }
         gBattlescriptCurrInstr += 7;

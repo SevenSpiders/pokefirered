@@ -1260,7 +1260,7 @@ BattleScript_SnoreIsAsleep::
 	jumpifhalfword CMP_EQUAL, gChosenMove, MOVE_SLEEP_TALK, BattleScript_DoSnore
 	printstring STRINGID_PKMNFASTASLEEP
 	waitmessage B_WAIT_TIME_LONG
-	statusanimation BS_ATTACKER
+	status2animation BS_ATTACKER, STATUS_SLEEP @was statusanimation
 BattleScript_DoSnore::
 	attackstring
 	ppreduce
@@ -1313,7 +1313,7 @@ BattleScript_EffectSleepTalk::
 BattleScript_SleepTalkIsAsleep::
 	printstring STRINGID_PKMNFASTASLEEP
 	waitmessage B_WAIT_TIME_LONG
-	statusanimation BS_ATTACKER
+	status2animation BS_ATTACKER, STATUS_SLEEP @was statusanimation
 	attackstring
 	ppreduce
 	orword gHitMarker, HITMARKER_NO_PPDEDUCT
@@ -3657,7 +3657,7 @@ BattleScript_FocusPunchSetUp::
 BattleScript_MoveUsedIsAsleep::
 	printstring STRINGID_PKMNFASTASLEEP
 	waitmessage B_WAIT_TIME_LONG
-	statusanimation BS_ATTACKER
+	status2animation BS_ATTACKER, STATUS_SLEEP @was statusanimation
 	goto BattleScript_MoveEnd
 
 BattleScript_MoveUsedWokeUp::
@@ -3677,7 +3677,7 @@ BattleScript_PoisonTurnDmg::
 	printstring STRINGID_PKMNHURTBYPOISON
 	waitmessage B_WAIT_TIME_LONG
 BattleScript_DoStatusTurnDmg::
-	statusanimation BS_ATTACKER
+	status2animation BS_ATTACKER, STATUS_POISON @was statusanimation
 BattleScript_DoTurnDmg::
 	orword gHitMarker, HITMARKER_IGNORE_SUBSTITUTE | HITMARKER_PASSIVE_DAMAGE
 	healthbarupdate BS_ATTACKER
@@ -3695,7 +3695,7 @@ BattleScript_BurnTurnDmg::
 BattleScript_MoveUsedIsFrozen::
 	printstring STRINGID_PKMNISFROZEN
 	waitmessage B_WAIT_TIME_LONG
-	statusanimation BS_ATTACKER
+	status2animation BS_ATTACKER, STATUS_FREEZE @was statusanimation
 	goto BattleScript_MoveEnd
 
 BattleScript_MoveUsedUnfroze::
@@ -3713,7 +3713,7 @@ BattleScript_DefrostedViaFireMove::
 BattleScript_MoveUsedIsParalyzed::
 	printstring STRINGID_PKMNISPARALYZED
 	waitmessage B_WAIT_TIME_LONG
-	statusanimation BS_ATTACKER
+	status2animation BS_ATTACKER, STATUS_PARALYSIS @was statusanimation
 	cancelmultiturnmoves BS_ATTACKER
 	goto BattleScript_MoveEnd
 
@@ -3828,7 +3828,7 @@ BattleScript_SilphScopeUnveiled::
 	end2
 
 BattleScript_MoveEffectSleep::
-	statusanimation BS_EFFECT_BATTLER
+	status2animation BS_EFFECT_BATTLER, STATUS_SLEEP @was statusanimation
 	printfromtable gFellAsleepStringIds
 	waitmessage B_WAIT_TIME_LONG
 BattleScript_UpdateEffectStatusIconRet::
@@ -3837,7 +3837,7 @@ BattleScript_UpdateEffectStatusIconRet::
 	return
 
 BattleScript_YawnMakesAsleep::
-	statusanimation BS_EFFECT_BATTLER
+	status2animation BS_EFFECT_BATTLER, STATUS_SLEEP @was statusanimation
 	printstring STRINGID_PKMNFELLASLEEP
 	waitmessage B_WAIT_TIME_LONG
 	updatestatusicon BS_EFFECT_BATTLER
@@ -3846,25 +3846,25 @@ BattleScript_YawnMakesAsleep::
 	end2
 
 BattleScript_MoveEffectPoison::
-	statusanimation BS_EFFECT_BATTLER
+	status2animation BS_EFFECT_BATTLER, STATUS_POISON @was statusanimation
 	printfromtable gGotPoisonedStringIds
 	waitmessage B_WAIT_TIME_LONG
 	goto BattleScript_UpdateEffectStatusIconRet
 
 BattleScript_MoveEffectBurn::
-	statusanimation BS_EFFECT_BATTLER
+	status2animation BS_EFFECT_BATTLER, STATUS_BURN @was statusanimation
 	printfromtable gGotBurnedStringIds
 	waitmessage B_WAIT_TIME_LONG
 	goto BattleScript_UpdateEffectStatusIconRet
 
 BattleScript_MoveEffectFreeze::
-	statusanimation BS_EFFECT_BATTLER
+	status2animation BS_EFFECT_BATTLER, STATUS_FREEZE @was statusanimation
 	printfromtable gGotFrozenStringIds
 	waitmessage B_WAIT_TIME_LONG
 	goto BattleScript_UpdateEffectStatusIconRet
 
 BattleScript_MoveEffectParalysis::
-	statusanimation BS_EFFECT_BATTLER
+	status2animation BS_EFFECT_BATTLER, STATUS_PARALYSIS @was statusanimation
 	printfromtable gGotParalyzedStringIds
 	waitmessage B_WAIT_TIME_LONG
 	goto BattleScript_UpdateEffectStatusIconRet
@@ -3875,7 +3875,7 @@ BattleScript_MoveEffectUproar::
 	return
 
 BattleScript_MoveEffectToxic::
-	statusanimation BS_EFFECT_BATTLER
+	status2animation BS_EFFECT_BATTLER, STATUS_POISON @was statusanimation
 	printstring STRINGID_PKMNBADLYPOISONED
 	waitmessage B_WAIT_TIME_LONG
 	goto BattleScript_UpdateEffectStatusIconRet

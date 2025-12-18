@@ -927,14 +927,10 @@ void BtlController_EmitStatusIconUpdate(u8 bufferId, u32 status1, u32 status2)
     PrepareBufferDataTransfer(bufferId, sBattleBuffersTransferData, 9);
 }
 
-void BtlController_EmitStatusAnimation(u8 bufferId, bool8 status2, u32 status) // TODO
+void BtlController_EmitStatusAnimation(u8 bufferId, u32 status) // TODO
 {
     sBattleBuffersTransferData[0] = CONTROLLER_STATUSANIMATION;
-    sBattleBuffersTransferData[1] = status2;
-    sBattleBuffersTransferData[2] = status;
-    sBattleBuffersTransferData[3] = (status & 0x0000FF00) >> 8;
-    sBattleBuffersTransferData[4] = (status & 0x00FF0000) >> 16;
-    sBattleBuffersTransferData[5] = (status & 0xFF000000) >> 24;
+    sBattleBuffersTransferData[1] = (u8)status;
     PrepareBufferDataTransfer(bufferId, sBattleBuffersTransferData, 6);
 }
 
