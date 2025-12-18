@@ -8229,8 +8229,6 @@ static void Cmd_trysetperishsong(void)
         }
         else
         {
-            gDisableStructs[i].perishSongTimer = 3;
-            gDisableStructs[i].perishSongTimerStartValue = 3;
             BattleMon_AddStatus(i, ENCODE_STATUS(STATUS_PERISH_SONG, 3));
         }
     }

@@ -2867,7 +2867,7 @@ static void TryDoEventsBeforeFirstTurn(void)
                     SwapTurnOrder(i, j);
     }
     if (!gBattleStruct->overworldWeatherDone
-        && AbilityBattleEffects(0, 0, 0, ABILITYEFFECT_SWITCH_IN_WEATHER, 0) != 0)
+        && AbilityBattleEffects(ABILITYEFFECT_ON_SWITCHIN, 0, 0, ABILITYEFFECT_SWITCH_IN_WEATHER, 0) != 0)
     {
         gBattleStruct->overworldWeatherDone = TRUE;
         return;
@@ -4562,17 +4562,22 @@ void BattleMons_Init()
 
 static void BattleMon_ClearOnSwitchOut(u32 battlerId)
 {
-    u32 i, statusType;
+    u32 i,j, statusType;
+    bool32 isPersistent;
 
     for (i=0; i<MAX_MON_STATUSES; i++)
     {
-        statusType = GET_STATUS_TYPE(gBattleMons[battlerId].statuses[i]);
-        if (statusType == STATUS_CONFUSED
-            // || statusType == STATUS_FLINCHED // add more
-            || statusType == STATUS_INFATUATION)
+        isPersistent = FALSE;
+        for (j=0; j<NELEMS(sPersistentStatuses); j++)
         {
-            gBattleMons[battlerId].statuses[i] = STATUS_NONE;
+            if (GET_STATUS_TYPE(gBattleMons[battlerId].statuses[i]) == sPersistentStatuses[j])
+            {
+                isPersistent = TRUE;
+                break;
+            }
         }
+        if (!isPersistent)
+            gBattleMons[battlerId].statuses[i] = STATUS_NONE;
     }
 }
 
@@ -4610,11 +4615,18 @@ u32 BattleMon_GetStatusIndex(u32 battlerId, u16 statusType)
 
 bool8 BattleMon_CanAddStatus(u32 battlerId, u16 statusType)
 {
-    if (BattleMon_HasStatus(battlerId, statusType)) 
-        return FALSE;
-    if (BattleMon_GetStatusIndex(battlerId, STATUS_NONE) >= MAX_MON_STATUSES)
-        return FALSE;
-    return TRUE;
+    u32 i;
+    bool32 foundFree = FALSE;
+
+    for(i=0; i<MAX_MON_STATUSES; i++)
+    {
+        if (!foundFree && GET_STATUS_TYPE(gBattleMons[battlerId].statuses[i]) == STATUS_NONE)
+            foundFree = TRUE;
+        if (GET_STATUS_TYPE(gBattleMons[battlerId].statuses[i]) == statusType)
+            return FALSE;
+    }
+
+    return foundFree;
 }
 
 u16 *BattleMon_GetStatusPtr(u32 battlerId, u16 statusType)
@@ -4679,9 +4691,7 @@ bool8 BattleMon_RemoveAnyStatus1(u32 battlerId)
 
     for (i=0; i<MAX_MON_STATUSES; i++)
     {
-        u16 s = GET_STATUS_TYPE(gBattleMons[battlerId].statuses[i]);
-        if (s == STATUS_POISON || s == STATUS_TOXIC || s == STATUS_SLEEP || s == STATUS_PARALYSIS 
-            || s == STATUS_FREEZE || s == STATUS_BURN)
+        if (GET_STATUS_TYPE(gBattleMons[battlerId].statuses[i]) <= STATUS_MAX_STATUS1)
         {
             gBattleMons[battlerId].statuses[i] = STATUS_NONE;
         }

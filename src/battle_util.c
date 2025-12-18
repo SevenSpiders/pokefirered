@@ -435,7 +435,7 @@ u8 GetImprisonedMovesCount(u8 battlerId, u16 move)
 
     for (i = 0; i < gBattlersCount; i++)
     {
-        if (battlerSide != GetBattlerSide(i) && gStatuses3[i] & STATUS3_IMPRISONED_OTHERS)
+        if (battlerSide != GetBattlerSide(i) && BattleMon_HasStatus(i, STATUS_IMPRISONED))
         {
             s32 j;
             for (j = 0; j < MAX_MON_MOVES; j++)
@@ -1810,11 +1810,7 @@ u8 AbilityBattleEffects(u8 caseID, u8 battler, u8 ability, u8 special, u16 moveA
                 }
                 break;
             case ABILITY_INTIMIDATE:
-                if (!(gSpecialStatuses[battler].intimidatedMon))
-                {
-                    gStatuses3[battler] |= STATUS3_INTIMIDATE_POKES;
-                    gSpecialStatuses[battler].intimidatedMon = 1;
-                }
+                BattleMon_TryAddStatus(battler, STATUS_INTIMIDATE);
                 break;
             case ABILITY_FORECAST:
                 effect = CastformDataTypeChange(battler);
@@ -2257,14 +2253,29 @@ u8 AbilityBattleEffects(u8 caseID, u8 battler, u8 ability, u8 special, u16 moveA
                 effect++;
             }
             break;
-        case ABILITYEFFECT_INTIMIDATE1: // 9
+        case ABILITYEFFECT_INTIMIDATE1: // 9 // remove intimidate
             for (i = 0; i < gBattlersCount; i++)
             {
-                if (gBattleMons[i].ability == ABILITY_INTIMIDATE && gStatuses3[i] & STATUS3_INTIMIDATE_POKES)
+                if (gBattleMons[i].ability == ABILITY_INTIMIDATE && BattleMon_HasStatus(i, STATUS_INTIMIDATE))
                 {
                     gLastUsedAbility = ABILITY_INTIMIDATE;
-                    gStatuses3[i] &= ~STATUS3_INTIMIDATE_POKES;
+                    BattleMon_RemoveStatus(i, STATUS_INTIMIDATE);
                     BattleScriptPushCursorAndCallback(BattleScript_IntimidateActivatesEnd3);
+                    gBattleStruct->intimidateBattler = i;
+                    effect++;
+                    break;
+                }
+            }
+            break;
+        case ABILITYEFFECT_INTIMIDATE2: // 10 never used
+            for (i = 0; i < gBattlersCount; i++)
+            {
+                if (gBattleMons[i].ability == ABILITY_INTIMIDATE && BattleMon_HasStatus(i, STATUS_INTIMIDATE))
+                {
+                    gLastUsedAbility = ABILITY_INTIMIDATE;
+                    BattleMon_RemoveStatus(i, STATUS_INTIMIDATE);
+                    BattleScriptPushCursor();
+                    gBattlescriptCurrInstr = BattleScript_IntimidateActivates;
                     gBattleStruct->intimidateBattler = i;
                     effect++;
                     break;
@@ -2325,21 +2336,6 @@ u8 AbilityBattleEffects(u8 caseID, u8 battler, u8 ability, u8 special, u16 moveA
                         PREPARE_ABILITY_BUFFER(gBattleTextBuff2, gLastUsedAbility)
                         break;
                     }
-                }
-            }
-            break;
-        case ABILITYEFFECT_INTIMIDATE2: // 10
-            for (i = 0; i < gBattlersCount; i++)
-            {
-                if (gBattleMons[i].ability == ABILITY_INTIMIDATE && (gStatuses3[i] & STATUS3_INTIMIDATE_POKES))
-                {
-                    gLastUsedAbility = ABILITY_INTIMIDATE;
-                    gStatuses3[i] &= ~STATUS3_INTIMIDATE_POKES;
-                    BattleScriptPushCursor();
-                    gBattlescriptCurrInstr = BattleScript_IntimidateActivates;
-                    gBattleStruct->intimidateBattler = i;
-                    effect++;
-                    break;
                 }
             }
             break;
