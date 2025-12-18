@@ -747,6 +747,8 @@ enum
 u8 DoBattlerEndTurnEffects(void)
 {
     u8 effect = 0;
+    u16 *statusPtr;
+    u32 statusData;
 
     gHitMarker |= (HITMARKER_GRUDGE | HITMARKER_SKIP_DMG_TRACK);
     while (gBattleStruct->turnEffectsBattlerId < gBattlersCount && gBattleStruct->turnEffectsTracker <= ENDTURN_BATTLER_COUNT)
@@ -761,7 +763,7 @@ u8 DoBattlerEndTurnEffects(void)
             switch (gBattleStruct->turnEffectsTracker)
             {
             case ENDTURN_INGRAIN:  // ingrain
-                if ((gStatuses3[gActiveBattler] & STATUS3_ROOTED)
+                if (BattleMon_HasStatus(gActiveBattler, STATUS_ROOTED)
                  && gBattleMons[gActiveBattler].hp != gBattleMons[gActiveBattler].maxHP
                  && gBattleMons[gActiveBattler].hp != 0)
                 {
@@ -790,11 +792,13 @@ u8 DoBattlerEndTurnEffects(void)
                 gBattleStruct->turnEffectsTracker++;
                 break;
             case ENDTURN_LEECH_SEED:  // leech seed
-                if ((gStatuses3[gActiveBattler] & STATUS3_LEECHSEED)
-                 && gBattleMons[gStatuses3[gActiveBattler] & STATUS3_LEECHSEED_BATTLER].hp != 0
+                statusPtr = BattleMon_GetStatusPtr(gActiveBattler, STATUS_LEECHSEED);
+                statusData = GET_STATUS_DATA(*statusPtr); // leech seed target
+                if (statusPtr != 0
+                 && gBattleMons[statusData].hp != 0
                  && gBattleMons[gActiveBattler].hp != 0)
                 {
-                    gBattlerTarget = gStatuses3[gActiveBattler] & STATUS3_LEECHSEED_BATTLER; // Notice gBattlerTarget is actually the HP receiver.
+                    gBattlerTarget = statusData; // Notice gBattlerTarget is actually the HP receiver.
                     gBattleMoveDamage = gBattleMons[gActiveBattler].maxHP / 8;
                     if (gBattleMoveDamage == 0)
                         gBattleMoveDamage = 1;
@@ -1029,13 +1033,17 @@ u8 DoBattlerEndTurnEffects(void)
                 gBattleStruct->turnEffectsTracker++;
                 break;
             case ENDTURN_LOCK_ON:  // lock-on decrement
-                if (gStatuses3[gActiveBattler] & STATUS3_ALWAYS_HITS)
-                    gStatuses3[gActiveBattler] -= STATUS3_ALWAYS_HITS_TURN(1);
+                statusPtr = BattleMon_GetStatusPtr(gActiveBattler, STATUS_ALWAYS_HITS);
+                statusData = GET_STATUS_DATA(*statusPtr); // turns left
+                if (statusData > 0)
+                    *statusPtr = ENCODE_STATUS(STATUS_ALWAYS_HITS, statusData - 1);
+                else 
+                    *statusPtr = STATUS_NONE;
                 gBattleStruct->turnEffectsTracker++;
                 break;
             case ENDTURN_CHARGE:  // charge
                 if (gDisableStructs[gActiveBattler].chargeTimer && --gDisableStructs[gActiveBattler].chargeTimer == 0)
-                    gStatuses3[gActiveBattler] &= ~STATUS3_CHARGED_UP;
+                    BattleMon_RemoveStatus(gActiveBattler, STATUS_CHARGED_UP);
                 gBattleStruct->turnEffectsTracker++;
                 break;
             case ENDTURN_TAUNT:  // taunt
@@ -1044,20 +1052,26 @@ u8 DoBattlerEndTurnEffects(void)
                 gBattleStruct->turnEffectsTracker++;
                 break;
             case ENDTURN_YAWN:  // yawn
-                if (gStatuses3[gActiveBattler] & STATUS3_YAWN)
+                if (BattleMon_HasStatus(gActiveBattler, STATUS_YAWN))
                 {
-                    gStatuses3[gActiveBattler] -= STATUS3_YAWN_TURN(1);
-                    if (!(gStatuses3[gActiveBattler] & STATUS3_YAWN) && !BattleMon_HasAnyStatus1(gActiveBattler)
+                    u16 *statusYawn = BattleMon_GetStatusPtr(gActiveBattler, STATUS_YAWN);
+                    u32 turnsLeft = GET_STATUS_DATA(*statusYawn);
+                    if (turnsLeft == 0 && !BattleMon_HasAnyStatus1(gActiveBattler)
                      && gBattleMons[gActiveBattler].ability != ABILITY_VITAL_SPIRIT
                      && gBattleMons[gActiveBattler].ability != ABILITY_INSOMNIA && !UproarWakeUpCheck(gActiveBattler))
                     {
                         CancelMultiTurnMoves(gActiveBattler);
+                        *statusYawn = STATUS_NONE;
                         BattleMon_AddStatus(gActiveBattler, ENCODE_STATUS(STATUS_SLEEP, (Random() & 3) + 2)); // 2-5 turns of sleep
                         BtlController_EmitSetMonData(BUFFER_A, REQUEST_STATUS_BATTLE, 0, 4, &gBattleMons[gActiveBattler].status1);
                         MarkBattlerForControllerExec(gActiveBattler);
                         gEffectBattler = gActiveBattler;
                         BattleScriptExecute(BattleScript_YawnMakesAsleep);
                         effect++;
+                    }
+                    else 
+                    {
+                        *statusYawn = ENCODE_STATUS(STATUS_YAWN, turnsLeft - 1);
                     }
                 }
                 gBattleStruct->turnEffectsTracker++;
@@ -1127,12 +1141,12 @@ bool8 HandleWishPerishSongOnTurnEnd(void)
                 continue;
             }
             gBattleStruct->wishPerishSongBattlerId++;
-            if (gStatuses3[gActiveBattler] & STATUS3_PERISH_SONG)
+            if (BattleMon_HasStatus(gActiveBattler, STATUS_PERISH_SONG))
             {
                 PREPARE_BYTE_NUMBER_BUFFER(gBattleTextBuff1, 1, gDisableStructs[gActiveBattler].perishSongTimer);
                 if (gDisableStructs[gActiveBattler].perishSongTimer == 0)
                 {
-                    gStatuses3[gActiveBattler] &= ~STATUS3_PERISH_SONG;
+                    BattleMon_RemoveStatus(gActiveBattler, STATUS_PERISH_SONG);
                     gBattleMoveDamage = gBattleMons[gActiveBattler].hp;
                     gBattlescriptCurrInstr = BattleScript_PerishSongTakesLife;
                 }
@@ -3067,7 +3081,7 @@ void ClearFuryCutterDestinyBondGrudge(u8 battlerId)
 {
     gDisableStructs[battlerId].furyCutterCounter = 0;
     BattleMon_RemoveStatus(battlerId, STATUS_DESTINY_BOND);
-    gStatuses3[battlerId] &= ~STATUS3_GRUDGE;
+    BattleMon_RemoveStatus(battlerId, STATUS_GRUDGE);
 }
 
 void HandleAction_RunBattleScript(void) // identical to RunBattleScriptCommands

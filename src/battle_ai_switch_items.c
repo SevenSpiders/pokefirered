@@ -16,7 +16,7 @@ static bool8 ShouldUseItem(void);
 
 static bool8 ShouldSwitchIfPerishSong(void)
 {
-    if (gStatuses3[gActiveBattler] & STATUS3_PERISH_SONG
+    if (BattleMon_HasStatus(gActiveBattler, STATUS_PERISH_SONG)
      && gDisableStructs[gActiveBattler].perishSongTimer == 0)
     {
         *(gBattleStruct->AI_monToSwitchIntoId + (GetBattlerPosition(gActiveBattler) >> 1)) = PARTY_SIZE;

@@ -680,7 +680,7 @@ static void Cmd_if_status3(void)
 
     status = T1_READ_32(sAIScriptPtr + 2);
 
-    if (gStatuses3[battlerId] & status)
+    if (BattleMon_HasStatus(battlerId, status))
         sAIScriptPtr = T1_READ_PTR(sAIScriptPtr + 6);
     else
         sAIScriptPtr += 10;
@@ -698,7 +698,7 @@ static void Cmd_if_not_status3(void)
 
     status = T1_READ_32(sAIScriptPtr + 2);
 
-    if (!(gStatuses3[battlerId] & status))
+    if (!BattleMon_HasStatus(battlerId, status))
         sAIScriptPtr = T1_READ_PTR(sAIScriptPtr + 6);
     else
         sAIScriptPtr += 10;
