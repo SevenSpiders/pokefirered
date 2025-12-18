@@ -52,6 +52,12 @@ const u8 gStatus1FromStatus [] = {
     [STATUS_TOXIC]     = STATUS1_PSN_ANY,
 };
 
+const u16 sPersistentStatuses[] = {
+    STATUS_CONFUSED,
+    STATUS_INTIMIDATE,
+    STATUS_INFATUATION,
+};
+
 static void SpriteCB_UnusedDebugSprite(struct Sprite *sprite);
 static void HandleAction_UseMove(void);
 static void HandleAction_Switch(void);
@@ -2355,15 +2361,15 @@ void SwitchInClearSetData(void)
     // if (gBattleMoves[gCurrentMove].effect == EFFECT_BATON_PASS)
     // {
     //     gBattleMons[gActiveBattler].status2 &= (STATUS_CONFUSED | STATUS_FOCUS | STATUS_SUBSTITUTE | STATUS_NO_ESCAPE | STATUS_CURSED);
-    //     gStatuses3[gActiveBattler] &= (STATUS3_LEECHSEED_BATTLER | STATUS3_LEECHSEED | STATUS3_ALWAYS_HITS | STATUS3_PERISH_SONG | STATUS3_ROOTED | STATUS3_MUDSPORT | STATUS3_WATERSPORT);
+    //     gStatuses3[gActiveBattler] &= (STATUS_LEECHSEED_BATTLER | STATUS_LEECHSEED | STATUS_ALWAYS_HITS | STATUS_PERISH_SONG | STATUS_ROOTED | STATUS_MUDSPORT | STATUS_WATERSPORT);
     //     for (i = 0; i < gBattlersCount; i++)
     //     {
     //         if (GetBattlerSide(gActiveBattler) != GetBattlerSide(i)
-    //          && (gStatuses3[i] & STATUS3_ALWAYS_HITS) != 0
+    //          && (gStatuses3[i] & STATUS_ALWAYS_HITS) != 0
     //          && (gDisableStructs[i].battlerWithSureHit == gActiveBattler))
     //         {
-    //             gStatuses3[i] &= ~STATUS3_ALWAYS_HITS;
-    //             gStatuses3[i] |= STATUS3_ALWAYS_HITS_TURN(2);
+    //             gStatuses3[i] &= ~STATUS_ALWAYS_HITS;
+    //             gStatuses3[i] |= STATUS_ALWAYS_HITS_TURN(2);
     //         }
     //     }
     // }

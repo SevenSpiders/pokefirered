@@ -238,7 +238,7 @@ gBattleScriptsForMoveEffects::
 
 BattleScript_EffectHit::
 	jumpifnotmove MOVE_SURF, BattleScript_HitFromAtkCanceler
-	jumpifnostatus3 BS_TARGET, STATUS3_UNDERWATER, BattleScript_HitFromAtkCanceler
+	jumpifnostatus3 BS_TARGET, STATUS_UNDERWATER, BattleScript_HitFromAtkCanceler
 	orword gHitMarker, HITMARKER_IGNORE_UNDERWATER
 	setbyte sDMG_MULTIPLIER, 2
 BattleScript_HitFromAtkCanceler::
@@ -597,7 +597,7 @@ BattleScript_EffectRoar::
 	attackstring
 	ppreduce
 	jumpifability BS_TARGET, ABILITY_SUCTION_CUPS, BattleScript_AbilityPreventsPhasingOut
-	jumpifstatus3 BS_TARGET, STATUS3_ROOTED, BattleScript_PrintMonIsRooted
+	jumpifstatus3 BS_TARGET, STATUS_ROOTED, BattleScript_PrintMonIsRooted
 	accuracycheck BattleScript_ButItFailed, NO_ACC_CALC_CHECK_LOCK_ON
 	accuracycheck BattleScript_MoveMissedPause, ACC_CURR_MOVE
 	forcerandomswitch BattleScript_ButItFailed
@@ -828,7 +828,7 @@ BattleScript_EffectDragonRage::
 
 BattleScript_EffectTrap::
 	jumpifnotmove MOVE_WHIRLPOOL, BattleScript_DoWrapEffect
-	jumpifnostatus3 BS_TARGET, STATUS3_UNDERWATER, BattleScript_DoWrapEffect
+	jumpifnostatus3 BS_TARGET, STATUS_UNDERWATER, BattleScript_DoWrapEffect
 	orword gHitMarker, HITMARKER_IGNORE_UNDERWATER
 	setbyte sDMG_MULTIPLIER, 2
 BattleScript_DoWrapEffect::
@@ -1820,7 +1820,7 @@ BattleScript_SkullBashEnd::
 	goto BattleScript_MoveEnd
 
 BattleScript_EffectTwister::
-	jumpifnostatus3 BS_TARGET, STATUS3_ON_AIR, BattleScript_FlinchEffect
+	jumpifnostatus3 BS_TARGET, STATUS_IN_AIR, BattleScript_FlinchEffect
 	orword gHitMarker, HITMARKER_IGNORE_ON_AIR
 	setbyte sDMG_MULTIPLIER, 2
 BattleScript_FlinchEffect::
@@ -1834,7 +1834,7 @@ BattleScript_EffectEarthquake::
 	selectfirstvalidtarget
 BattleScript_HitsAllWithUndergroundBonusLoop::
 	movevaluescleanup
-	jumpifnostatus3 BS_TARGET, STATUS3_UNDERGROUND, BattleScript_HitsAllNoUndergroundBonus
+	jumpifnostatus3 BS_TARGET, STATUS_UNDERGROUND, BattleScript_HitsAllNoUndergroundBonus
 	orword gHitMarker, HITMARKER_IGNORE_UNDERGROUND
 	setbyte sDMG_MULTIPLIER, 2
 	goto BattleScript_DoHitAllWithUndergroundBonus
@@ -1886,13 +1886,13 @@ BattleScript_EffectFutureSight::
 	goto BattleScript_MoveEnd
 
 BattleScript_EffectGust::
-	jumpifnostatus3 BS_TARGET, STATUS3_ON_AIR, BattleScript_EffectHit
+	jumpifnostatus3 BS_TARGET, STATUS_IN_AIR, BattleScript_EffectHit
 	orword gHitMarker, HITMARKER_IGNORE_ON_AIR
 	setbyte sDMG_MULTIPLIER, 2
 	goto BattleScript_EffectHit
 
 BattleScript_EffectStomp::
-	jumpifnostatus3 BS_TARGET, STATUS3_MINIMIZED, BattleScript_FlinchEffect
+	jumpifnostatus3 BS_TARGET, STATUS_MINIMIZED, BattleScript_FlinchEffect
 	setbyte sDMG_MULTIPLIER, 2
 	goto BattleScript_FlinchEffect
 

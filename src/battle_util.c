@@ -1824,7 +1824,7 @@ u8 AbilityBattleEffects(u8 caseID, u8 battler, u8 ability, u8 special, u16 moveA
             case ABILITY_TRACE:
                 if (!(gSpecialStatuses[battler].traced))
                 {
-                    gStatuses3[battler] |= STATUS3_TRACE;
+                    BattleMon_AddStatus(battler, STATUS_TRACE);
                     gSpecialStatuses[battler].traced = 1;
                 }
                 break;
@@ -2285,7 +2285,7 @@ u8 AbilityBattleEffects(u8 caseID, u8 battler, u8 ability, u8 special, u16 moveA
         case ABILITYEFFECT_TRACE: // 11
             for (i = 0; i < gBattlersCount; i++)
             {
-                if (gBattleMons[i].ability == ABILITY_TRACE && (gStatuses3[i] & STATUS3_TRACE))
+                if (gBattleMons[i].ability == ABILITY_TRACE && BattleMon_HasStatus(i, STATUS_TRACE))
                 {
                     u8 target2;
                     side = (GetBattlerPosition(i) ^ BIT_SIDE) & BIT_SIDE; // side of the opposing pokemon
@@ -2329,7 +2329,7 @@ u8 AbilityBattleEffects(u8 caseID, u8 battler, u8 ability, u8 special, u16 moveA
                     if (effect != 0)
                     {
                         BattleScriptPushCursorAndCallback(BattleScript_TraceActivates);
-                        gStatuses3[i] &= ~STATUS3_TRACE;
+                        BattleMon_RemoveStatus(i, STATUS_TRACE);
                         gBattleScripting.battler = i;
 
                         PREPARE_MON_NICK_WITH_PREFIX_BUFFER(gBattleTextBuff1, gActiveBattler, gBattlerPartyIndexes[gActiveBattler])
@@ -2367,14 +2367,14 @@ u8 AbilityBattleEffects(u8 caseID, u8 battler, u8 ability, u8 special, u16 moveA
             case ABILITYEFFECT_MUD_SPORT:
                 for (i = 0; i < gBattlersCount; i++)
                 {
-                    if (gStatuses3[i] & STATUS3_MUDSPORT)
+                    if (BattleMon_HasStatus(i, STATUS_MUDSPORT))
                         effect = i + 1;
                 }
                 break;
             case ABILITYEFFECT_WATER_SPORT:
                 for (i = 0; i < gBattlersCount; i++)
                 {
-                    if (gStatuses3[i] & STATUS3_WATERSPORT)
+                    if (BattleMon_HasStatus(i, STATUS_WATERSPORT))
                         effect = i + 1;
                 }
                 break;
