@@ -1495,8 +1495,7 @@ static void OpponentHandleStatusAnimation(void)
 {
     if (!IsBattleSEPlaying(gActiveBattler))
     {
-        InitAndLaunchChosenStatusAnimation(gBattleBufferA[gActiveBattler][1],
-                                           gBattleBufferA[gActiveBattler][2] | (gBattleBufferA[gActiveBattler][3] << 8) | (gBattleBufferA[gActiveBattler][4] << 16) | (gBattleBufferA[gActiveBattler][5] << 24));
+        InitAndLaunchChosenStatusAnimation(gBattleBufferA[gActiveBattler][1]);
         gBattlerControllerFuncs[gActiveBattler] = CompleteOnFinishedStatusAnimation;
     }
 }
