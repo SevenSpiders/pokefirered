@@ -3009,30 +3009,6 @@ static void Cmd_jumpifstatus(void)
     gBattlescriptCurrInstr += 10;
 }
 
-// static void Cmd_jumpifstatus1(void)
-// {
-//     u32 i;
-//     u8 battlerId = GetBattlerForBattleScript(gBattlescriptCurrInstr[1]);
-//     u32 flags = T2_READ_32(gBattlescriptCurrInstr + 2);
-//     const u8 *jumpPtr = T2_READ_PTR(gBattlescriptCurrInstr + 6);
-
-//     // if (gBattleMons[battlerId].status1 & flags && gBattleMons[battlerId].hp != 0)
-//     //     gBattlescriptCurrInstr = jumpPtr;
-//     // else
-//     //     gBattlescriptCurrInstr += 10;
-
-//     for(i=1; i <= STATUS_MAX_STATUS1; i++)
-//     {
-//         if (gBattleMons[battlerId].hp == 0) break;
-//         if ( BattleMon_HasStatus(battlerId, i))
-//         {
-//             gBattlescriptCurrInstr = jumpPtr;
-//             return;
-//         }
-//     }
-//     gBattlescriptCurrInstr += 10;
-// }
-
 static void Cmd_jumpifstatus2(void) // only ever uses single flags -> simple substitute
 {
     u8 battlerId = GetBattlerForBattleScript(gBattlescriptCurrInstr[1]);
@@ -4182,7 +4158,7 @@ static void Cmd_moveend(void)
             gBattleScripting.moveendState++;
             break;
         case MOVEEND_DEFROST: // defrosting check
-            if (gBattleMons[gBattlerTarget].status1 & STATUS1_FREEZE
+            if (BattleMon_HasStatus(gBattlerTarget, STATUS_FREEZE)
                 && gBattleMons[gBattlerTarget].hp != 0
                 && gBattlerAttacker != gBattlerTarget
                 && gSpecialStatuses[gBattlerTarget].specialDmg
@@ -4190,7 +4166,7 @@ static void Cmd_moveend(void)
                 && moveType == TYPE_FIRE)
             {
                 u32 statusFlags;
-                gBattleMons[gBattlerTarget].status1 &= ~STATUS1_FREEZE;
+                BattleMon_RemoveStatus(gBattlerTarget, STATUS_FREEZE);
                 gActiveBattler = gBattlerTarget;
                 statusFlags = BattleMon_GetStatus1Flags(gBattlerTarget);
                 BtlController_EmitSetMonData(BUFFER_A, REQUEST_STATUS_BATTLE, 0, 4, &statusFlags);
@@ -5569,7 +5545,7 @@ static void Cmd_statusanimation(void) // should only use status2animation
             && gDisableStructs[gActiveBattler].substituteHP == 0
             && !(gHitMarker & HITMARKER_NO_ANIMATIONS))
         {
-            BtlController_EmitStatusAnimation(BUFFER_A, gBattleMons[gActiveBattler].status1);
+            BtlController_EmitStatusAnimation(BUFFER_A, 0); // of gActiveBattler
             MarkBattlerForControllerExec(gActiveBattler);
         }
         gBattlescriptCurrInstr += 2;
@@ -6233,8 +6209,6 @@ static void Cmd_various(void)
         {
             if (gBattleMons[i].ability != ABILITY_SOUNDPROOF)
             {
-            //     gBattleMons[i].status1 &= ~STATUS1_SLEEP;
-            //     gBattleMons[i].status2 &= ~STATUS_NIGHTMARE;
                 BattleMon_RemoveStatus(i, STATUS_SLEEP);
                 BattleMon_RemoveStatus(i, STATUS_NIGHTMARE);
 
@@ -6563,10 +6537,10 @@ static void Cmd_trysetrest(void)
     else
     {
         u32 statusFlags;
-        if (gBattleMons[gBattlerTarget].status1 & ((u8)(~STATUS1_SLEEP)))
-            gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_REST_STATUSED;
+        if (BattleMon_HasStatus(gBattlerTarget, STATUS_SLEEP)) // TODO
+            gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_REST_STATUSED; // {B_ATK_NAME_WITH_PREFIX} slept and became healthy!
         else
-            gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_REST;
+            gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_REST; // {B_ATK_NAME_WITH_PREFIX} went\nto sleep!
 
         BattleMon_AddStatus(gBattlerTarget, ENCODE_STATUS(STATUS_SLEEP, 3));
         statusFlags = BattleMon_GetStatus1Flags(gBattlerTarget);

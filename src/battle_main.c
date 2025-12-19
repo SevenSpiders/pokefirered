@@ -2941,7 +2941,7 @@ static void HandleEndTurn_ContinueBattle(void)
         for (i = 0; i < gBattlersCount; i++)
         {
             BattleMon_RemoveStatus(i, STATUS_FLINCHED);
-            if ((gBattleMons[i].status1 & STATUS1_SLEEP) && BattleMon_HasStatus(i, STATUS_SLEEP))
+            if (BattleMon_HasStatus(i, STATUS_MULTI_TURN) && BattleMon_HasStatus(i, STATUS_SLEEP))
                 CancelMultiTurnMoves(i);
         }
         gBattleStruct->turnEffectsTracker = 0;
@@ -3456,7 +3456,7 @@ u8 GetWhoStrikesFirst(u8 battler1, u8 battler2, bool8 ignoreChosenMoves)
         speedBattler1 = (speedBattler1 * 110) / 100;
     if (holdEffect == HOLD_EFFECT_MACHO_BRACE)
         speedBattler1 /= 2;
-    if (gBattleMons[battler1].status1 & STATUS1_PARALYSIS)
+    if (BattleMon_HasStatus(battler1, STATUS_PARALYSIS))
         speedBattler1 /= 4;
     if (holdEffect == HOLD_EFFECT_QUICK_CLAW && gRandomTurnNumber < (0xFFFF * holdEffectParam) / 100)
         speedBattler1 = UINT_MAX;
@@ -3481,7 +3481,7 @@ u8 GetWhoStrikesFirst(u8 battler1, u8 battler2, bool8 ignoreChosenMoves)
         speedBattler2 = (speedBattler2 * 110) / 100;
     if (holdEffect == HOLD_EFFECT_MACHO_BRACE)
         speedBattler2 /= 2;
-    if (gBattleMons[battler2].status1 & STATUS1_PARALYSIS)
+    if (BattleMon_HasStatus(battler2, STATUS_PARALYSIS))
         speedBattler2 /= 4;
     if (holdEffect == HOLD_EFFECT_QUICK_CLAW && gRandomTurnNumber < (0xFFFF * holdEffectParam) / 100)
         speedBattler2 = UINT_MAX;
