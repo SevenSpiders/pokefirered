@@ -7382,8 +7382,9 @@ static void Cmd_updatestatusicon(void)
         {
             if (!(gAbsentBattlerFlags & gBitTable[gActiveBattler]))
             {
-                // BtlController_EmitStatusIconUpdate(BUFFER_A, gBattleMons[gActiveBattler].status1, gBattleMons[gActiveBattler].status2);
-                // MarkBattlerForControllerExec(gActiveBattler);
+
+                BtlController_EmitStatusIconUpdate(BUFFER_A);
+                MarkBattlerForControllerExec(gActiveBattler);
             }
         }
         gBattlescriptCurrInstr += 2;
@@ -7393,16 +7394,16 @@ static void Cmd_updatestatusicon(void)
         gActiveBattler = gBattlerAttacker;
         if (!(gAbsentBattlerFlags & gBitTable[gActiveBattler]))
         {
-            // BtlController_EmitStatusIconUpdate(BUFFER_A, gBattleMons[gActiveBattler].status1, gBattleMons[gActiveBattler].status2);
-            // MarkBattlerForControllerExec(gActiveBattler);
+            BtlController_EmitStatusIconUpdate(BUFFER_A);
+            MarkBattlerForControllerExec(gActiveBattler);
         }
         if ((gBattleTypeFlags & BATTLE_TYPE_DOUBLE))
         {
             gActiveBattler = GetBattlerAtPosition(GetBattlerPosition(gBattlerAttacker) ^ BIT_FLANK);
             if (!(gAbsentBattlerFlags & gBitTable[gActiveBattler]))
             {
-                // BtlController_EmitStatusIconUpdate(BUFFER_A, gBattleMons[gActiveBattler].status1, gBattleMons[gActiveBattler].status2);
-                // MarkBattlerForControllerExec(gActiveBattler);
+                BtlController_EmitStatusIconUpdate(BUFFER_A);
+                MarkBattlerForControllerExec(gActiveBattler);
             }
         }
         gBattlescriptCurrInstr += 2;
@@ -7411,8 +7412,8 @@ static void Cmd_updatestatusicon(void)
     {
 
         gActiveBattler = GetBattlerForBattleScript(gBattlescriptCurrInstr[1]);
-        // BtlController_EmitStatusIconUpdate(BUFFER_A, gBattleMons[gActiveBattler].status1, gBattleMons[gActiveBattler].status2);
-        // MarkBattlerForControllerExec(gActiveBattler);
+        BtlController_EmitStatusIconUpdate(BUFFER_A);
+        MarkBattlerForControllerExec(gActiveBattler);
         gBattlescriptCurrInstr += 2;
     }
 }

@@ -913,17 +913,9 @@ void BtlController_EmitExpUpdate(u8 bufferId, u8 partyId, u16 expPoints)
     PrepareBufferDataTransfer(bufferId, sBattleBuffersTransferData, 4);
 }
 
-void BtlController_EmitStatusIconUpdate(u8 bufferId, u32 status1, u32 status2)
+void BtlController_EmitStatusIconUpdate(u8 bufferId)
 {
     sBattleBuffersTransferData[0] = CONTROLLER_STATUSICONUPDATE;
-    sBattleBuffersTransferData[1] = status1;
-    sBattleBuffersTransferData[2] = (status1 & 0x0000FF00) >> 8;
-    sBattleBuffersTransferData[3] = (status1 & 0x00FF0000) >> 16;
-    sBattleBuffersTransferData[4] = (status1 & 0xFF000000) >> 24;
-    sBattleBuffersTransferData[5] = status2;
-    sBattleBuffersTransferData[6] = (status2 & 0x0000FF00) >> 8;
-    sBattleBuffersTransferData[7] = (status2 & 0x00FF0000) >> 16;
-    sBattleBuffersTransferData[8] = (status2 & 0xFF000000) >> 24;
     PrepareBufferDataTransfer(bufferId, sBattleBuffersTransferData, 9);
 }
 
