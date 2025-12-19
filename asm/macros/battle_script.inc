@@ -170,7 +170,7 @@
 	.4byte \ptr
 	.endm
 
-	.macro jumpifstatus3condition battler:req, status3:req, param2:req, ptr:req
+	.macro jumpifstatuscondition battler:req, status3:req, param2:req, ptr:req
 	.byte 0x21
 	.byte \battler
 	.4byte \status3
@@ -1360,11 +1360,11 @@
 	.endm
 
 	.macro jumpifstatus3 battler:req, status:req, jumpptr:req
-	jumpifstatus3condition \battler, \status, 0x0, \jumpptr
+	jumpifstatuscondition \battler, \status, 0x0, \jumpptr
 	.endm
 
-	.macro jumpifnostatus3 battler:req, status:req, jumpptr:req
-	jumpifstatus3condition \battler, \status, 0x1, \jumpptr
+	.macro jumpifnostatus battler:req, status:req, jumpptr:req
+	jumpifstatuscondition \battler, \status, 0x1, \jumpptr
 	.endm
 
 	.macro jumpifmovehadnoeffect jumpptr:req

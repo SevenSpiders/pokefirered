@@ -235,7 +235,7 @@ AI_CBM_Explosion_End::
 	end
 
 AI_CBM_Nightmare::
-	if_status2 AI_TARGET, STATUS_NIGHTMARE, Score_Minus10
+	if_status AI_TARGET, STATUS_NIGHTMARE, Score_Minus10
 	if_not_status AI_TARGET, STATUS_SLEEP, Score_Minus8
 	end
 
@@ -384,11 +384,11 @@ AI_CBM_Mist::
 	end
 
 AI_CBM_FocusEnergy::
-	if_status2 AI_USER, STATUS_FOCUS, Score_Minus10
+	if_status AI_USER, STATUS_FOCUS, Score_Minus10
 	end
 
 AI_CBM_Confuse::
-	if_status2 AI_TARGET, STATUS_CONFUSED, Score_Minus5
+	if_status AI_TARGET, STATUS_CONFUSED, Score_Minus5
 	get_ability AI_TARGET
 	if_equal ABILITY_OWN_TEMPO, Score_Minus10
 @	if_side_affecting AI_TARGET, SIDE_STATUS_SAFEGUARD, Score_Minus10  @ Improvement in Emerald
@@ -407,12 +407,12 @@ AI_CBM_Paralyze::
 	end
 
 AI_CBM_Substitute::
-	if_status2 AI_USER, STATUS_SUBSTITUTE, Score_Minus8
+	if_status AI_USER, STATUS_SUBSTITUTE, Score_Minus8
 	if_hp_less_than AI_USER, 26, Score_Minus10
 	end
 
 AI_CBM_LeechSeed::
-	if_status3 AI_TARGET, STATUS_LEECHSEED, Score_Minus10
+	if_status AI_TARGET, STATUS_LEECHSEED, Score_Minus10
 	get_target_type1
 	if_equal TYPE_GRASS, Score_Minus10
 	get_target_type2
@@ -432,7 +432,7 @@ AI_CBM_DamageDuringSleep::
 	end
 
 AI_CBM_CantEscape::
-	if_status2 AI_TARGET, STATUS_NO_ESCAPE, Score_Minus10
+	if_status AI_TARGET, STATUS_NO_ESCAPE, Score_Minus10
 	end
 
 AI_CBM_Curse::
@@ -445,11 +445,11 @@ AI_CBM_Spikes::
 	end
 
 AI_CBM_Foresight::
-	if_status2 AI_TARGET, STATUS_FORESIGHT, Score_Minus10
+	if_status AI_TARGET, STATUS_FORESIGHT, Score_Minus10
 	end
 
 AI_CBM_PerishSong::
-	if_status3 AI_TARGET, STATUS_PERISH_SONG, Score_Minus10
+	if_status AI_TARGET, STATUS_PERISH_SONG, Score_Minus10
 	end
 
 AI_CBM_Sandstorm::
@@ -458,7 +458,7 @@ AI_CBM_Sandstorm::
 	end
 
 AI_CBM_Attract::
-	if_status2 AI_TARGET, STATUS_INFATUATION, Score_Minus10
+	if_status AI_TARGET, STATUS_INFATUATION, Score_Minus10
 	get_ability AI_TARGET
 	if_equal ABILITY_OBLIVIOUS, Score_Minus10
 	get_gender AI_USER
@@ -529,7 +529,7 @@ AI_CBM_Hail::
 	end
 
 AI_CBM_Torment::
-	if_status2 AI_TARGET, STATUS_TORMENT, Score_Minus10
+	if_status AI_TARGET, STATUS_TORMENT, Score_Minus10
 	end
 
 AI_CBM_WillOWisp::
@@ -552,7 +552,7 @@ AI_CBM_TrickAndKnockOff::
 	end
 
 AI_CBM_Ingrain::
-	if_status3 AI_USER, STATUS_ROOTED, Score_Minus10
+	if_status AI_USER, STATUS_ROOTED, Score_Minus10
 	end
 
 AI_CBM_Recycle::
@@ -561,7 +561,7 @@ AI_CBM_Recycle::
 	end
 
 AI_CBM_Imprison::
-	if_status3 AI_USER, STATUS_IMPRISONED, Score_Minus10
+	if_status AI_USER, STATUS_IMPRISONED, Score_Minus10
 	end
 
 AI_CBM_Refresh::
@@ -569,7 +569,7 @@ AI_CBM_Refresh::
 	end
 
 AI_CBM_MudSport::
-	if_status3 AI_USER, STATUS_MUDSPORT, Score_Minus10
+	if_status AI_USER, STATUS_MUDSPORT, Score_Minus10
 	end
 
 AI_CBM_Tickle::
@@ -588,7 +588,7 @@ AI_CBM_BulkUp::
 	end
 
 AI_CBM_WaterSport::
-	if_status3 AI_USER, STATUS_WATERSPORT, Score_Minus10
+	if_status AI_USER, STATUS_WATERSPORT, Score_Minus10
 	end
 
 AI_CBM_CalmMind::
@@ -1082,17 +1082,17 @@ AI_CV_EvasionUp4::
 	score +3
 
 AI_CV_EvasionUp5::
-	if_not_status3 AI_TARGET, STATUS_LEECHSEED, AI_CV_EvasionUp6
+	if_not_status AI_TARGET, STATUS_LEECHSEED, AI_CV_EvasionUp6
 	if_random_less_than 70, AI_CV_EvasionUp6
 	score +3
 
 AI_CV_EvasionUp6::
-	if_not_status3 AI_USER, STATUS_ROOTED, AI_CV_EvasionUp7
+	if_not_status AI_USER, STATUS_ROOTED, AI_CV_EvasionUp7
 	if_random_less_than 128, AI_CV_EvasionUp7
 	score +2
 
 AI_CV_EvasionUp7::
-	if_not_status2 AI_TARGET, STATUS_CURSED, AI_CV_EvasionUp8
+	if_not_status AI_TARGET, STATUS_CURSED, AI_CV_EvasionUp8
 	if_random_less_than 70, AI_CV_EvasionUp8
 	score +3
 
@@ -1266,17 +1266,17 @@ AI_CV_AccuracyDown4::
 	score +2
 
 AI_CV_AccuracyDown5::
-	if_not_status3 AI_TARGET, STATUS_LEECHSEED, AI_CV_AccuracyDown6
+	if_not_status AI_TARGET, STATUS_LEECHSEED, AI_CV_AccuracyDown6
 	if_random_less_than 70, AI_CV_AccuracyDown6
 	score +2
 
 AI_CV_AccuracyDown6::
-	if_not_status3 AI_USER, STATUS_ROOTED, AI_CV_AccuracyDown7
+	if_not_status AI_USER, STATUS_ROOTED, AI_CV_AccuracyDown7
 	if_random_less_than 128, AI_CV_AccuracyDown7
 	score +1
 
 AI_CV_AccuracyDown7::
-	if_not_status2 AI_TARGET, STATUS_CURSED, AI_CV_AccuracyDown8
+	if_not_status AI_TARGET, STATUS_CURSED, AI_CV_AccuracyDown8
 	if_random_less_than 70, AI_CV_AccuracyDown8
 	score +2
 
@@ -1520,9 +1520,9 @@ AI_CV_SuperFang_End::
 
 AI_CV_Trap::
 	if_status AI_TARGET, STATUS_POISON, AI_CV_Trap2
-	if_status2 AI_TARGET, STATUS_CURSED, AI_CV_Trap2
-	if_status3 AI_TARGET, STATUS_PERISH_SONG, AI_CV_Trap2
-	if_status2 AI_TARGET, STATUS_INFATUATION, AI_CV_Trap2
+	if_status AI_TARGET, STATUS_CURSED, AI_CV_Trap2
+	if_status AI_TARGET, STATUS_PERISH_SONG, AI_CV_Trap2
+	if_status AI_TARGET, STATUS_INFATUATION, AI_CV_Trap2
 	goto AI_CV_Trap_End
 
 AI_CV_Trap2::
@@ -1678,11 +1678,11 @@ AI_CV_Substitute5::
 	goto AI_CV_Substitute_End
 
 AI_CV_Substitute6::
-	if_not_status2 AI_TARGET, STATUS_CONFUSED, AI_CV_Substitute8
+	if_not_status AI_TARGET, STATUS_CONFUSED, AI_CV_Substitute8
 	goto AI_CV_Substitute_End
 
 AI_CV_Substitute7::
-	if_status3 AI_TARGET, STATUS_LEECHSEED, AI_CV_Substitute_End
+	if_status AI_TARGET, STATUS_LEECHSEED, AI_CV_Substitute_End
 
 AI_CV_Substitute8::
 	if_random_less_than 100, AI_CV_Substitute_End
@@ -1724,8 +1724,8 @@ AI_CV_Disable_End::
 
 AI_CV_Counter::
 	if_status AI_TARGET, STATUS_SLEEP, AI_CV_Counter_ScoreDown1
-	if_status2 AI_TARGET, STATUS_INFATUATION, AI_CV_Counter_ScoreDown1
-	if_status2 AI_TARGET, STATUS_CONFUSED, AI_CV_Counter_ScoreDown1
+	if_status AI_TARGET, STATUS_INFATUATION, AI_CV_Counter_ScoreDown1
+	if_status AI_TARGET, STATUS_CONFUSED, AI_CV_Counter_ScoreDown1
 	if_hp_more_than AI_USER, 30, AI_CV_Counter2
 	if_random_less_than 10, AI_CV_Counter2
 	score -1
@@ -2015,19 +2015,19 @@ AI_CV_Protect::
 	get_protect_count AI_USER
 	if_more_than 1, AI_CV_Protect_ScoreDown2
 	if_status AI_USER, STATUS_POISON, AI_CV_Protect3
-	if_status2 AI_USER, STATUS_CURSED, AI_CV_Protect3
-	if_status3 AI_USER, STATUS_PERISH_SONG, AI_CV_Protect3
-	if_status2 AI_USER, STATUS_INFATUATION, AI_CV_Protect3
-	if_status3 AI_USER, STATUS_LEECHSEED, AI_CV_Protect3
-	if_status3 AI_USER, STATUS_YAWN, AI_CV_Protect3
+	if_status AI_USER, STATUS_CURSED, AI_CV_Protect3
+	if_status AI_USER, STATUS_PERISH_SONG, AI_CV_Protect3
+	if_status AI_USER, STATUS_INFATUATION, AI_CV_Protect3
+	if_status AI_USER, STATUS_LEECHSEED, AI_CV_Protect3
+	if_status AI_USER, STATUS_YAWN, AI_CV_Protect3
 	if_has_move_with_effect AI_TARGET, EFFECT_RESTORE_HP, AI_CV_Protect3
 	if_has_move_with_effect AI_TARGET, EFFECT_DEFENSE_CURL, AI_CV_Protect3
 	if_status AI_TARGET, STATUS_POISON, AI_CV_Protect_ScoreUp2
-	if_status2 AI_TARGET, STATUS_CURSED, AI_CV_Protect_ScoreUp2
-	if_status3 AI_TARGET, STATUS_PERISH_SONG, AI_CV_Protect_ScoreUp2
-	if_status2 AI_TARGET, STATUS_INFATUATION, AI_CV_Protect_ScoreUp2
-	if_status3 AI_TARGET, STATUS_LEECHSEED, AI_CV_Protect_ScoreUp2
-	if_status3 AI_TARGET, STATUS_YAWN, AI_CV_Protect_ScoreUp2
+	if_status AI_TARGET, STATUS_CURSED, AI_CV_Protect_ScoreUp2
+	if_status AI_TARGET, STATUS_PERISH_SONG, AI_CV_Protect_ScoreUp2
+	if_status AI_TARGET, STATUS_INFATUATION, AI_CV_Protect_ScoreUp2
+	if_status AI_TARGET, STATUS_LEECHSEED, AI_CV_Protect_ScoreUp2
+	if_status AI_TARGET, STATUS_YAWN, AI_CV_Protect_ScoreUp2
 	get_last_used_move AI_TARGET
 	get_move_effect_from_result
 	if_not_equal EFFECT_LOCK_ON, AI_CV_Protect_ScoreUp2
@@ -2242,8 +2242,8 @@ AI_CV_PsychUp_End::
 
 AI_CV_MirrorCoat::
 	if_status AI_TARGET, STATUS_SLEEP, AI_CV_MirrorCoat_ScoreDown1
-	if_status2 AI_TARGET, STATUS_INFATUATION, AI_CV_MirrorCoat_ScoreDown1
-	if_status2 AI_TARGET, STATUS_CONFUSED, AI_CV_MirrorCoat_ScoreDown1
+	if_status AI_TARGET, STATUS_INFATUATION, AI_CV_MirrorCoat_ScoreDown1
+	if_status AI_TARGET, STATUS_CONFUSED, AI_CV_MirrorCoat_ScoreDown1
 	if_hp_more_than AI_USER, 30, AI_CV_MirrorCoat2
 	if_random_less_than 10, AI_CV_MirrorCoat2
 	score -1
@@ -2331,8 +2331,8 @@ AI_CV_SemiInvulnerable::
 @	  To fix, swap _CheckSandstormTypes/_CheckIceType in the below script
 AI_CV_SemiInvulnerable2::
 	if_status AI_TARGET, STATUS_POISON, AI_CV_SemiInvulnerable_TryEncourage
-	if_status2 AI_TARGET, STATUS_CURSED, AI_CV_SemiInvulnerable_TryEncourage
-	if_status3 AI_TARGET, STATUS_LEECHSEED, AI_CV_SemiInvulnerable_TryEncourage
+	if_status AI_TARGET, STATUS_CURSED, AI_CV_SemiInvulnerable_TryEncourage
+	if_status AI_TARGET, STATUS_LEECHSEED, AI_CV_SemiInvulnerable_TryEncourage
 	get_weather
 	if_equal AI_WEATHER_HAIL, AI_CV_SemiInvulnerable_CheckSandstormTypes
 	if_equal AI_WEATHER_SANDSTORM, AI_CV_SemiInvulnerable_CheckIceType
@@ -2414,8 +2414,8 @@ AI_CV_FocusPunch::
 	if_type_effectiveness AI_EFFECTIVENESS_x0_25, AI_CV_FocusPunch2
 	if_type_effectiveness AI_EFFECTIVENESS_x0_5, AI_CV_FocusPunch2
 	if_status AI_TARGET, STATUS_SLEEP, AI_CV_FocusPunch_ScoreUp1
-	if_status2 AI_TARGET, STATUS_INFATUATION, AI_CV_FocusPunch3
-	if_status2 AI_TARGET, STATUS_CONFUSED, AI_CV_FocusPunch3
+	if_status AI_TARGET, STATUS_INFATUATION, AI_CV_FocusPunch3
+	if_status AI_TARGET, STATUS_CONFUSED, AI_CV_FocusPunch3
 	is_first_turn_for AI_USER
 	if_not_equal 0, AI_CV_FocusPunch_End
 	if_random_less_than 100, AI_CV_FocusPunch_End
@@ -2580,8 +2580,8 @@ AI_CV_Recycle_ItemsToEncourage::
 
 AI_CV_Revenge::
 	if_status AI_TARGET, STATUS_SLEEP, AI_CV_Revenge_ScoreDown2
-	if_status2 AI_TARGET, STATUS_INFATUATION, AI_CV_Revenge_ScoreDown2
-	if_status2 AI_TARGET, STATUS_CONFUSED, AI_CV_Revenge_ScoreDown2
+	if_status AI_TARGET, STATUS_INFATUATION, AI_CV_Revenge_ScoreDown2
+	if_status AI_TARGET, STATUS_CONFUSED, AI_CV_Revenge_ScoreDown2
 	if_random_less_than 180, AI_CV_Revenge_ScoreDown2
 	score +2
 	goto AI_CV_Revenge_End
@@ -3224,8 +3224,8 @@ AI_Unknown_End::
 	end
 
 AI_Roaming::
-	if_status2 AI_USER, STATUS_WRAPPED, AI_Roaming_End
-	if_status2 AI_USER, STATUS_NO_ESCAPE, AI_Roaming_End
+	if_status AI_USER, STATUS_WRAPPED, AI_Roaming_End
+	if_status AI_USER, STATUS_NO_ESCAPE, AI_Roaming_End
 	get_ability AI_TARGET
 	if_equal ABILITY_SHADOW_TAG, AI_Roaming_End
 	get_ability AI_USER

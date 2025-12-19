@@ -94,7 +94,7 @@ static void Cmd_jumpifstatus2(void);
 static void Cmd_jumpifability(void);
 static void Cmd_jumpifsideaffecting(void);
 static void Cmd_jumpifstat(void);
-static void Cmd_jumpifstatus3condition(void);
+static void Cmd_jumpifstatuscondition(void);
 static void Cmd_jumpiftype(void);
 static void Cmd_getexp(void);
 static void Cmd_checkteamslost(void);
@@ -345,7 +345,7 @@ void (* const gBattleScriptingCommandsTable[])(void) =
     Cmd_jumpifability,                           //0x1E
     Cmd_jumpifsideaffecting,                     //0x1F
     Cmd_jumpifstat,                              //0x20
-    Cmd_jumpifstatus3condition,                  //0x21
+    Cmd_jumpifstatuscondition,                  //0x21
     Cmd_jumpiftype,                              //0x22
     Cmd_getexp,                                  //0x23
     Cmd_checkteamslost,                          //0x24
@@ -3000,6 +3000,7 @@ static void Cmd_jumpifstatus2(void) // only ever uses single flags -> simple sub
     u8 battlerId = GetBattlerForBattleScript(gBattlescriptCurrInstr[1]);
     u32 status = T2_READ_32(gBattlescriptCurrInstr + 2);
     const u8 *jumpPtr = T2_READ_PTR(gBattlescriptCurrInstr + 6);
+    DebugPrintf("DO NOT USE ANYMORE status: %d", status);
 
     if (BattleMon_HasStatus(battlerId, status) && gBattleMons[battlerId].hp != 0)
         gBattlescriptCurrInstr = jumpPtr;
@@ -3114,7 +3115,7 @@ static void Cmd_jumpifstat(void)
         gBattlescriptCurrInstr += 9;
 }
 
-static void Cmd_jumpifstatus3condition(void) // only used for rooted
+static void Cmd_jumpifstatuscondition(void)
 {
     u32 status;
     const u8 *jumpPtr;
