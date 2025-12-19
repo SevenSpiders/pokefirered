@@ -207,33 +207,6 @@ void InitAndLaunchChosenStatusAnimation(u32 status)
         gBattleSpritesDataPtr->healthBoxesData[gActiveBattler].statusAnimActive = FALSE;
         break;
     }
-    
-        // if (status == STATUS1_FREEZE)
-        //     LaunchStatusAnimation(gActiveBattler, B_ANIM_STATUS_FRZ);
-        // else if (status == STATUS1_POISON || status & STATUS1_TOXIC_POISON)
-        //     LaunchStatusAnimation(gActiveBattler, B_ANIM_STATUS_PSN);
-        // else if (status == STATUS1_BURN)
-        //     LaunchStatusAnimation(gActiveBattler, B_ANIM_STATUS_BRN);
-        // else if (status & STATUS1_SLEEP)
-        //     LaunchStatusAnimation(gActiveBattler, B_ANIM_STATUS_SLP);
-        // else if (status == STATUS1_PARALYSIS)
-        //     LaunchStatusAnimation(gActiveBattler, B_ANIM_STATUS_PRZ);
-        // else // no animation
-            
-   
-        // if (status & STATUS_INFATUATION)
-        //     LaunchStatusAnimation(gActiveBattler, B_ANIM_STATUS_INFATUATION);
-        // else if (status & STATUS_CONFUSED)
-        //     LaunchStatusAnimation(gActiveBattler, B_ANIM_STATUS_CONFUSION);
-        // else if (status & STATUS_CURSED)
-        //     LaunchStatusAnimation(gActiveBattler, B_ANIM_STATUS_CURSED);
-        // else if (status & STATUS_NIGHTMARE)
-        //     LaunchStatusAnimation(gActiveBattler, B_ANIM_STATUS_NIGHTMARE);
-        // else if (status & STATUS_WRAPPED)
-        //     LaunchStatusAnimation(gActiveBattler, B_ANIM_STATUS_WRAPPED); // this animation doesn't actually exist
-        // else // no animation
-        //     gBattleSpritesDataPtr->healthBoxesData[gActiveBattler].statusAnimActive = FALSE;
-    
 }
 
 #define tBattlerId data[0]

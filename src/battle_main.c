@@ -44,7 +44,6 @@
 #include "constants/trainers.h"
 
 const u8 gStatus1FromStatus [STATUS_MAX_STATUS1+1] = {
-    // [STATUS_NONE]      = 0,
     [STATUS_SLEEP]     = STATUS1_SLEEP,
     [STATUS_POISON]    = STATUS1_PSN_ANY,
     [STATUS_BURN]      = STATUS1_BURN,
@@ -4671,8 +4670,11 @@ bool8 BattleMon_HasAnyStatus1(u32 battlerId)
 
 bool8 BattleMon_AddStatus(u32 battlerId, u16 status)
 {
-    u32 i = BattleMon_GetStatusIndex(battlerId, GET_STATUS_TYPE(status));
-    if (i >= MAX_MON_STATUSES) return FALSE;
+    u32 i;
+    // i = BattleMon_GetStatusIndex(battlerId, GET_STATUS_TYPE(status));
+    // if (i < MAX_MON_STATUSES) return FALSE;// already exists
+    i = BattleMon_GetStatusIndex(battlerId, STATUS_NONE);
+    if (i>= MAX_MON_STATUSES) return FALSE;
     gBattleMons[battlerId].statuses[i] = status;
     return TRUE;
 }

@@ -240,7 +240,7 @@ AI_CBM_Nightmare::
 	end
 
 AI_CBM_DreamEater::
-	if_not_status AI_TARGET, STATUS1_SLEEP, Score_Minus8
+	if_not_status AI_TARGET, STATUS_SLEEP, Score_Minus8
 	if_type_effectiveness AI_EFFECTIVENESS_x0, Score_Minus10
 	end
 
@@ -402,7 +402,7 @@ AI_CBM_Paralyze::
 	if_type_effectiveness AI_EFFECTIVENESS_x0, Score_Minus10
 	get_ability AI_TARGET
 	if_equal ABILITY_LIMBER, Score_Minus10
-	if_status AI_TARGET, STATUS1_ANY, Score_Minus10
+	if_status AI_TARGET, STATUS_ANY_STATUS1, Score_Minus10
 @	if_side_affecting AI_TARGET, SIDE_STATUS_SAFEGUARD, Score_Minus10  @ Improvement in Emerald
 	end
 
@@ -428,7 +428,7 @@ AI_CBM_Encore::
 	end
 
 AI_CBM_DamageDuringSleep::
-	if_not_status AI_USER, STATUS1_SLEEP, Score_Minus8
+	if_not_status AI_USER, STATUS_SLEEP, Score_Minus8
 	end
 
 AI_CBM_CantEscape::
@@ -535,7 +535,7 @@ AI_CBM_Torment::
 AI_CBM_WillOWisp::
 	get_ability AI_TARGET
 	if_equal ABILITY_WATER_VEIL, Score_Minus10
-	if_status AI_TARGET, STATUS1_ANY, Score_Minus10
+	if_status AI_TARGET, STATUS_ANY_STATUS1, Score_Minus10
 	if_type_effectiveness AI_EFFECTIVENESS_x0, Score_Minus10
 	if_type_effectiveness AI_EFFECTIVENESS_x0_5, Score_Minus10
 	if_type_effectiveness AI_EFFECTIVENESS_x0_25, Score_Minus10
@@ -565,7 +565,7 @@ AI_CBM_Imprison::
 	end
 
 AI_CBM_Refresh::
-	if_not_status AI_USER, STATUS1_ANY, Score_Minus10
+	if_not_status AI_USER, STATUS_ANY_STATUS1, Score_Minus10
 	end
 
 AI_CBM_MudSport::
@@ -1073,7 +1073,7 @@ AI_CV_EvasionUp2::
 	score -1
 
 AI_CV_EvasionUp3::
-	if_not_status AI_TARGET, STATUS1_TOXIC_POISON, AI_CV_EvasionUp5
+	if_not_status AI_TARGET, STATUS_POISON, AI_CV_EvasionUp5
 	if_hp_more_than AI_USER, 50, AI_CV_EvasionUp4
 	if_random_less_than 80, AI_CV_EvasionUp5
 
@@ -1261,7 +1261,7 @@ AI_CV_AccuracyDown3::
 	score -2
 
 AI_CV_AccuracyDown4::
-	if_not_status AI_TARGET, STATUS1_TOXIC_POISON, AI_CV_AccuracyDown5
+	if_not_status AI_TARGET, STATUS_POISON, AI_CV_AccuracyDown5
 	if_random_less_than 70, AI_CV_AccuracyDown5
 	score +2
 
@@ -1519,7 +1519,7 @@ AI_CV_SuperFang_End::
 	end
 
 AI_CV_Trap::
-	if_status AI_TARGET, STATUS1_TOXIC_POISON, AI_CV_Trap2
+	if_status AI_TARGET, STATUS_POISON, AI_CV_Trap2
 	if_status2 AI_TARGET, STATUS_CURSED, AI_CV_Trap2
 	if_status3 AI_TARGET, STATUS_PERISH_SONG, AI_CV_Trap2
 	if_status2 AI_TARGET, STATUS_INFATUATION, AI_CV_Trap2
@@ -1674,7 +1674,7 @@ AI_CV_Substitute4::
 	goto AI_CV_Substitute_End
 
 AI_CV_Substitute5::
-	if_not_status AI_TARGET, STATUS1_ANY, AI_CV_Substitute8
+	if_not_status AI_TARGET, STATUS_ANY_STATUS1, AI_CV_Substitute8
 	goto AI_CV_Substitute_End
 
 AI_CV_Substitute6::
@@ -1723,7 +1723,7 @@ AI_CV_Disable_End::
 	end
 
 AI_CV_Counter::
-	if_status AI_TARGET, STATUS1_SLEEP, AI_CV_Counter_ScoreDown1
+	if_status AI_TARGET, STATUS_SLEEP, AI_CV_Counter_ScoreDown1
 	if_status2 AI_TARGET, STATUS_INFATUATION, AI_CV_Counter_ScoreDown1
 	if_status2 AI_TARGET, STATUS_CONFUSED, AI_CV_Counter_ScoreDown1
 	if_hp_more_than AI_USER, 30, AI_CV_Counter2
@@ -1903,7 +1903,7 @@ AI_CV_LockOn_End::
 	end
 
 AI_CV_SleepTalk::
-@	if_status AI_USER, STATUS1_SLEEP, Score_Plus10  @ Improvement in Emerald
+@	if_status AI_USER, STATUS_SLEEP, Score_Plus10  @ Improvement in Emerald
 	score +2   @ Change to -5
 	end
 
@@ -1954,8 +1954,8 @@ AI_CV_Flail_End::
 	end
 
 AI_CV_HealBell::
-	if_status AI_TARGET, STATUS1_ANY, AI_CV_HealBell_End
-	if_status_in_party AI_TARGET, STATUS1_ANY, AI_CV_HealBell_End
+	if_status AI_TARGET, STATUS_ANY_STATUS1, AI_CV_HealBell_End
+	if_status_in_party AI_TARGET, STATUS_ANY_STATUS1, AI_CV_HealBell_End
 	score -5
 
 AI_CV_HealBell_End::
@@ -2014,7 +2014,7 @@ AI_CV_Curse_End::
 AI_CV_Protect::
 	get_protect_count AI_USER
 	if_more_than 1, AI_CV_Protect_ScoreDown2
-	if_status AI_USER, STATUS1_TOXIC_POISON, AI_CV_Protect3
+	if_status AI_USER, STATUS_POISON, AI_CV_Protect3
 	if_status2 AI_USER, STATUS_CURSED, AI_CV_Protect3
 	if_status3 AI_USER, STATUS_PERISH_SONG, AI_CV_Protect3
 	if_status2 AI_USER, STATUS_INFATUATION, AI_CV_Protect3
@@ -2022,7 +2022,7 @@ AI_CV_Protect::
 	if_status3 AI_USER, STATUS_YAWN, AI_CV_Protect3
 	if_has_move_with_effect AI_TARGET, EFFECT_RESTORE_HP, AI_CV_Protect3
 	if_has_move_with_effect AI_TARGET, EFFECT_DEFENSE_CURL, AI_CV_Protect3
-	if_status AI_TARGET, STATUS1_TOXIC_POISON, AI_CV_Protect_ScoreUp2
+	if_status AI_TARGET, STATUS_POISON, AI_CV_Protect_ScoreUp2
 	if_status2 AI_TARGET, STATUS_CURSED, AI_CV_Protect_ScoreUp2
 	if_status3 AI_TARGET, STATUS_PERISH_SONG, AI_CV_Protect_ScoreUp2
 	if_status2 AI_TARGET, STATUS_INFATUATION, AI_CV_Protect_ScoreUp2
@@ -2241,7 +2241,7 @@ AI_CV_PsychUp_End::
 	end
 
 AI_CV_MirrorCoat::
-	if_status AI_TARGET, STATUS1_SLEEP, AI_CV_MirrorCoat_ScoreDown1
+	if_status AI_TARGET, STATUS_SLEEP, AI_CV_MirrorCoat_ScoreDown1
 	if_status2 AI_TARGET, STATUS_INFATUATION, AI_CV_MirrorCoat_ScoreDown1
 	if_status2 AI_TARGET, STATUS_CONFUSED, AI_CV_MirrorCoat_ScoreDown1
 	if_hp_more_than AI_USER, 30, AI_CV_MirrorCoat2
@@ -2330,7 +2330,7 @@ AI_CV_SemiInvulnerable::
 @	  The result is that the AI is encouraged to stall while taking damage from weather
 @	  To fix, swap _CheckSandstormTypes/_CheckIceType in the below script
 AI_CV_SemiInvulnerable2::
-	if_status AI_TARGET, STATUS1_TOXIC_POISON, AI_CV_SemiInvulnerable_TryEncourage
+	if_status AI_TARGET, STATUS_POISON, AI_CV_SemiInvulnerable_TryEncourage
 	if_status2 AI_TARGET, STATUS_CURSED, AI_CV_SemiInvulnerable_TryEncourage
 	if_status3 AI_TARGET, STATUS_LEECHSEED, AI_CV_SemiInvulnerable_TryEncourage
 	get_weather
@@ -2404,7 +2404,7 @@ AI_CV_Hail_End::
 
 @ BUG: Facade score is increased if the target is statused, but should be if the user is. Replace AI_TARGET with AI_USER
 AI_CV_Facade::
-	if_not_status AI_TARGET, STATUS1_ANY, AI_CV_Facade_End
+	if_not_status AI_TARGET, STATUS_ANY_STATUS1, AI_CV_Facade_End
 	score +1
 
 AI_CV_Facade_End::
@@ -2413,7 +2413,7 @@ AI_CV_Facade_End::
 AI_CV_FocusPunch::
 	if_type_effectiveness AI_EFFECTIVENESS_x0_25, AI_CV_FocusPunch2
 	if_type_effectiveness AI_EFFECTIVENESS_x0_5, AI_CV_FocusPunch2
-	if_status AI_TARGET, STATUS1_SLEEP, AI_CV_FocusPunch_ScoreUp1
+	if_status AI_TARGET, STATUS_SLEEP, AI_CV_FocusPunch_ScoreUp1
 	if_status2 AI_TARGET, STATUS_INFATUATION, AI_CV_FocusPunch3
 	if_status2 AI_TARGET, STATUS_CONFUSED, AI_CV_FocusPunch3
 	is_first_turn_for AI_USER
@@ -2436,7 +2436,7 @@ AI_CV_FocusPunch_End::
 	end
 
 AI_CV_SmellingSalt::
-	if_status AI_TARGET, STATUS1_PARALYSIS, AI_CV_SmellingSalt_ScoreUp1
+	if_status AI_TARGET, STATUS_PARALYSIS, AI_CV_SmellingSalt_ScoreUp1
 	goto AI_CV_SmellingSalt_End
 
 AI_CV_SmellingSalt_ScoreUp1::
@@ -2579,7 +2579,7 @@ AI_CV_Recycle_ItemsToEncourage::
 	.byte -1
 
 AI_CV_Revenge::
-	if_status AI_TARGET, STATUS1_SLEEP, AI_CV_Revenge_ScoreDown2
+	if_status AI_TARGET, STATUS_SLEEP, AI_CV_Revenge_ScoreDown2
 	if_status2 AI_TARGET, STATUS_INFATUATION, AI_CV_Revenge_ScoreDown2
 	if_status2 AI_TARGET, STATUS_CONFUSED, AI_CV_Revenge_ScoreDown2
 	if_random_less_than 180, AI_CV_Revenge_ScoreDown2
