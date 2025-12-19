@@ -1,5 +1,6 @@
 #include "global.h"
 #include "gflib.h"
+#include "DNS.h"
 
 #define MAX_SPRITE_COPY_REQUESTS 64
 
@@ -1593,6 +1594,27 @@ u8 LoadSpritePalette(const struct SpritePalette *palette)
     {
         sSpritePaletteTags[index] = palette->tag;
         DoLoadSpritePalette(palette->data, PLTT_ID(index));
+        return index;
+    }
+}
+
+u8 LoadDNSSpritePalette(const struct SpritePalette *palette)
+{
+    u8 index = IndexOfSpritePaletteTag(palette->tag);
+
+    if (index != 0xFF)
+        return index;
+
+    index = IndexOfSpritePaletteTag(0xFFFF);
+
+    if (index == 0xFF)
+    {
+        return 0xFF;
+    }
+    else
+    {
+        sSpritePaletteTags[index] = palette->tag;
+        LoadDNSPalette(palette->data, PLTT_ID(index) + 0x100, 30);
         return index;
     }
 }
