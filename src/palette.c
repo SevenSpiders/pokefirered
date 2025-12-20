@@ -1009,7 +1009,7 @@ static void Task_BlendPalettesGradually(u8 taskId)
     }
 }
 
-#include "overworld.h"
+#include "overworld.h" // IsMapTypeOutdoors
 static void TintPaletteForDayNight(u16 offset, u16 size)
 {
     u32 i;
@@ -1053,6 +1053,11 @@ static u16 DarkenColor(struct PlttData* srcColor) {
     // Add blue shift proportional to luminance
     b += (luminance * blueFactor) >> 8;
     if (b > 255) b = 255;
+
+    // *srcColor = (struct PlttData) RGB2(r >> 3, g >> 3, b >> 3);
+    srcColor->r = r >> 3;
+    srcColor->g = g >> 3;
+    srcColor->b = b >> 3;
 
     return RGB2(r >> 3, g >> 3, b >> 3);
 }

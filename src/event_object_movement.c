@@ -2171,11 +2171,11 @@ static u8 TryLoadObjectPalette(const struct SpritePalette *spritePalette)
     return LoadSpritePalette(spritePalette);
 }
 
-void PatchObjectPalette(u16 paletteTag, u8 paletteSlot)
+void PatchObjectPalette(u16 paletteTag, u8 paletteSlot) // overworld objects
 {
     u8 paletteIndex = FindObjectEventPaletteIndexByTag(paletteTag);
 
-    LoadPalette(sObjectEventSpritePalettes[paletteIndex].data, OBJ_PLTT_ID(paletteSlot), PLTT_SIZE_4BPP);
+    LoadDNSPalette(sObjectEventSpritePalettes[paletteIndex].data, OBJ_PLTT_ID(paletteSlot), PLTT_SIZE_4BPP);
     ApplyGlobalFieldPaletteTint(paletteSlot);
 }
 

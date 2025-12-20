@@ -1598,7 +1598,7 @@ u8 LoadSpritePalette(const struct SpritePalette *palette)
     }
 }
 
-u8 LoadDNSSpritePalette(const struct SpritePalette *palette)
+u8 LoadDNSSpritePalette(const struct SpritePalette *palette) // example grass moving
 {
     u8 index = IndexOfSpritePaletteTag(palette->tag);
 
