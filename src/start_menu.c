@@ -36,6 +36,7 @@
 #include "help_system.h"
 #include "constants/songs.h"
 #include "constants/field_weather.h"
+#include "testfunctions.h"
 
 enum StartMenuOption
 {
@@ -85,6 +86,7 @@ static bool8 StartMenuPlayerCallback(void);
 static bool8 StartMenuSaveCallback(void);
 static bool8 StartMenuOptionCallback(void);
 static bool8 StartMenuExitCallback(void);
+static bool8 StartMenuTestCallback(void);
 static bool8 StartMenuSafariZoneRetireCallback(void);
 static bool8 StartMenuLinkPlayerCallback(void);
 static bool8 StartCB_Save1(void);
@@ -119,7 +121,11 @@ static const struct MenuAction sStartMenuActionTable[] = {
     { gText_MenuPlayer, {.u8_void = StartMenuPlayerCallback} },
     { gText_MenuSave, {.u8_void = StartMenuSaveCallback} },
     { gText_MenuOption, {.u8_void = StartMenuOptionCallback} },
+    #ifdef DEBUG_MODE
+    { gText_MenuExit, {.u8_void = StartMenuTestCallback} },
+    #else
     { gText_MenuExit, {.u8_void = StartMenuExitCallback} },
+    #endif // DEBUG_MODE
     { gText_MenuRetire, {.u8_void = StartMenuSafariZoneRetireCallback} },
     { gText_MenuPlayer, {.u8_void = StartMenuLinkPlayerCallback} }
 };
@@ -447,6 +453,7 @@ static void StartMenu_FadeScreenIfLeavingOverworld(void)
 {
     if (sStartMenuCallback != StartMenuSaveCallback
      && sStartMenuCallback != StartMenuExitCallback
+     && sStartMenuCallback != StartMenuTestCallback
      && sStartMenuCallback != StartMenuSafariZoneRetireCallback)
     {
         StopPokemonLeagueLightingEffectTask();
@@ -532,6 +539,15 @@ static bool8 StartMenuOptionCallback(void)
         return TRUE;
     }
     return FALSE;
+}
+
+static bool8 StartMenuTestCallback(void)
+{
+    DestroySafariZoneStatsWindow();
+    DestroyHelpMessageWindow_();
+    CloseStartMenu();
+    TestFunction32();
+    return TRUE;
 }
 
 static bool8 StartMenuExitCallback(void)
