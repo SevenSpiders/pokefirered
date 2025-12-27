@@ -235,6 +235,12 @@ struct SpeciesInfo
             u8 noFlip : 1;
 };
 
+enum {
+    MOVE_CATEGORY_PHYSICAL = 0,
+    MOVE_CATEGORY_SPECIAL,
+    MOVE_CATEGORY_STATUS
+};
+
 struct BattleMove
 {
     u8 effect;
@@ -244,6 +250,7 @@ struct BattleMove
     u8 pp;
     u8 secondaryEffectChance;
     u8 target;
+    u8 category;
     s8 priority;
     u8 flags;
 };
