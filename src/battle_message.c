@@ -1282,6 +1282,7 @@ const u8 gText_LinkStandby[] = _("{PAUSE 16}Link standby…");
 const u8 gText_BattleMenu[] = _("{PALETTE 5}{COLOR_HIGHLIGHT_SHADOW 13 14 15}FIGHT{CLEAR_TO 56}BAG\nPOKéMON{CLEAR_TO 56}RUN");
 const u8 gText_SafariZoneMenu[] = _("{PALETTE 5}{COLOR_HIGHLIGHT_SHADOW 13 14 15}BALL{CLEAR_TO 56}BAIT\nROCK{CLEAR_TO 56}RUN");
 const u8 gText_MoveInterfacePP[] = _("PP ");
+const u8 gText_MovePwr[] = _("Pwr");
 const u8 gText_MoveInterfaceType[] = _("TYPE/");
 const u8 gText_MoveInterfaceDynamicColors[] = _("{PALETTE 5}{COLOR_HIGHLIGHT_SHADOW 13 14 15}");
 const u8 gText_WhichMoveToForget_Unused[] = _("{PALETTE 5}{COLOR_HIGHLIGHT_SHADOW 13 14 15}どの わざを\nわすれさせたい?");
@@ -2489,7 +2490,7 @@ static const struct BattleWindowText sTextOnWindowsInfo_Normal[] = {
         .bgColor = 14,
         .shadowColor = 15,
     },
-    [B_WIN_PP] = {
+    [B_WIN_PP] = { // colors defined in LoadBattleMenuWindowGfx
         .fillValue = PIXEL_FILL(0xe),
         .fontId = FONT_SMALL,
         .x = 0,
@@ -2499,7 +2500,7 @@ static const struct BattleWindowText sTextOnWindowsInfo_Normal[] = {
         .speed = 0,
         .fgColor = 12,
         .bgColor = 14,
-        .shadowColor = 11,
+        .shadowColor = 15,
     },
     [B_WIN_MOVE_TYPE] = {
         .fillValue = PIXEL_FILL(0xe),
@@ -2523,7 +2524,7 @@ static const struct BattleWindowText sTextOnWindowsInfo_Normal[] = {
         .speed = 0,
         .fgColor = 12,
         .bgColor = 14,
-        .shadowColor = 11,
+        .shadowColor = 15,
     },
     [B_WIN_DUMMY] = {
         .fillValue = PIXEL_FILL(0xe),
@@ -2817,7 +2818,7 @@ void SetPpNumbersPaletteInMoveSelection(void)
 {
     struct ChooseMoveStruct *chooseMoveStruct = (struct ChooseMoveStruct *)(&gBattleBufferA[gActiveBattler][4]);
     const u16 *palPtr = gPPTextPalette;
-    u8 var = GetCurrentPpToMaxPpState(chooseMoveStruct->currentPp[gMoveSelectionCursor[gActiveBattler]],
+    u8 var = GetCurrentPpToMaxPpState(chooseMoveStruct->currentPower[gMoveSelectionCursor[gActiveBattler]],
                                       chooseMoveStruct->maxPp[gMoveSelectionCursor[gActiveBattler]]);
 
     gPlttBufferUnfaded[BG_PLTT_ID(5) + 12] = palPtr[(var * 2) + 0];

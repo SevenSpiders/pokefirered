@@ -3178,7 +3178,7 @@ static void HandleTurnActionSelectionState(void)
                         for (i = 0; i < MAX_MON_MOVES; i++)
                         {
                             moveInfo.moves[i] = gBattleMons[gActiveBattler].moves[i];
-                            moveInfo.currentPp[i] = gBattleMons[gActiveBattler].pp[i];
+                            moveInfo.currentPower[i] = gBattleMoves[moveInfo.moves[i]].power;
                             moveInfo.maxPp[i] = CalculatePPWithBonus(gBattleMons[gActiveBattler].moves[i],
                                                                      gBattleMons[gActiveBattler].ppBonuses,
                                                                      i);
