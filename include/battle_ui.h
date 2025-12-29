@@ -3,6 +3,7 @@
 
 void BattleUI_LoadGfx(void);
 void BattleUI_DisplayMoveInfo(void);
+void BattleUI_UpdateStatusIcons(void);
 // void BattleUI_DisplayMoveDescription(void);
 
 #endif
