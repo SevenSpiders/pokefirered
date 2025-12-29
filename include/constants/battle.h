@@ -354,6 +354,7 @@
 #define B_WIN_VS_OUTCOME_LEFT    22
 #define B_WIN_VS_OUTCOME_RIGHT   23
 #define B_WIN_OAK_OLD_MAN        24
+#define B_WIN_STATUS1            25
 
 // Palettes
 #define B_PLTT_UI               0
@@ -364,7 +365,8 @@
 #define B_PLTT_TEXT             5
 #define B_PLTT_6                6 // DrawBattleEntryBackground, level up, attack?
 #define B_PLTT_7                7 // FIRST BATTLE
-#define B_PLTT_TYPE             7
+#define B_PLTT_TYPE             13
+#define B_PLTT_ICONS            12
 #define B_PLTT_POKEMON          8 // player1
 #define B_PLTT_POKEMON2         9 // opponent1
 #define B_PLTT_POKEMON3         10
@@ -379,11 +381,12 @@
 #define B_PLTT_18               18 // pokemon3
 #define B_PLTT_19               19 // pokemon4
 
-
+// Tiles
 #define B_TILE_FRAME1           18 // 27
 #define B_TILE_FRAME2           34 // 43
 
 #define B_TILE_MSG              144 // 255
+#define B_TILE_ICONS            256 // 319 status icons
 #define B_TILE_LEVEL_UP         256 // 365 level up stats
 #define B_TILE_MINI_BOX         366 // 401 tiny pokemon representation
 #define B_TILE_ACTIONS          400 // 447

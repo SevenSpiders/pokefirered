@@ -220,7 +220,7 @@ static const struct WindowTemplate sStandardBattleWindowTemplates[] = {
         .width = 8,
         .height = 2,
         .paletteNum = B_PLTT_TYPE, // 5
-        .baseBlock = 0x296
+        .baseBlock = B_TILE_TYPE //0x296
     },
     [B_WIN_PP_REMAINING] = {
         .bg = 0,
@@ -365,6 +365,15 @@ static const struct WindowTemplate sStandardBattleWindowTemplates[] = {
         .height = 4,
         .paletteNum = 7,
         .baseBlock = 0x090
+    },
+    [B_WIN_STATUS1] = {
+        .bg = 0,
+        .tilemapLeft = 17,
+        .tilemapTop = 13,
+        .width = 8,
+        .height = 1,
+        .paletteNum = B_PLTT_ICONS,
+        .baseBlock = B_TILE_ICONS
     },
     DUMMY_WIN_TEMPLATE
 };
