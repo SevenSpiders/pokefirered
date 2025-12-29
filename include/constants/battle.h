@@ -356,20 +356,50 @@
 #define B_WIN_OAK_OLD_MAN        24
 
 // Palettes
-#define B_PLTT_UI               1
-#define B_PLTT_GROUND1          2
-#define B_PLTT_GROUND2          3
-#define B_PLTT_GROUND3          4 // not sure
+#define B_PLTT_UI               0
+#define B_PLTT_FRAME            1
+#define B_PLTT_TERRAIN          2
+#define B_PLTT_TERRAIN2         3
+#define B_PLTT_TERRAIN3         4
 #define B_PLTT_TEXT             5
-#define B_PLTT_6                6 // free
+#define B_PLTT_6                6 // DrawBattleEntryBackground, level up, attack?
 #define B_PLTT_7                7 // FIRST BATTLE
 #define B_PLTT_TYPE             7
-#define B_PLTT_POKEMON1         8 // player1
+#define B_PLTT_POKEMON          8 // player1
 #define B_PLTT_POKEMON2         9 // opponent1
 #define B_PLTT_POKEMON3         10
 #define B_PLTT_POKEMON4         11
+#define B_PLTT_12               12 // free
+#define B_PLTT_13               13 // union room?
+#define B_PLTT_14               14 // egg hatch?
+#define B_PLTT_15               15 // sliding pokeball intro, mugshot intro
+// object palettes
+#define B_PLTT_16               16 // pokemon1
+#define B_PLTT_17               17 // pokemon2
+#define B_PLTT_18               18 // pokemon3
+#define B_PLTT_19               19 // pokemon4
 
-#define B_TILE_UI               18
+
+#define B_TILE_FRAME1           18 // 27
+#define B_TILE_FRAME2           34 // 43
+
+#define B_TILE_MSG              144 // 255
+#define B_TILE_LEVEL_UP         256 // 365 level up stats
+#define B_TILE_MINI_BOX         366 // 401 tiny pokemon representation
+#define B_TILE_ACTIONS          400 // 447
+#define B_TILE_PROMPT           448 // 503 what will x do?
+
+#define B_TILE_TEMP             512 // 576 temporary copy of enemy pokemon, grass swoosh intro
+
+#define B_TILE_PWR              656 // 661
+#define B_TILE_TYPE             662 // 677
+#define B_TILE_POWER            678 // 687
+#define B_TILE_TEMP2            768 // 832 temporary copy of player pokemon
+#define B_TILE_MOVE1            768 // 783
+#define B_TILE_MOVE2            784 // 799
+#define B_TILE_MOVE3            800 // 815
+#define B_TILE_MOVE4            816 // 831
+#define B_TILE_TERRAIN          1025 // 1112
 
 #define B_TEXT_VALUE_MASK               0x3F
 #define B_TEXT_FLAG_MASK                0xC0

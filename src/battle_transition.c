@@ -18,6 +18,7 @@
 #include "event_object_movement.h"
 #include "constants/songs.h"
 
+#define B_PLTT_15 15
 #define PALTAG_UNUSED_MUGSHOT 0x100A
 
 #define B_TRANS_DMA_FLAGS (1 | ((DMA_SRC_INC | DMA_DEST_FIXED | DMA_REPEAT | DMA_16BIT | DMA_START_HBLANK | DMA_ENABLE) << 16))
@@ -937,7 +938,7 @@ static bool8 BigPokeball_Init(struct Task *task)
     GetBg0TilesDst(&tilemap, &tileset);
     CpuFill16(0, tilemap, BG_SCREEN_SIZE);
     CpuCopy16(sBigPokeball_Gfx, tileset, sizeof(sBigPokeball_Gfx));
-    LoadPalette(sFieldEffectPal_Pokeball, BG_PLTT_ID(15), sizeof(sFieldEffectPal_Pokeball));
+    LoadPalette(sFieldEffectPal_Pokeball, BG_PLTT_ID(B_PLTT_15), sizeof(sFieldEffectPal_Pokeball));
     task->tState++;
     return FALSE;
 }
@@ -1108,7 +1109,7 @@ static bool8 PokeballsTrail_Init(struct Task *task)
     GetBg0TilesDst(&tilemap, &tileset);
     CpuCopy16(sSlidingPokeball_Tilemap, tileset, sizeof(sSlidingPokeball_Tilemap));
     CpuFill32(0, tilemap, BG_SCREEN_SIZE);
-    LoadPalette(sFieldEffectPal_Pokeball, BG_PLTT_ID(15), sizeof(sFieldEffectPal_Pokeball));
+    LoadPalette(sFieldEffectPal_Pokeball, BG_PLTT_ID(B_PLTT_15), sizeof(sFieldEffectPal_Pokeball));
     task->tState++;
     return FALSE;
 }
@@ -1910,8 +1911,8 @@ static bool8 Mugshot_SetGfx(struct Task *task)
     
     GetBg0TilesDst(&tilemap, &tileset);
     CpuCopy16(sMugshotBanner_Gfx, tileset, sizeof(sMugshotBanner_Gfx));
-    LoadPalette(sOpponentMugshotsPals[task->tMugshotId], BG_PLTT_ID(15), PLTT_SIZE_4BPP);
-    LoadPalette(sPlayerMugshotsPals[gSaveBlock2Ptr->playerGender], BG_PLTT_ID(15) + 10, PLTT_SIZEOF(16 - 10));
+    LoadPalette(sOpponentMugshotsPals[task->tMugshotId], BG_PLTT_ID(B_PLTT_15), PLTT_SIZE_4BPP);
+    LoadPalette(sPlayerMugshotsPals[gSaveBlock2Ptr->playerGender], BG_PLTT_ID(B_PLTT_15) + 10, PLTT_SIZEOF(16 - 10));
     
     for (i = 0; i < 20; i++)
         for (j = 0; j < 32; j++, mugshotsMap++)

@@ -35,9 +35,9 @@ static const struct IconData gTypeIconData[] = {
     [TYPE_DARK]     = { 32, 12, 0x8C },
     [TYPE_DRAGON]   = { 32, 12, 0xA0 },
     [TYPE_MYSTERY]  = { 32, 12, 0xA4 }, 
-    [MOVE_CATEGORY_PHYSICAL + NUMBER_OF_MON_TYPES] = {14, 12, 0x0A},
-    [MOVE_CATEGORY_SPECIAL + NUMBER_OF_MON_TYPES] = {14, 12, 0x0C},
-    [MOVE_CATEGORY_STATUS + NUMBER_OF_MON_TYPES] = {14, 12, 0x0E},
+    [MOVE_CATEGORY_PHYSICAL + NUMBER_OF_MON_TYPES] = {12, 12, 0x04},
+    [MOVE_CATEGORY_SPECIAL + NUMBER_OF_MON_TYPES] = {12, 12, 0x06},
+    [MOVE_CATEGORY_STATUS + NUMBER_OF_MON_TYPES] = {12, 12, 0x08},
 };
 
 void BlitTypeIcon(u8 windowId, u8 iconId, u16 x, u16 y)
@@ -49,13 +49,12 @@ void BlitTypeIcon(u8 windowId, u8 iconId, u16 x, u16 y)
 
 static void DisplayMoveType(u8 type)
 {
-    // FillWindowPixelRect(B_WIN_MOVE_TYPE, 15, 0, 0, 64, 16);
     BlitTypeIcon(B_WIN_MOVE_TYPE, type, 0, 0);
 }
 
 static void DisplayMoveCategory(u8 category)
 {
-    // BlitTypeIcon(B_WIN_MOVE_TYPE, category + NUMBER_OF_MON_TYPES, 16, 0);
+    BlitTypeIcon(B_WIN_MOVE_TYPE, category + NUMBER_OF_MON_TYPES, 34, 0);
 }
 
 static void DisplayMovePower(u8 power)
