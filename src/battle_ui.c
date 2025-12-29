@@ -49,12 +49,13 @@ void BlitTypeIcon(u8 windowId, u8 iconId, u16 x, u16 y)
 
 static void DisplayMoveType(u8 type)
 {
+    // FillWindowPixelRect(B_WIN_MOVE_TYPE, 15, 0, 0, 64, 16);
     BlitTypeIcon(B_WIN_MOVE_TYPE, type, 0, 0);
 }
 
 static void DisplayMoveCategory(u8 category)
 {
-    BlitTypeIcon(B_WIN_MOVE_TYPE, category + NUMBER_OF_MON_TYPES, 16, 0);
+    // BlitTypeIcon(B_WIN_MOVE_TYPE, category + NUMBER_OF_MON_TYPES, 16, 0);
 }
 
 static void DisplayMovePower(u8 power)
@@ -74,13 +75,21 @@ static void DisplayMovePower(u8 power)
     BattlePutTextOnWindow(gDisplayedStringBattle, B_WIN_PP_REMAINING); // defined in battle_bg.c
 }
 
+void BattleUI_LoadGfx()
+{
+    LoadPalette(gMenuInfoElements2_Pal, BG_PLTT_ID(B_PLTT_TYPE), PLTT_SIZE_4BPP);
+    FillWindowPixelRect(B_WIN_MOVE_TYPE, 15, 0, 0, 64, 16);
+}
+
 void BattleUI_DisplayMoveInfo()
 {
     struct ChooseMoveStruct *moveInfo = (struct ChooseMoveStruct *)(&gBattleBufferA[gActiveBattler][4]);
     u32 move = moveInfo->moves[gMoveSelectionCursor[gActiveBattler]];
 
-    DebugPrintf("display move info");
+    // DebugPrintf("display move info");
     DisplayMoveCategory(gBattleMoves[move].category);
     DisplayMoveType(gBattleMoves[move].type);
     DisplayMovePower(moveInfo->currentPower[gMoveSelectionCursor[gActiveBattler]]);
+    PutWindowTilemap(B_WIN_MOVE_TYPE);
+	CopyWindowToVram(B_WIN_MOVE_TYPE, COPYWIN_FULL);
 }

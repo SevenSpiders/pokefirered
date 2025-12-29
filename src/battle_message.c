@@ -2431,7 +2431,7 @@ static const struct BattleWindowText sTextOnWindowsInfo_Normal[] = {
         .shadowColor = 6,
     },
     [B_WIN_ACTION_MENU] = {
-        .fillValue = PIXEL_FILL(0xe),
+        .fillValue = PIXEL_FILL(14),
         .fontId = FONT_NORMAL_COPY_1,
         .x = 0,
         .y = 2,
@@ -2443,7 +2443,7 @@ static const struct BattleWindowText sTextOnWindowsInfo_Normal[] = {
         .shadowColor = 15,
     },
     [B_WIN_MOVE_NAME_1] = {
-        .fillValue = PIXEL_FILL(0xe),
+        .fillValue = PIXEL_FILL(14),
         .fontId = FONT_SMALL,
         .x = 0,
         .y = 1,
@@ -2455,7 +2455,7 @@ static const struct BattleWindowText sTextOnWindowsInfo_Normal[] = {
         .shadowColor = 15,
     },
     [B_WIN_MOVE_NAME_2] = {
-        .fillValue = PIXEL_FILL(0xe),
+        .fillValue = PIXEL_FILL(14),
         .fontId = FONT_SMALL,
         .x = 0,
         .y = 1,
@@ -2467,7 +2467,7 @@ static const struct BattleWindowText sTextOnWindowsInfo_Normal[] = {
         .shadowColor = 15,
     },
     [B_WIN_MOVE_NAME_3] = {
-        .fillValue = PIXEL_FILL(0xe),
+        .fillValue = PIXEL_FILL(14),
         .fontId = FONT_SMALL,
         .x = 0,
         .y = 1,
@@ -2479,7 +2479,7 @@ static const struct BattleWindowText sTextOnWindowsInfo_Normal[] = {
         .shadowColor = 15,
     },
     [B_WIN_MOVE_NAME_4] = {
-        .fillValue = PIXEL_FILL(0xe),
+        .fillValue = PIXEL_FILL(14),
         .fontId = FONT_SMALL,
         .x = 0,
         .y = 1,
@@ -2491,7 +2491,7 @@ static const struct BattleWindowText sTextOnWindowsInfo_Normal[] = {
         .shadowColor = 15,
     },
     [B_WIN_PP] = { // colors defined in LoadBattleMenuWindowGfx
-        .fillValue = PIXEL_FILL(0xe),
+        .fillValue = PIXEL_FILL(14),
         .fontId = FONT_SMALL,
         .x = 0,
         .y = 2,
@@ -2503,7 +2503,7 @@ static const struct BattleWindowText sTextOnWindowsInfo_Normal[] = {
         .shadowColor = 15,
     },
     [B_WIN_MOVE_TYPE] = {
-        .fillValue = PIXEL_FILL(0xe),
+        .fillValue = PIXEL_FILL(15),
         .fontId = FONT_SMALL,
         .x = 0,
         .y = 2,
@@ -2515,7 +2515,7 @@ static const struct BattleWindowText sTextOnWindowsInfo_Normal[] = {
         .shadowColor = 15,
     },
     [B_WIN_PP_REMAINING] = {
-        .fillValue = PIXEL_FILL(0xe),
+        .fillValue = PIXEL_FILL(14),
         .fontId = FONT_NORMAL_COPY_1,
         .x = 10,
         .y = 2,
@@ -2527,7 +2527,7 @@ static const struct BattleWindowText sTextOnWindowsInfo_Normal[] = {
         .shadowColor = 15,
     },
     [B_WIN_DUMMY] = {
-        .fillValue = PIXEL_FILL(0xe),
+        .fillValue = PIXEL_FILL(14),
         .fontId = FONT_NORMAL_COPY_1,
         .x = 0,
         .y = 2,
@@ -2539,7 +2539,7 @@ static const struct BattleWindowText sTextOnWindowsInfo_Normal[] = {
         .shadowColor = 15,
     },
     [B_WIN_SWITCH_PROMPT] = {
-        .fillValue = PIXEL_FILL(0xe),
+        .fillValue = PIXEL_FILL(14),
         .fontId = FONT_NORMAL_COPY_1,
         .x = 0,
         .y = 2,
@@ -2551,7 +2551,7 @@ static const struct BattleWindowText sTextOnWindowsInfo_Normal[] = {
         .shadowColor = 15,
     },
     [B_WIN_LEVEL_UP_BOX] = {
-        .fillValue = PIXEL_FILL(0xe),
+        .fillValue = PIXEL_FILL(14),
         .fontId = FONT_NORMAL,
         .x = 0,
         .y = 0,
@@ -2575,7 +2575,7 @@ static const struct BattleWindowText sTextOnWindowsInfo_Normal[] = {
         .shadowColor = 2,
     },
     [B_WIN_YESNO] = {
-        .fillValue = PIXEL_FILL(0xe),
+        .fillValue = PIXEL_FILL(14),
         .fontId = FONT_NORMAL,
         .x = 0,
         .y = 2,
@@ -2587,7 +2587,7 @@ static const struct BattleWindowText sTextOnWindowsInfo_Normal[] = {
         .shadowColor = 15,
     },
     [B_WIN_VS_PLAYER] = {
-        .fillValue = PIXEL_FILL(0xe),
+        .fillValue = PIXEL_FILL(14),
         .fontId = FONT_NORMAL,
         .x = 0,
         .y = 2,
@@ -2599,7 +2599,7 @@ static const struct BattleWindowText sTextOnWindowsInfo_Normal[] = {
         .shadowColor = 15,
     },
     [B_WIN_VS_OPPONENT] = {
-        .fillValue = PIXEL_FILL(0xe),
+        .fillValue = PIXEL_FILL(14),
         .fontId = FONT_NORMAL,
         .x = 0,
         .y = 2,
@@ -2611,7 +2611,7 @@ static const struct BattleWindowText sTextOnWindowsInfo_Normal[] = {
         .shadowColor = 15,
     },
     [B_WIN_VS_MULTI_PLAYER_1] = {
-        .fillValue = PIXEL_FILL(0xe),
+        .fillValue = PIXEL_FILL(14),
         .fontId = FONT_NORMAL,
         .x = 0,
         .y = 2,
@@ -2623,7 +2623,7 @@ static const struct BattleWindowText sTextOnWindowsInfo_Normal[] = {
         .shadowColor = 15,
     },
     [B_WIN_VS_MULTI_PLAYER_2] = {
-        .fillValue = PIXEL_FILL(0xe),
+        .fillValue = PIXEL_FILL(14),
         .fontId = FONT_NORMAL,
         .x = 0,
         .y = 2,
@@ -2635,7 +2635,7 @@ static const struct BattleWindowText sTextOnWindowsInfo_Normal[] = {
         .shadowColor = 15,
     },
     [B_WIN_VS_MULTI_PLAYER_3] = {
-        .fillValue = PIXEL_FILL(0xe),
+        .fillValue = PIXEL_FILL(14),
         .fontId = FONT_NORMAL,
         .x = 0,
         .y = 2,
@@ -2647,7 +2647,7 @@ static const struct BattleWindowText sTextOnWindowsInfo_Normal[] = {
         .shadowColor = 15,
     },
     [B_WIN_VS_MULTI_PLAYER_4] = {
-        .fillValue = PIXEL_FILL(0xe),
+        .fillValue = PIXEL_FILL(14),
         .fontId = FONT_NORMAL,
         .x = 0,
         .y = 2,
@@ -2726,11 +2726,12 @@ void BattlePutTextOnWindow(const u8 *text, u8 windowId) {
     int x;
     u8 color;
 
-    u8 textFlags = windowId & 0xC0;
-    windowId &= 0x3F;
-    if (!(textFlags & 0x80))
+    u8 textFlags = windowId & B_TEXT_FLAG_MASK;
+    windowId &= B_TEXT_VALUE_MASK;
+    if (windowId == B_WIN_MOVE_TYPE) DebugPrintf("put text on window 8??");
+    if (!(textFlags & B_TEXT_FLAG_WINDOW_CLEAR))
         FillWindowPixelBuffer(windowId, sTextOnWindowsInfo_Normal[windowId].fillValue);
-    if (textFlags & 0x40) {
+    if (textFlags & B_TEXT_FLAG_NPC_CONTEXT_FONT) {
         color = ContextNpcGetTextColor();
         printerTemplate.fontId = sNpcTextColorToFont[color];
     }
@@ -2797,7 +2798,7 @@ void BattlePutTextOnWindow(const u8 *text, u8 windowId) {
     }
 
     AddTextPrinter(&printerTemplate, speed, NULL);
-    if (!(textFlags & 0x80))
+    if (!(textFlags & B_TEXT_FLAG_WINDOW_CLEAR))
     {
         PutWindowTilemap(windowId);
         CopyWindowToVram(windowId, COPYWIN_FULL);

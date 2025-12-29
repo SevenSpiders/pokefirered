@@ -355,6 +355,24 @@
 #define B_WIN_VS_OUTCOME_RIGHT   23
 #define B_WIN_OAK_OLD_MAN        24
 
+// Palettes
+#define B_PLTT_UI               1
+#define B_PLTT_GROUND1          2
+#define B_PLTT_GROUND2          3
+#define B_PLTT_GROUND3          4 // not sure
+#define B_PLTT_TEXT             5
+#define B_PLTT_6                6 // free
+#define B_PLTT_7                7 // FIRST BATTLE
+#define B_PLTT_TYPE             7
+#define B_PLTT_POKEMON1         8 // player1
+#define B_PLTT_POKEMON2         9 // opponent1
+#define B_PLTT_POKEMON3         10
+#define B_PLTT_POKEMON4         11
+
+#define B_TILE_UI               18
+
+#define B_TEXT_VALUE_MASK               0x3F
+#define B_TEXT_FLAG_MASK                0xC0
 #define B_TEXT_FLAG_NPC_CONTEXT_FONT    (1 << 6)
 #define B_TEXT_FLAG_WINDOW_CLEAR        (1 << 7)
 
