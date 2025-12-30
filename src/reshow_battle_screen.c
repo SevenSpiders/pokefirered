@@ -68,8 +68,7 @@ static void CB2_ReshowBattleScreenAfterMenu(void)
         ShowBg(2);
         ShowBg(3);
         ResetPaletteFade();
-        gBattle_BG0_X = 0;
-        gBattle_BG0_Y = 0;
+        SetBG0Offset(0, 0);
         gBattle_BG1_X = 0;
         gBattle_BG1_Y = 0;
         gBattle_BG2_X = 0;

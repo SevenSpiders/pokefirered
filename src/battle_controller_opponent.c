@@ -1308,8 +1308,7 @@ static void OpponentHandlePrintString(void)
 {
     u16 *stringId;
 
-    gBattle_BG0_X = 0;
-    gBattle_BG0_Y = 0;
+    SetBG0Offset(0, 0);
     stringId = (u16 *)(&gBattleBufferA[gActiveBattler][2]);
     BufferStringBattle(*stringId);
     if (BattleStringShouldBeColored(*stringId))

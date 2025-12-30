@@ -42,6 +42,7 @@
 #include "constants/pokemon.h"
 #include "constants/songs.h"
 #include "constants/trainers.h"
+#include "battle_ui.h" // for UpdateBG0
 
 const u8 gStatus1FromStatus [STATUS_MAX_STATUS1+1] = {
     [STATUS_SLEEP]     = STATUS1_SLEEP,
@@ -624,6 +625,13 @@ const u8 *const gStatusConditionStringsTable[][2] =
     {gStatusConditionString_LoveJpn, gText_Love}
 };
 
+void SetBG0Offset(u16 x, u16 y)
+{
+    BattleUI_UpdateBG0Offset(x, y);
+    gBattle_BG0_X = x;
+    gBattle_BG0_Y = y;
+}
+
 void CB2_InitBattle(void)
 {
     MoveSaveBlocks_ResetHeap();
@@ -692,8 +700,7 @@ static void CB2_InitBattleInternal(void)
     ScanlineEffect_SetParams(sIntroScanlineParams16Bit);
 
     ResetPaletteFade();
-    gBattle_BG0_X = 0;
-    gBattle_BG0_Y = 0;
+    SetBG0Offset(0, 0);
     gBattle_BG1_X = 0;
     gBattle_BG1_Y = 0;
     gBattle_BG2_X = 0;
@@ -1775,8 +1782,7 @@ void CB2_InitEndLinkBattle(void)
         gScanlineEffectRegBuffers[1][i] = 0xFF10;
     }
     ResetPaletteFade();
-    gBattle_BG0_X = 0;
-    gBattle_BG0_Y = 0;
+    SetBG0Offset(0, 0);
     gBattle_BG1_X = 0;
     gBattle_BG1_Y = 0;
     gBattle_BG2_X = 0;
@@ -4144,8 +4150,7 @@ static void HandleAction_UseMove(void)
 static void HandleAction_Switch(void)
 {
     gBattlerAttacker = gBattlerByTurnOrder[gCurrentTurnActionNumber];
-    gBattle_BG0_X = 0;
-    gBattle_BG0_Y = 0;
+    SetBG0Offset(0, 0);
     gActionSelectionCursor[gBattlerAttacker] = 0;
     gMoveSelectionCursor[gBattlerAttacker] = 0;
     PREPARE_MON_NICK_BUFFER(gBattleTextBuff1, gBattlerAttacker, *(gBattleStruct->battlerPartyIndexes + gBattlerAttacker));
@@ -4159,8 +4164,7 @@ static void HandleAction_Switch(void)
 static void HandleAction_UseItem(void)
 {
     gBattlerAttacker = gBattlerTarget = gBattlerByTurnOrder[gCurrentTurnActionNumber];
-    gBattle_BG0_X = 0;
-    gBattle_BG0_Y = 0;
+    SetBG0Offset(0, 0);
     ClearFuryCutterDestinyBondGrudge(gBattlerAttacker);
     gLastUsedItem = gBattleBufferB[gBattlerAttacker][1] | (gBattleBufferB[gBattlerAttacker][2] << 8);
     if (gLastUsedItem <= ITEM_PREMIER_BALL) // is ball
@@ -4343,8 +4347,7 @@ static void HandleAction_Run(void)
 static void HandleAction_WatchesCarefully(void)
 {
     gBattlerAttacker = gBattlerByTurnOrder[gCurrentTurnActionNumber];
-    gBattle_BG0_X = 0;
-    gBattle_BG0_Y = 0;
+    SetBG0Offset(0, 0);
     if (gBattleStruct->safariRockThrowCounter != 0)
     {
         --gBattleStruct->safariRockThrowCounter;
@@ -4380,8 +4383,7 @@ static void HandleAction_WatchesCarefully(void)
 static void HandleAction_SafariZoneBallThrow(void)
 {
     gBattlerAttacker = gBattlerByTurnOrder[gCurrentTurnActionNumber];
-    gBattle_BG0_X = 0;
-    gBattle_BG0_Y = 0;
+    SetBG0Offset(0, 0);
     --gNumSafariBalls;
     gLastUsedItem = ITEM_SAFARI_BALL;
     gBattlescriptCurrInstr = gBattlescriptsForBallThrow[ITEM_SAFARI_BALL];
@@ -4391,8 +4393,7 @@ static void HandleAction_SafariZoneBallThrow(void)
 static void HandleAction_ThrowBait(void)
 {
     gBattlerAttacker = gBattlerByTurnOrder[gCurrentTurnActionNumber];
-    gBattle_BG0_X = 0;
-    gBattle_BG0_Y = 0;
+    SetBG0Offset(0, 0);
     gBattleStruct->safariBaitThrowCounter += Random() % 5 + 2;
     if (gBattleStruct->safariBaitThrowCounter > 6)
         gBattleStruct->safariBaitThrowCounter = 6;
@@ -4407,8 +4408,7 @@ static void HandleAction_ThrowBait(void)
 static void HandleAction_ThrowRock(void)
 {
     gBattlerAttacker = gBattlerByTurnOrder[gCurrentTurnActionNumber];
-    gBattle_BG0_X = 0;
-    gBattle_BG0_Y = 0;
+    SetBG0Offset(0, 0);
     gBattleStruct->safariRockThrowCounter += Random() % 5 + 2;
     if (gBattleStruct->safariRockThrowCounter > 6)
         gBattleStruct->safariRockThrowCounter = 6;
@@ -4431,8 +4431,7 @@ static void HandleAction_SafariZoneRun(void)
 static void HandleAction_OldManBallThrow(void)
 {
     gBattlerAttacker = gBattlerByTurnOrder[gCurrentTurnActionNumber];
-    gBattle_BG0_X = 0;
-    gBattle_BG0_Y = 0;
+    SetBG0Offset(0, 0);
     PREPARE_MON_NICK_BUFFER(gBattleTextBuff1, gBattlerAttacker, gBattlerPartyIndexes[gBattlerAttacker])
     gBattlescriptCurrInstr = gBattlescriptsForSafariActions[3];
     gCurrentActionFuncId = B_ACTION_EXEC_SCRIPT;

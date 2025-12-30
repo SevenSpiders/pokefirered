@@ -6,8 +6,14 @@
 #include "battle_controllers.h" // ChooseMoveStruct
 #include "graphics.h" // gMenuInfoElements_Gfx
 
-static const u16 sBattleIcons_Pal[] = INCBIN_U16("graphics/battle_interface/status_icons.gbapal");
-static const u8 sBattleIcons_Gfx[] = INCBIN_U8("graphics/battle_interface/status_icons.4bpp");
+
+typedef struct {
+    u32 windowId;
+    s32 offsetX;
+    s32 offsetY;
+    u32 row;
+    u32 tilemapTop;
+} IconTray;
 
 struct IconData
 {
@@ -15,6 +21,10 @@ struct IconData
     u8 height;
     u16 offset;
 };
+
+static const u16 sBattleIcons_Pal[] = INCBIN_U16("graphics/battle_interface/status_icons.gbapal");
+static const u8 sBattleIcons_Gfx[] = INCBIN_U8("graphics/battle_interface/status_icons.4bpp");
+static IconTray sIconTrays[2]; // 0: player, 1: enemy
 
 static const struct IconData gTypeIconData[] = {
     [TYPE_NORMAL]   = { 32, 12, 0x20 },
@@ -104,6 +114,12 @@ static void DisplayStatIcon(u8 statType, bool8 negative)
 
 void BattleUI_LoadGfx()
 {
+    sIconTrays[0].windowId = B_WIN_STATUS1;
+    sIconTrays[0].tilemapTop = 13;
+
+    sIconTrays[1].windowId = B_WIN_STATUS2;
+    sIconTrays[1].tilemapTop = 13;
+
     LoadPalette(gMenuInfoElements2_Pal, BG_PLTT_ID(B_PLTT_TYPE), PLTT_SIZE_4BPP);
     LoadPalette(sBattleIcons_Pal, BG_PLTT_ID(B_PLTT_ICONS), PLTT_SIZE_4BPP);
     FillWindowPixelRect(B_WIN_MOVE_TYPE, 15, 0, 0, 64, 16);
@@ -132,4 +148,15 @@ void BattleUI_UpdateStatusIcons()
     FillWindowPixelRect(B_WIN_STATUS1, 12, 0, 0, 64, 8);
     PutWindowTilemap(B_WIN_STATUS1);
 	CopyWindowToVram(B_WIN_STATUS1, COPYWIN_FULL);
+}
+
+void BattleUI_UpdateBG0Offset(u16 x, u16 y)
+{
+    u32 i;
+    for (i=0; i<2; i++)
+    {
+        u32 tilemapTop =  y / 8 + sIconTrays[i].tilemapTop;
+        SetWindowAttribute(sIconTrays[i].windowId, WINDOW_TILEMAP_TOP, tilemapTop);
+    }
+    BattleUI_UpdateStatusIcons();
 }

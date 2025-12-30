@@ -4,6 +4,7 @@
 void BattleUI_LoadGfx(void);
 void BattleUI_DisplayMoveInfo(void);
 void BattleUI_UpdateStatusIcons(void);
+void BattleUI_UpdateBG0Offset(u16 x, u16 y);
 // void BattleUI_DisplayMoveDescription(void);
 
 #endif

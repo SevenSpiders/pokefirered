@@ -1527,8 +1527,7 @@ static void PokedudeHandlePrintString(void)
 {
     u16 *stringId;
 
-    gBattle_BG0_X = 0;
-    gBattle_BG0_Y = 0;
+    SetBG0Offset(0, 0);
     stringId = (u16 *)(&gBattleBufferA[gActiveBattler][2]);
     BufferStringBattle(*stringId);
     if (BattleStringShouldBeColored(*stringId))
@@ -1550,8 +1549,7 @@ static void HandleChooseActionAfterDma3(void)
 {
     if (!IsDma3ManagerBusyWithBgCopy())
     {
-        gBattle_BG0_X = 0;
-        gBattle_BG0_Y = 160;
+        SetBG0Offset(0, 160);
         gBattlerControllerFuncs[gActiveBattler] = HandleInputChooseAction;
     }
 }
@@ -1586,8 +1584,7 @@ static void PokedudeHandleChooseMoveAfterDma3(void)
 {
     if (!IsDma3ManagerBusyWithBgCopy())
     {
-        gBattle_BG0_X = 0;
-        gBattle_BG0_Y = 320;
+        SetBG0Offset(0, 320);
         gBattlerControllerFuncs[gActiveBattler] = PokedudeHandleInputChooseMove;
     }
 }
@@ -2553,7 +2550,7 @@ static void PokedudeAction_PrintVoiceoverMessage(void)
         }
         break;
     case 2:
-        gBattle_BG0_Y = 0;
+        SetBG0Offset(0, 0);
         BattleStringExpandPlaceholdersToDisplayedString(GetPokedudeText());
         BattlePutTextOnWindow(gDisplayedStringBattle, B_WIN_OAK_OLD_MAN);
         ++gPokedudeBattlerStates[gActiveBattler]->timer;
@@ -2574,7 +2571,7 @@ static void PokedudeAction_PrintVoiceoverMessage(void)
                 BattleStopLowHpSound();
                 PlayBGM(MUS_VICTORY_WILD);
             }
-            gBattle_BG0_Y = gPokedudeBattlerStates[gActiveBattler]->saved_bg0y;
+            SetBG0Offset(0, gPokedudeBattlerStates[gActiveBattler]->saved_bg0y);
             BtlCtrl_RemoveVoiceoverMessageFrame();
             ReturnFromPokedudeAction();
         }

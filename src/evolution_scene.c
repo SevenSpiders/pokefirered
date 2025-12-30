@@ -229,8 +229,7 @@ void EvolutionScene(struct Pokemon* mon, u16 postEvoSpecies, bool8 canStopEvo, u
 
     ResetPaletteFade();
 
-    gBattle_BG0_X = 0;
-    gBattle_BG0_Y = 0;
+    SetBG0Offset(0, 0);
     gBattle_BG1_X = 0;
     gBattle_BG1_Y = 0;
     gBattle_BG2_X = 0;
@@ -336,8 +335,7 @@ static void CB2_EvolutionSceneLoadGraphics(void)
 
     ResetPaletteFade();
 
-    gBattle_BG0_X = 0;
-    gBattle_BG0_Y = 0;
+    SetBG0Offset(0, 0);
     gBattle_BG1_X = 0;
     gBattle_BG1_Y = 0;
     gBattle_BG2_X = 0;
@@ -514,8 +512,7 @@ void TradeEvolutionScene(struct Pokemon* mon, u16 postEvoSpecies, u8 preEvoSprit
     gTasks[id].tEvoWasStopped = FALSE;
     gTasks[id].tPartyId = partyId;
 
-    gBattle_BG0_X = 0;
-    gBattle_BG0_Y = 0;
+    SetBG0Offset(0, 0);
     gBattle_BG1_X = 0;
     gBattle_BG1_Y = 0;
     gBattle_BG2_X = 0;

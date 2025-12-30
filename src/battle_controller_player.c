@@ -592,8 +592,7 @@ static u32 HandleMoveInputUnused(void)
     if (JOY_NEW(B_BUTTON))
     {
         PlaySE(SE_SELECT);
-        gBattle_BG0_X = 0;
-        gBattle_BG0_Y = 0x140;
+        SetBG0Offset(0, 320);
         var = 0xFF;
     }
     if (JOY_NEW(DPAD_LEFT) && gMoveSelectionCursor[gActiveBattler] & 1)
@@ -1481,8 +1480,7 @@ static void PrintLinkStandbyMsg(void)
 {
     if (gBattleTypeFlags & BATTLE_TYPE_LINK)
     {
-        gBattle_BG0_X = 0;
-        gBattle_BG0_Y = 0;
+        SetBG0Offset(0, 0);
         BattlePutTextOnWindow(gText_LinkStandby, B_WIN_MSG);
     }
 }
@@ -2376,8 +2374,7 @@ static void PlayerHandlePrintString(void)
 {
     u16 *stringId;
 
-    gBattle_BG0_X = 0;
-    gBattle_BG0_Y = 0;
+    SetBG0Offset(0, 0);
     stringId = (u16 *)(&gBattleBufferA[gActiveBattler][2]);
     BufferStringBattle(*stringId);
     if (BattleStringShouldBeColored(*stringId))
@@ -2399,8 +2396,7 @@ static void HandleChooseActionAfterDma3(void)
 {
     if (!IsDma3ManagerBusyWithBgCopy())
     {
-        gBattle_BG0_X = 0;
-        gBattle_BG0_Y = 160;
+        SetBG0Offset(0, 160);
         gBattlerControllerFuncs[gActiveBattler] = HandleInputChooseAction;
     }
 }
@@ -2427,8 +2423,7 @@ static void HandleChooseMoveAfterDma3(void)
 {
     if (!IsDma3ManagerBusyWithBgCopy())
     {
-        gBattle_BG0_X = 0;
-        gBattle_BG0_Y = 320;
+        SetBG0Offset(0, 320);
         gBattlerControllerFuncs[gActiveBattler] = HandleInputChooseMove;
     }
 }
