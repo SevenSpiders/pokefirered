@@ -5164,7 +5164,7 @@ static void Cmd_yesnoboxlearnmove(void)
     switch (gBattleScripting.learnMoveState)
     {
     case 0:
-        HandleBattleWindow(23, 8, 29, 13, 0);
+        SetBattleWindow(23, 8, 29, 13, 0);
         BattlePutTextOnWindow(gText_BattleYesNoChoice, B_WIN_YESNO);
         gBattleScripting.learnMoveState++;
         gBattleCommunication[CURSOR_POSITION] = 0;
@@ -5190,7 +5190,7 @@ static void Cmd_yesnoboxlearnmove(void)
             PlaySE(SE_SELECT);
             if (gBattleCommunication[1] == 0)
             {
-                HandleBattleWindow(23, 8, 29, 13, WINDOW_CLEAR);
+                SetBattleWindow(23, 8, 29, 13, WINDOW_CLEAR);
                 BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 16, RGB_BLACK);
                 gBattleScripting.learnMoveState++;
             }
@@ -5256,7 +5256,7 @@ static void Cmd_yesnoboxlearnmove(void)
         }
         break;
     case 4:
-        HandleBattleWindow(23, 8, 29, 13, WINDOW_CLEAR);
+        SetBattleWindow(23, 8, 29, 13, WINDOW_CLEAR);
         gBattlescriptCurrInstr += 5;
         break;
     case 5:
@@ -5273,7 +5273,7 @@ static void Cmd_yesnoboxstoplearningmove(void)
     switch (gBattleScripting.learnMoveState)
     {
     case 0:
-        HandleBattleWindow(23, 8, 29, 13, 0);
+        SetBattleWindow(23, 8, 29, 13, 0);
         BattlePutTextOnWindow(gText_BattleYesNoChoice, B_WIN_YESNO);
         gBattleScripting.learnMoveState++;
         gBattleCommunication[CURSOR_POSITION] = 0;
@@ -5303,13 +5303,13 @@ static void Cmd_yesnoboxstoplearningmove(void)
             else
                 gBattlescriptCurrInstr += 5;
 
-            HandleBattleWindow(23, 8, 29, 13, WINDOW_CLEAR);
+            SetBattleWindow(23, 8, 29, 13, WINDOW_CLEAR);
         }
         else if (JOY_NEW(B_BUTTON))
         {
             PlaySE(SE_SELECT);
             gBattlescriptCurrInstr = T1_READ_PTR(gBattlescriptCurrInstr + 1);
-            HandleBattleWindow(23, 8, 29, 13, WINDOW_CLEAR);
+            SetBattleWindow(23, 8, 29, 13, WINDOW_CLEAR);
         }
         break;
     }
@@ -5571,7 +5571,7 @@ static void Cmd_yesnobox(void)
     switch (gBattleCommunication[0])
     {
     case 0:
-        HandleBattleWindow(23, 8, 29, 13, 0);
+        SetBattleWindow(23, 8, 29, 13, 0);
         BattlePutTextOnWindow(gText_BattleYesNoChoice, B_WIN_YESNO);
         gBattleCommunication[0]++;
         gBattleCommunication[CURSOR_POSITION] = 0;
@@ -5596,13 +5596,13 @@ static void Cmd_yesnobox(void)
         {
             gBattleCommunication[CURSOR_POSITION] = 1;
             PlaySE(SE_SELECT);
-            HandleBattleWindow(23, 8, 29, 13, WINDOW_CLEAR);
+            SetBattleWindow(23, 8, 29, 13, WINDOW_CLEAR);
             gBattlescriptCurrInstr++;
         }
         else if (JOY_NEW(A_BUTTON))
         {
             PlaySE(SE_SELECT);
-            HandleBattleWindow(23, 8, 29, 13, WINDOW_CLEAR);
+            SetBattleWindow(23, 8, 29, 13, WINDOW_CLEAR);
             gBattlescriptCurrInstr++;
         }
         break;
@@ -5718,7 +5718,7 @@ static void Cmd_drawlvlupbox(void)
         SetBgAttribute(1, BG_ATTR_PRIORITY, 0);
         ShowBg(0);
         ShowBg(1);
-        HandleBattleWindow(18, 7, 29, 19, WINDOW_BG1);
+        SetBattleWindow(18, 7, 29, 19, WINDOW_BG1);
         gBattleScripting.drawlvlupboxState = 4;
         break;
     case 4:
@@ -5752,7 +5752,7 @@ static void Cmd_drawlvlupbox(void)
         {
             // Close level up box
             PlaySE(SE_SELECT);
-            HandleBattleWindow(18, 7, 29, 19, WINDOW_BG1 | WINDOW_CLEAR);
+            SetBattleWindow(18, 7, 29, 19, WINDOW_BG1 | WINDOW_CLEAR);
             gBattleScripting.drawlvlupboxState++;
         }
         break;
@@ -9738,7 +9738,8 @@ static void Cmd_displaydexinfo(void)
     }
 }
 
-void HandleBattleWindow(u8 xStart, u8 yStart, u8 xEnd, u8 yEnd, u8 flags)
+// Create message window rect
+void SetBattleWindow(u8 xStart, u8 yStart, u8 xEnd, u8 yEnd, u8 flags)
 {
     s32 destY, destX;
     u16 var = 0;
@@ -9750,33 +9751,33 @@ void HandleBattleWindow(u8 xStart, u8 yStart, u8 xEnd, u8 yEnd, u8 flags)
             if (destY == yStart)
             {
                 if (destX == xStart)
-                    var = 0x1022;
+                    var = 0x1022; // top left corner
                 else if (destX == xEnd)
-                    var = 0x1024;
+                    var = 0x1024; // top right corner
                 else
-                    var = 0x1023;
+                    var = 0x1023; // top border
             }
             else if (destY == yEnd)
             {
                 if (destX == xStart)
-                    var = 0x1028;
+                    var = 0x1028; // bottom left corner
                 else if (destX == xEnd)
-                    var = 0x102A;
+                    var = 0x102A; // bottom right corner
                 else
-                    var = 0x1029;
+                    var = 0x1029; // bottom border
             }
             else
             {
                 if (destX == xStart)
-                    var = 0x1025;
+                    var = 0x1025; // left border
                 else if (destX == xEnd)
-                    var = 0x1027;
+                    var = 0x1027; // right border
                 else
-                    var = 0x1026;
+                    var = 0x1026; // fill
             }
 
             if (flags & WINDOW_CLEAR)
-                var = 0;
+                var = 0; // no value
 
             if (flags & WINDOW_BG1)
                 CopyToBgTilemapBufferRect_ChangePalette(1, &var, destX, destY, 1, 1, 0x11);
@@ -9811,7 +9812,7 @@ static void Cmd_trygivecaughtmonnick(void)
     switch (gBattleCommunication[MULTIUSE_STATE])
     {
     case 0:
-        HandleBattleWindow(23, 8, 29, 13, 0);
+        SetBattleWindow(23, 8, 29, 13, 0);
         BattlePutTextOnWindow(gText_BattleYesNoChoice, B_WIN_YESNO);
         gBattleCommunication[MULTIUSE_STATE]++;
         gBattleCommunication[CURSOR_POSITION] = 0;

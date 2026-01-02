@@ -355,6 +355,7 @@
 #define B_WIN_VS_OUTCOME_RIGHT   23
 #define B_WIN_OAK_OLD_MAN        24
 #define B_WIN_STATUS1            25
+#define B_WIN_STATUS2            26
 
 // Palettes
 #define B_PLTT_UI               0
@@ -389,9 +390,10 @@
 #define B_TILE_ICONS            256 // 319 status icons
 #define B_TILE_LEVEL_UP         256 // 365 level up stats
 #define B_TILE_MINI_BOX         366 // 401 tiny pokemon representation
-#define B_TILE_ACTIONS          400 // 447
+#define B_TILE_ACTIONS          400 // 455
 #define B_TILE_PROMPT           448 // 503 what will x do?
 
+#define B_TILE_YESNO            512 // 527 was 256 - 272
 #define B_TILE_TEMP             512 // 576 temporary copy of enemy pokemon, grass swoosh intro
 
 #define B_TILE_PWR              656 // 661

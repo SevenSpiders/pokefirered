@@ -349,7 +349,7 @@ void ResetBgsAndClearDma3BusyFlags(bool32 enableWindowTileAutoAlloc)
         sDmaBusyBitfield[i] = 0;
     }
 
-    gWindowTileAutoAllocEnabled = enableWindowTileAutoAlloc;
+    gWindowTileAutoAllocEnabled = enableWindowTileAutoAlloc; // only used in credits
 
     for (i = 0; i < 0x100; i++)
     {

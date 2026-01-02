@@ -147,8 +147,8 @@ static const struct WindowTemplate sStandardBattleWindowTemplates[] = {
         .tilemapTop = 15,
         .width = 28,
         .height = 4,
-        .paletteNum = 0,
-        .baseBlock = 0x090
+        .paletteNum = B_PLTT_UI,
+        .baseBlock = B_TILE_MSG
     },
     [B_WIN_ACTION_PROMPT] = {
         .bg = 0,
@@ -156,8 +156,8 @@ static const struct WindowTemplate sStandardBattleWindowTemplates[] = {
         .tilemapTop = 35,
         .width = 14,
         .height = 4,
-        .paletteNum = 0,
-        .baseBlock = 0x1c0
+        .paletteNum = B_PLTT_UI,
+        .baseBlock = B_TILE_PROMPT
     },
     [B_WIN_ACTION_MENU] = {
         .bg = 0,
@@ -166,7 +166,7 @@ static const struct WindowTemplate sStandardBattleWindowTemplates[] = {
         .width = 12,
         .height = 4,
         .paletteNum = B_PLTT_TEXT,
-        .baseBlock = 0x190
+        .baseBlock = B_TILE_ACTIONS
     },
     [B_WIN_MOVE_NAME_1] = {
         .bg = 0,
@@ -175,7 +175,7 @@ static const struct WindowTemplate sStandardBattleWindowTemplates[] = {
         .width = 8,
         .height = 2,
         .paletteNum = B_PLTT_TEXT,
-        .baseBlock = 0x300
+        .baseBlock = B_TILE_MOVE1
     },
     [B_WIN_MOVE_NAME_2] = {
         .bg = 0,
@@ -184,7 +184,7 @@ static const struct WindowTemplate sStandardBattleWindowTemplates[] = {
         .width = 8,
         .height = 2,
         .paletteNum = B_PLTT_TEXT,
-        .baseBlock = 0x310
+        .baseBlock = B_TILE_MOVE2
     },
     [B_WIN_MOVE_NAME_3] = {
         .bg = 0,
@@ -193,7 +193,7 @@ static const struct WindowTemplate sStandardBattleWindowTemplates[] = {
         .width = 8,
         .height = 2,
         .paletteNum = B_PLTT_TEXT,
-        .baseBlock = 0x320
+        .baseBlock = B_TILE_MOVE3
     },
     [B_WIN_MOVE_NAME_4] = {
         .bg = 0,
@@ -202,7 +202,7 @@ static const struct WindowTemplate sStandardBattleWindowTemplates[] = {
         .width = 8,
         .height = 2,
         .paletteNum = B_PLTT_TEXT,
-        .baseBlock = 0x330
+        .baseBlock = B_TILE_MOVE4
     },
     [B_WIN_PP] = {
         .bg = 0,
@@ -256,7 +256,7 @@ static const struct WindowTemplate sStandardBattleWindowTemplates[] = {
         .width = 10,
         .height = 11,
         .paletteNum = B_PLTT_TEXT,
-        .baseBlock = 0x100
+        .baseBlock = B_TILE_LEVEL_UP
     },
     [B_WIN_LEVEL_UP_BANNER] = {
         .bg = 2,
@@ -264,8 +264,8 @@ static const struct WindowTemplate sStandardBattleWindowTemplates[] = {
         .tilemapTop = 0,
         .width = 12,
         .height = 3,
-        .paletteNum = 6,
-        .baseBlock = 0x16e
+        .paletteNum = B_PLTT_6,
+        .baseBlock = B_TILE_MINI_BOX
     },
     [B_WIN_YESNO] = {
         .bg = 0,
@@ -274,7 +274,7 @@ static const struct WindowTemplate sStandardBattleWindowTemplates[] = {
         .width = 4,
         .height = 4,
         .paletteNum = B_PLTT_TEXT,
-        .baseBlock = 0x100
+        .baseBlock = B_TILE_YESNO
     },
     [B_WIN_VS_PLAYER] = {
         .bg = 1,
@@ -374,6 +374,15 @@ static const struct WindowTemplate sStandardBattleWindowTemplates[] = {
         .height = 1,
         .paletteNum = B_PLTT_ICONS,
         .baseBlock = B_TILE_ICONS
+    },
+    [B_WIN_STATUS2] = {
+        .bg = 0,
+        .tilemapLeft = 3,
+        .tilemapTop = 5,
+        .width = 8,
+        .height = 1,
+        .paletteNum = B_PLTT_ICONS,
+        .baseBlock = B_TILE_ICONS + 8
     },
     DUMMY_WIN_TEMPLATE
 };
@@ -682,6 +691,7 @@ void GetBattleTerrainGfxPtrs(u8 terrain, const u32 **tilesPtr, const u32 **mapPt
 
 void BattleInitBgsAndWindows(void)
 {
+    DebugPrintf("init bgs windows");
     ResetBgsAndClearDma3BusyFlags(FALSE);
     InitBgsFromTemplates(0, gBattleBgTemplates, NELEMS(gBattleBgTemplates));
     InitWindows(sStandardBattleWindowTemplates);

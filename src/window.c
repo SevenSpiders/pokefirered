@@ -114,7 +114,7 @@ u16 AddWindow(const struct WindowTemplate *template)
     }
 
     if (win == WINDOWS_MAX)
-        return 0xFF;
+        return WINDOW_NONE;
 
     bgLayer = template->bg;
     allocatedBaseBlock = 0;
@@ -124,7 +124,7 @@ u16 AddWindow(const struct WindowTemplate *template)
         allocatedBaseBlock = BgTileAllocOp(bgLayer, 0, template->width * template->height, BG_TILE_FIND_FREE_SPACE);
 
         if (allocatedBaseBlock == -1)
-            return 0xFF;
+            return WINDOW_NONE;
     }
 
     if (gWindowBgTilemapBuffers[bgLayer] == NULL)
@@ -136,7 +136,7 @@ u16 AddWindow(const struct WindowTemplate *template)
             allocatedTilemapBuffer = Alloc(bgSize);
 
             if (allocatedTilemapBuffer == NULL)
-                return 0xFF;
+                return WINDOW_NONE;
 
             for (i = 0; i < bgSize; ++i)
                 allocatedTilemapBuffer[i] = 0;
@@ -155,7 +155,7 @@ u16 AddWindow(const struct WindowTemplate *template)
             Free(gWindowBgTilemapBuffers[bgLayer]);
             gWindowBgTilemapBuffers[bgLayer] = allocatedTilemapBuffer;
         }
-        return 0xFF;
+        return WINDOW_NONE;
     }
 
     gWindows[win].tileData = allocatedTilemapBuffer;

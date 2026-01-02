@@ -9,10 +9,13 @@
 
 typedef struct {
     u32 windowId;
+    u32 windowId2;
+    u32 windowIds[3];
     s32 offsetX;
     s32 offsetY;
-    u32 row;
-    u32 tilemapTop;
+    u8 row;
+    u16 tilemapTop;
+    bool8 isVisible; 
 } IconTray;
 
 struct IconData
@@ -20,6 +23,34 @@ struct IconData
     u8 width;
     u8 height;
     u16 offset;
+};
+
+#define WIN_P1 0
+#define WIN_P2 1
+#define WIN_O1 2
+#define WIN_O2 3
+#define OFFSET_1 20
+#define OFFSET_2 40
+
+static const struct WindowTemplate sIconWindowTemplates[] = {
+    [0] = { // player
+        .bg = 0,
+        .tilemapLeft = 17,
+        .tilemapTop = 13,
+        .width = 8,
+        .height = 1,
+        .paletteNum = B_PLTT_ICONS,
+        .baseBlock = B_TILE_ICONS
+    },
+    [1] = { // opponent
+        .bg = 0,
+        .tilemapLeft = 3,
+        .tilemapTop = 5 +OFFSET_1,
+        .width = 8,
+        .height = 1,
+        .paletteNum = B_PLTT_ICONS,
+        .baseBlock = B_TILE_ICONS + 8
+    }
 };
 
 static const u16 sBattleIcons_Pal[] = INCBIN_U16("graphics/battle_interface/status_icons.gbapal");
@@ -112,6 +143,27 @@ static void DisplayStatIcon(u8 statType, bool8 negative)
     BlitStatIcon(B_WIN_STATUS1, statType, 0, 0);
 }
 
+static void BattleUI_AddWindow(u8 battlerId)
+{
+    u32 i;
+    u32 offsetY = sIconWindowTemplates[battlerId].tilemapTop;
+    for (i=0; i<3; i++)
+    {
+        sIconTrays[battlerId].windowIds[i] = AddWindow(&sIconWindowTemplates[battlerId]);
+        sIconTrays[battlerId].isVisible = (sIconTrays[battlerId].windowIds[i] != WINDOW_NONE);
+        SetWindowAttribute(sIconTrays[battlerId].windowIds[i], WINDOW_TILEMAP_TOP, OFFSET_1*i + offsetY);
+        DebugPrintf("add tray window %d", sIconTrays[battlerId].windowIds[i]);
+    }
+}
+
+static void BattleUI_RemoveWindow(u8 battlerId)
+{
+    ClearWindowTilemap(sIconTrays[battlerId].windowId);
+    RemoveWindow(sIconTrays[battlerId].windowId);
+    RemoveWindow(sIconTrays[battlerId].windowId2);
+    sIconTrays[battlerId].isVisible = FALSE;
+}
+
 void BattleUI_LoadGfx()
 {
     sIconTrays[0].windowId = B_WIN_STATUS1;
@@ -124,7 +176,9 @@ void BattleUI_LoadGfx()
     LoadPalette(sBattleIcons_Pal, BG_PLTT_ID(B_PLTT_ICONS), PLTT_SIZE_4BPP);
     FillWindowPixelRect(B_WIN_MOVE_TYPE, 15, 0, 0, 64, 16);
     // FillWindowPixelRect(B_WIN_STATUS1, 15, 0, 0, 64, 16);
-    BattleUI_UpdateStatusIcons();
+    // BattleUI_UpdateStatusIcons();
+    // BattleUI_AddWindow(0);
+    BattleUI_UpdateStatusIcons(0);
 }
 
 void BattleUI_DisplayMoveInfo()
@@ -136,27 +190,62 @@ void BattleUI_DisplayMoveInfo()
     DisplayMoveCategory(gBattleMoves[move].category);
     DisplayMoveType(gBattleMoves[move].type);
     DisplayMovePower(moveInfo->currentPower[gMoveSelectionCursor[gActiveBattler]]);
-    BattleUI_UpdateStatusIcons();
+    // BattleUI_UpdateStatusIcons();
     PutWindowTilemap(B_WIN_MOVE_TYPE);
 	CopyWindowToVram(B_WIN_MOVE_TYPE, COPYWIN_FULL);
 }
 
-void BattleUI_UpdateStatusIcons()
+void BattleUI_UpdateStatusIcons(u8 battlerId)
 {
-    DebugPrintf("update status");
+    // u32 windowId = sIconTrays[battlerId].windowIds[0];
+    // u32 windowId2 = sIconTrays[battlerId].windowIds[1];
+    u32 windowId = sIconTrays[battlerId].windowId;
+    DebugPrintf("update status %d, %d", windowId, 0);
     // DisplayStatIcon(STAT_ATK, FALSE);
-    FillWindowPixelRect(B_WIN_STATUS1, 12, 0, 0, 64, 8);
-    PutWindowTilemap(B_WIN_STATUS1);
-	CopyWindowToVram(B_WIN_STATUS1, COPYWIN_FULL);
+    // check isVisible
+    FillWindowPixelRect(windowId, 12, 0, 0, 64, 8);
+    PutWindowTilemap(windowId);
+	CopyWindowToVram(windowId, COPYWIN_FULL);
+
+    // FillWindowPixelRect(windowId2, 12, 0, 0, 64, 8);
+    // PutWindowTilemap(windowId2);
+    // CopyWindowToVram(windowId2, COPYWIN_FULL);
 }
 
 void BattleUI_UpdateBG0Offset(u16 x, u16 y)
 {
-    u32 i;
-    for (i=0; i<2; i++)
-    {
-        u32 tilemapTop =  y / 8 + sIconTrays[i].tilemapTop;
-        SetWindowAttribute(sIconTrays[i].windowId, WINDOW_TILEMAP_TOP, tilemapTop);
-    }
-    BattleUI_UpdateStatusIcons();
+    // u32 i;
+    // DebugPrintf("window id %d", sIconTrays[0].windowId);
+    // for (i=0; i<2; i++)
+    // {
+    //     u32 tilemapTop =  y / 8 + sIconTrays[i].tilemapTop;
+    //     SetWindowAttribute(sIconTrays[i].windowId, WINDOW_TILEMAP_TOP, tilemapTop);
+    // }
+    u32 tilemapTop =  y / 8 + sIconTrays[0].tilemapTop;
+    SetWindowAttribute(sIconTrays[0].windowId, WINDOW_TILEMAP_TOP, tilemapTop);
+    BattleUI_UpdateStatusIcons(0);
 }
+// static bool8 sIsShowingInfo;
+
+// #define PALETTE_ICONS (1 << 10)
+// #define PALETTE_TEXT_BOX (1 << 0)
+// #define PALETTE_HP (1 << 1)
+// #define PALETTE_TEXT (1 << 5)
+// #define PALETTES_TO_FADE PALETTES_ALL - PALETTE_ICONS - PALETTE_TEXT_BOX - PALETTE_HP - PALETTE_TEXT
+// // #define PALETTES_TO_FADE PALETTES_OBJECTS
+
+// static void ShowInfo(void)
+// {
+//     Healthbox_Blank(gHealthboxSpriteIds[1]);
+//     // show info window
+//     DebugPrintf("Show info");
+//     BeginNormalPaletteFade(PALETTES_TO_FADE, 0, 0, 8, RGB_BLACK);
+// }
+
+// static void ResetHealthBar(void)
+// {
+//     Healthbox_HideInfo(gHealthboxSpriteIds[1]);
+//     UpdateHealthboxAttribute(gHealthboxSpriteIds[1], &gEnemyParty[gBattlerPartyIndexes[0]], HEALTHBOX_ALL);
+//     DebugPrintf("Hide info");
+//     BeginNormalPaletteFade(PALETTES_TO_FADE, 0, 8, 0, RGB_BLACK);
+// }

@@ -3,7 +3,7 @@
 
 #include "global.h"
 
-// Arguments for 'flags' in HandleBattleWindow
+// Arguments for 'flags' in SetBattleWindow
 #define WINDOW_CLEAR (1 << 0)
 #define WINDOW_BG1   (1 << 7)
 
@@ -16,7 +16,7 @@ bool32 IsMonGettingExpSentOut(void);
 void BattleDestroyYesNoCursorAt(void);
 void BattleCreateYesNoCursorAt(void);
 void BufferMoveToLearnIntoBattleTextBuff2(void);
-void HandleBattleWindow(u8 xStart, u8 yStart, u8 xEnd, u8 yEnd, u8 flags);
+void SetBattleWindow(u8 xStart, u8 yStart, u8 xEnd, u8 yEnd, u8 flags);
 bool8 UproarWakeUpCheck(u8 battlerId);
 
 extern void (* const gBattleScriptingCommandsTable[])(void);
