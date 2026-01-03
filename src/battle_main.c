@@ -4675,6 +4675,7 @@ bool8 BattleMon_AddStatus(u32 battlerId, u16 status)
     i = BattleMon_GetStatusIndex(battlerId, STATUS_NONE);
     if (i>= MAX_MON_STATUSES) return FALSE;
     gBattleMons[battlerId].statuses[i] = status;
+    BattleUI_UpdateStatusIcons(battlerId);
     return TRUE;
 }
 
@@ -4690,6 +4691,7 @@ bool8 BattleMon_RemoveStatus(u32 battlerId, u16 statusType)
     u32 i = BattleMon_GetStatusIndex(battlerId, statusType);
     if (i >= MAX_MON_STATUSES) return FALSE;
     gBattleMons[battlerId].statuses[i] = STATUS_NONE;
+    BattleUI_UpdateStatusIcons(battlerId);
     return TRUE;
 }
 
@@ -4704,6 +4706,7 @@ bool8 BattleMon_RemoveAnyStatus1(u32 battlerId)
             gBattleMons[battlerId].statuses[i] = STATUS_NONE;
         }
     }
+    BattleUI_UpdateStatusIcons(battlerId);
     return TRUE;
 }
 

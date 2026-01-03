@@ -10,6 +10,7 @@
 #include "pokemon_summary_screen.h"
 #include "safari_zone.h"
 #include "constants/songs.h"
+#include "battle_ui.h"
 
 #undef abs
 #define abs(a) ((a) < 0 ? -(a) : (a))
@@ -681,6 +682,7 @@ void SetHealthboxSpriteInvisible(u8 healthboxSpriteId)
     gSprites[healthboxSpriteId].invisible = TRUE;
     gSprites[gSprites[healthboxSpriteId].sHealthBarSpriteId].invisible = TRUE;
     gSprites[gSprites[healthboxSpriteId].sHealthboxOtherSpriteId].invisible = TRUE;
+    BattleUI_ShowStatusIcons(gActiveBattler, FALSE);
 }
 
 void SetHealthboxSpriteVisible(u8 healthboxSpriteId)
@@ -688,6 +690,7 @@ void SetHealthboxSpriteVisible(u8 healthboxSpriteId)
     gSprites[healthboxSpriteId].invisible = FALSE;
     gSprites[gSprites[healthboxSpriteId].sHealthBarSpriteId].invisible = FALSE;
     gSprites[gSprites[healthboxSpriteId].sHealthboxOtherSpriteId].invisible = FALSE;
+    BattleUI_ShowStatusIcons(gActiveBattler, TRUE);
 }
 
 static void UpdateSpritePos(u8 spriteId, s16 x, s16 y)

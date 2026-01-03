@@ -9,11 +9,9 @@
 
 typedef struct {
     u32 windowId;
-    u32 windowId2;
-    u32 windowIds[3];
     s32 offsetX;
     s32 offsetY;
-    u8 row;
+    // u8 row;
     u16 tilemapTop;
     bool8 isVisible; 
 } IconTray;
@@ -22,91 +20,164 @@ struct IconData
 {
     u8 width;
     u8 height;
-    u16 offset;
-};
-
-#define WIN_P1 0
-#define WIN_P2 1
-#define WIN_O1 2
-#define WIN_O2 3
-#define OFFSET_1 20
-#define OFFSET_2 40
-
-static const struct WindowTemplate sIconWindowTemplates[] = {
-    [0] = { // player
-        .bg = 0,
-        .tilemapLeft = 17,
-        .tilemapTop = 13,
-        .width = 8,
-        .height = 1,
-        .paletteNum = B_PLTT_ICONS,
-        .baseBlock = B_TILE_ICONS
-    },
-    [1] = { // opponent
-        .bg = 0,
-        .tilemapLeft = 3,
-        .tilemapTop = 5 +OFFSET_1,
-        .width = 8,
-        .height = 1,
-        .paletteNum = B_PLTT_ICONS,
-        .baseBlock = B_TILE_ICONS + 8
-    }
+    u16 tile;
 };
 
 static const u16 sBattleIcons_Pal[] = INCBIN_U16("graphics/battle_interface/status_icons.gbapal");
 static const u8 sBattleIcons_Gfx[] = INCBIN_U8("graphics/battle_interface/status_icons.4bpp");
 static IconTray sIconTrays[2]; // 0: player, 1: enemy
 
+#define ICON_NONE { 0, 0, 0 }
+#define ICON_TYPE(tile) { 32, 12, tile }
+#define ICON_NUMBER(tile) { 8, 7, tile }
+#define ICON_STAT(tile) { 14, 8, tile }
+#define ICON_STATUS(tile) { 14, 8, tile }
+#define STAT_NEGATIVE NUM_BATTLE_STATS-1
+#define ICON_DISTANCE 2
+
 static const struct IconData gTypeIconData[] = {
-    [TYPE_NORMAL]   = { 32, 12, 0x20 },
-    [TYPE_FLYING]   = { 32, 12, 0x60 },
-    [TYPE_GROUND]   = { 32, 12, 0x48 },
-    [TYPE_ROCK]     = { 32, 12, 0x44 },
-    [TYPE_BUG]      = { 32, 12, 0x6C },
-    [TYPE_FIRE]     = { 32, 12, 0x24 },
-    [TYPE_WATER]    = { 32, 12, 0x28 },
-    [TYPE_GRASS]    = { 32, 12, 0x2C },
-    [TYPE_ELECTRIC] = { 32, 12, 0x40 },
-    [TYPE_ICE]      = { 32, 12, 0x4C },
-    [TYPE_FIGHTING] = { 32, 12, 0x64 },
-    [TYPE_GHOST]    = { 32, 12, 0x68 },
-    [TYPE_POISON]   = { 32, 12, 0x80 },
-    [TYPE_PSYCHIC]  = { 32, 12, 0x84 },
-    [TYPE_STEEL]    = { 32, 12, 0x88 },
-    [TYPE_DARK]     = { 32, 12, 0x8C },
-    [TYPE_DRAGON]   = { 32, 12, 0xA0 },
-    [TYPE_MYSTERY]  = { 32, 12, 0xA4 }, 
-    [MOVE_CATEGORY_PHYSICAL + NUMBER_OF_MON_TYPES] = {12, 12, 0x04},
-    [MOVE_CATEGORY_SPECIAL + NUMBER_OF_MON_TYPES] = {12, 12, 0x06},
-    [MOVE_CATEGORY_STATUS + NUMBER_OF_MON_TYPES] = {12, 12, 0x08},
+    [TYPE_NORMAL]   = ICON_TYPE(0x20),
+    [TYPE_FIRE]     = ICON_TYPE(0x24),
+    [TYPE_WATER]    = ICON_TYPE(0x28),
+    [TYPE_GRASS]    = ICON_TYPE(0x2C),
+    [TYPE_ELECTRIC] = ICON_TYPE(0x40),
+    [TYPE_ROCK]     = ICON_TYPE(0x44),
+    [TYPE_GROUND]   = ICON_TYPE(0x48),
+    [TYPE_ICE]      = ICON_TYPE(0x4C),
+    [TYPE_FLYING]   = ICON_TYPE(0x60),
+    [TYPE_FIGHTING] = ICON_TYPE(0x64),
+    [TYPE_GHOST]    = ICON_TYPE(0x68),
+    [TYPE_BUG]      = ICON_TYPE(0x6C),
+    [TYPE_POISON]   = ICON_TYPE(0x80),
+    [TYPE_PSYCHIC]  = ICON_TYPE(0x84),
+    [TYPE_STEEL]    = ICON_TYPE(0x88),
+    [TYPE_DARK]     = ICON_TYPE(0x8C),
+    [TYPE_DRAGON]   = ICON_TYPE(0xA0),
+    [TYPE_MYSTERY]  = ICON_TYPE(0xA4), 
+    [MOVE_CATEGORY_PHYSICAL + NUMBER_OF_MON_TYPES] = ICON_TYPE(0x04),
+    [MOVE_CATEGORY_SPECIAL + NUMBER_OF_MON_TYPES] = ICON_TYPE(0x06),
+    [MOVE_CATEGORY_STATUS + NUMBER_OF_MON_TYPES] = ICON_TYPE(0x08),
 };
-#define STAT_NEGATIVE NUM_STATS-1
 
 static const struct IconData gStatIconData[] = {
-    [0] = {},
-    [STAT_ATK]   = { 32, 12, 0x20 },
-    [STAT_DEF]  = { 32, 12, 0x24 },
-    [STAT_SPEED]  = { 32, 12, 0x28 },
-    [STAT_SPATK]  = { 32, 12, 0x2C },
-    [STAT_SPDEF]  = { 32, 12, 0x30 },
-    [STAT_ATK + STAT_NEGATIVE]   = { 32, 12, 0x40 },
-    [STAT_DEF + STAT_NEGATIVE]  = { 32, 12, 0x44 },
-    [STAT_SPEED + STAT_NEGATIVE]  = { 32, 12, 0x48 },
-    [STAT_SPATK + STAT_NEGATIVE]  = { 32, 12, 0x4C },
-    [STAT_SPDEF + STAT_NEGATIVE]  = { 32, 12, 0x50 },
+    [STAT_HP] =                     ICON_NONE, // no HP stat
+    [STAT_ATK]   =                  ICON_STAT(0x00),
+    [STAT_DEF]  =                   ICON_STAT(0x02),
+    [STAT_SPATK]  =                 ICON_STAT(0x04),
+    [STAT_SPDEF]  =                 ICON_STAT(0x06),
+    [STAT_EVASION] =                ICON_STAT(0x08),
+    [STAT_SPEED]  =                 ICON_STAT(0x0A),
+    [STAT_ACC] =                    ICON_STAT(0x0C),
+
+    [STAT_ATK + STAT_NEGATIVE]   =  ICON_STAT(0x10),
+    [STAT_DEF + STAT_NEGATIVE]  =   ICON_STAT(0x12),
+    [STAT_SPATK + STAT_NEGATIVE]  = ICON_STAT(0x14),
+    [STAT_SPDEF + STAT_NEGATIVE]  = ICON_STAT(0x16),
+    [STAT_EVASION + STAT_NEGATIVE] = ICON_STAT(0x18),
+    [STAT_SPEED + STAT_NEGATIVE]  = ICON_STAT(0x1A),
+    [STAT_ACC + STAT_NEGATIVE] =    ICON_STAT(0x1C),
+};
+
+
+static const struct IconData gNumberIconData[] = {
+    [1] = ICON_NUMBER(0x20),
+    [2] = ICON_NUMBER(0x21),
+    [3] = ICON_NUMBER(0x22),
+    [4] = ICON_NUMBER(0x23),
+    [5] = ICON_NUMBER(0x24),
+    [6] = ICON_NUMBER(0x25),
+    [7] = ICON_NUMBER(0x26),
+    [8] = ICON_NUMBER(0x27),
+    [9] = ICON_NUMBER(0x28),
+    [0] = ICON_NUMBER(0x2A),
+    [10] = ICON_NUMBER(0x2B),
+};
+
+static const struct IconData gStatusIconData[] = {
+    [STATUS_NONE] = ICON_NONE,
+
+    /* Tiles start at 0x40 and increment by 2 for each entry */
+    [STATUS_SLEEP]       = ICON_STATUS(0x40),
+    [STATUS_POISON]      = ICON_STATUS(0x42),
+    [STATUS_BURN]        = ICON_STATUS(0x44),
+    [STATUS_FREEZE]      = ICON_STATUS(0x46),
+    [STATUS_PARALYSIS]   = ICON_STATUS(0x48),
+    [STATUS_TOXIC]       = ICON_STATUS(0x4A),
+
+    [STATUS_CONFUSED]    = ICON_STATUS(0x4C),
+    [STATUS_FLINCHED]    = ICON_STATUS(0x4E),
+    [STATUS_UPROAR]      = ICON_STATUS(0x50),
+    [STATUS_BIDE]        = ICON_STATUS(0x52),
+    [STATUS_MULTI_TURN]  = ICON_NONE,
+    [STATUS_THRASH]      = ICON_STATUS(0x56),
+    [STATUS_WRAPPED]     = ICON_STATUS(0x58),
+    [STATUS_INFATUATION] = ICON_STATUS(0x5A),
+    [STATUS_FOCUS]       = ICON_STATUS(0x5C),
+    [STATUS_TRANSFORMED] = ICON_STATUS(0x5E),
+    [STATUS_RECHARGE]    = ICON_STATUS(0x60),
+    [STATUS_RAGE]        = ICON_STATUS(0x62),
+    [STATUS_SUBSTITUTE]  = ICON_STATUS(0x64),
+    [STATUS_DESTINY_BOND]= ICON_STATUS(0x66),
+    [STATUS_NO_ESCAPE]   = ICON_STATUS(0x68),
+    [STATUS_NIGHTMARE]   = ICON_STATUS(0x6A),
+    [STATUS_CURSED]      = ICON_STATUS(0x6C),
+    [STATUS_FORESIGHT]   = ICON_STATUS(0x6E),
+    [STATUS_DEFENSE_CURL]= ICON_STATUS(0x70),
+    [STATUS_TORMENT]     = ICON_STATUS(0x72),
+
+    /* Status3 / miscellaneous */
+    [STATUS_LEECHSEED]   = ICON_STATUS(0x74),
+    [STATUS_ALWAYS_HITS] = ICON_STATUS(0x76),
+    [STATUS_PERISH_SONG] = ICON_STATUS(0x78),
+    [STATUS_IN_AIR]      = ICON_STATUS(0x7A),
+    [STATUS_UNDERGROUND] = ICON_STATUS(0x7C),
+    [STATUS_MINIMIZED]   = ICON_STATUS(0x7E),
+    [STATUS_CHARGED_UP]  = ICON_STATUS(0x80),
+    [STATUS_ROOTED]      = ICON_STATUS(0x82),
+    [STATUS_YAWN]        = ICON_STATUS(0x84),
+    [STATUS_IMPRISONED]  = ICON_STATUS(0x86),
+    [STATUS_GRUDGE]      = ICON_STATUS(0x88),
+    [STATUS_NO_CRIT]     = ICON_STATUS(0x8A),
+    [STATUS_MUDSPORT]    = ICON_STATUS(0x8C),
+    [STATUS_WATERSPORT]  = ICON_STATUS(0x8E),
+    [STATUS_UNDERWATER]  = ICON_STATUS(0x90),
+    [STATUS_INTIMIDATE]  = ICON_STATUS(0x92),
+    [STATUS_TRACE]       = ICON_STATUS(0x94),
 };
 
 
 static void BlitTypeIcon(u8 windowId, u8 iconId, u16 x, u16 y)
 {
-    BlitBitmapRectToWindow(windowId, &gMenuInfoElements_Gfx[gTypeIconData[iconId].offset * TILE_SIZE_4BPP], 0, 0, 128, 128, 
+    BlitBitmapRectToWindow(windowId, &gMenuInfoElements_Gfx[gTypeIconData[iconId].tile * TILE_SIZE_4BPP], 0, 0, 128, 128, 
         x, y, gTypeIconData[iconId].width, gTypeIconData[iconId].height);
 }
 
-static void BlitStatIcon(u8 windowId, u8 iconId, u16 x, u16 y)
+static void BlitIcon(u8 windowId, struct IconData icon, u16 x, u16 y)
 {
-    BlitBitmapRectToWindow(windowId, &sBattleIcons_Gfx[gStatIconData[iconId].offset * TILE_SIZE_4BPP], 0, 0, 128, 160, 
-        x, y, gStatIconData[iconId].width, gStatIconData[iconId].height);
+    BlitBitmapRectToWindow(windowId, &sBattleIcons_Gfx[icon.tile * TILE_SIZE_4BPP], 0, 0, 128, 160, x, y, icon.width, icon.height);
+}
+
+static void AddIcon(u8 battlerId, struct IconData icon)
+{
+    BlitIcon(sIconTrays[battlerId].windowId, icon, sIconTrays[battlerId].offsetX, sIconTrays[battlerId].offsetY);
+    sIconTrays[battlerId].offsetX += icon.width + ICON_DISTANCE;
+}
+
+static void AddStatIcon(u8 battlerId, u8 iconId, s8 val)
+{
+    DebugPrintf("stat %d val %d", iconId, val);
+    if (val < 0) iconId += STAT_NEGATIVE;
+    AddIcon(battlerId, gStatIconData[iconId]);
+    if (abs(val) == 1) return;
+    sIconTrays[battlerId].offsetX -= ICON_DISTANCE;
+    AddIcon(battlerId, gNumberIconData[abs(val)]);
+}
+
+static void AddStatusIcon(u8 battlerId, u16 status)
+{
+    if (status == STATUS_NONE) return;
+    DebugPrintf("add status %d", status);
+    AddIcon(battlerId, gStatusIconData[GET_STATUS_TYPE(status)]);
 }
 
 
@@ -137,31 +208,10 @@ static void DisplayMovePower(u8 power)
     BattlePutTextOnWindow(gDisplayedStringBattle, B_WIN_PP_REMAINING); // defined in battle_bg.c
 }
 
-static void DisplayStatIcon(u8 statType, bool8 negative)
+static void CopyIconsToVRAM(u8 windowId)
 {
-    if (negative) statType += STAT_NEGATIVE;
-    BlitStatIcon(B_WIN_STATUS1, statType, 0, 0);
-}
-
-static void BattleUI_AddWindow(u8 battlerId)
-{
-    u32 i;
-    u32 offsetY = sIconWindowTemplates[battlerId].tilemapTop;
-    for (i=0; i<3; i++)
-    {
-        sIconTrays[battlerId].windowIds[i] = AddWindow(&sIconWindowTemplates[battlerId]);
-        sIconTrays[battlerId].isVisible = (sIconTrays[battlerId].windowIds[i] != WINDOW_NONE);
-        SetWindowAttribute(sIconTrays[battlerId].windowIds[i], WINDOW_TILEMAP_TOP, OFFSET_1*i + offsetY);
-        DebugPrintf("add tray window %d", sIconTrays[battlerId].windowIds[i]);
-    }
-}
-
-static void BattleUI_RemoveWindow(u8 battlerId)
-{
-    ClearWindowTilemap(sIconTrays[battlerId].windowId);
-    RemoveWindow(sIconTrays[battlerId].windowId);
-    RemoveWindow(sIconTrays[battlerId].windowId2);
-    sIconTrays[battlerId].isVisible = FALSE;
+    PutWindowTilemap(windowId);
+	CopyWindowToVram(windowId, COPYWIN_FULL);
 }
 
 void BattleUI_LoadGfx()
@@ -170,15 +220,11 @@ void BattleUI_LoadGfx()
     sIconTrays[0].tilemapTop = 13;
 
     sIconTrays[1].windowId = B_WIN_STATUS2;
-    sIconTrays[1].tilemapTop = 13;
+    sIconTrays[1].tilemapTop = 5;
 
     LoadPalette(gMenuInfoElements2_Pal, BG_PLTT_ID(B_PLTT_TYPE), PLTT_SIZE_4BPP);
     LoadPalette(sBattleIcons_Pal, BG_PLTT_ID(B_PLTT_ICONS), PLTT_SIZE_4BPP);
     FillWindowPixelRect(B_WIN_MOVE_TYPE, 15, 0, 0, 64, 16);
-    // FillWindowPixelRect(B_WIN_STATUS1, 15, 0, 0, 64, 16);
-    // BattleUI_UpdateStatusIcons();
-    // BattleUI_AddWindow(0);
-    BattleUI_UpdateStatusIcons(0);
 }
 
 void BattleUI_DisplayMoveInfo()
@@ -186,45 +232,62 @@ void BattleUI_DisplayMoveInfo()
     struct ChooseMoveStruct *moveInfo = (struct ChooseMoveStruct *)(&gBattleBufferA[gActiveBattler][4]);
     u32 move = moveInfo->moves[gMoveSelectionCursor[gActiveBattler]];
 
-    // DebugPrintf("display move info");
     DisplayMoveCategory(gBattleMoves[move].category);
     DisplayMoveType(gBattleMoves[move].type);
     DisplayMovePower(moveInfo->currentPower[gMoveSelectionCursor[gActiveBattler]]);
-    // BattleUI_UpdateStatusIcons();
     PutWindowTilemap(B_WIN_MOVE_TYPE);
 	CopyWindowToVram(B_WIN_MOVE_TYPE, COPYWIN_FULL);
 }
 
+static void ClearTray(u8 battlerId)
+{
+    FillWindowPixelBuffer(sIconTrays[battlerId].windowId, 0);
+    sIconTrays[battlerId].offsetX = 0;
+    sIconTrays[battlerId].offsetY = 0;
+}
+
 void BattleUI_UpdateStatusIcons(u8 battlerId)
 {
-    // u32 windowId = sIconTrays[battlerId].windowIds[0];
-    // u32 windowId2 = sIconTrays[battlerId].windowIds[1];
+    u32 i;
+    s8 val;
     u32 windowId = sIconTrays[battlerId].windowId;
-    DebugPrintf("update status %d, %d", windowId, 0);
-    // DisplayStatIcon(STAT_ATK, FALSE);
-    // check isVisible
-    FillWindowPixelRect(windowId, 12, 0, 0, 64, 8);
-    PutWindowTilemap(windowId);
-	CopyWindowToVram(windowId, COPYWIN_FULL);
 
-    // FillWindowPixelRect(windowId2, 12, 0, 0, 64, 8);
-    // PutWindowTilemap(windowId2);
-    // CopyWindowToVram(windowId2, COPYWIN_FULL);
+    DebugPrintf("update status");
+
+    ClearTray(battlerId);
+
+    if (!sIconTrays[battlerId].isVisible) return;
+
+    for (i=1; i<NUM_BATTLE_STATS;i++) //start at 1 to skip STAT_HP
+    {
+        val = gBattleMons[battlerId].statStages[i] - DEFAULT_STAT_STAGE;
+        if (val != 0)
+            AddStatIcon(battlerId, i, val);
+    }
+
+    for(i=0; i<MAX_MON_STATUSES; i++)
+    {
+        AddStatusIcon(battlerId, gBattleMons[battlerId].statuses[i]);
+    }
+    CopyIconsToVRAM(windowId);
 }
 
 void BattleUI_UpdateBG0Offset(u16 x, u16 y)
 {
-    // u32 i;
-    // DebugPrintf("window id %d", sIconTrays[0].windowId);
-    // for (i=0; i<2; i++)
-    // {
-    //     u32 tilemapTop =  y / 8 + sIconTrays[i].tilemapTop;
-    //     SetWindowAttribute(sIconTrays[i].windowId, WINDOW_TILEMAP_TOP, tilemapTop);
-    // }
-    u32 tilemapTop =  y / 8 + sIconTrays[0].tilemapTop;
-    SetWindowAttribute(sIconTrays[0].windowId, WINDOW_TILEMAP_TOP, tilemapTop);
-    BattleUI_UpdateStatusIcons(0);
+    u32 i;
+    for (i=0; i<2; i++)
+    {
+        SetWindowAttribute(sIconTrays[i].windowId, WINDOW_TILEMAP_TOP, y/8 + sIconTrays[i].tilemapTop);
+        CopyIconsToVRAM(sIconTrays[i].windowId);
+    }
 }
+
+void BattleUI_ShowStatusIcons(u8 battlerId, bool8 shouldShow)
+{
+    sIconTrays[battlerId].isVisible = shouldShow;
+    BattleUI_UpdateStatusIcons(battlerId);
+}
+
 // static bool8 sIsShowingInfo;
 
 // #define PALETTE_ICONS (1 << 10)

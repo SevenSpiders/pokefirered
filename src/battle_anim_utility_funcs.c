@@ -6,6 +6,7 @@
 #include "task.h"
 #include "util.h"
 #include "constants/songs.h"
+// #include "battle_ui.h"
 
 struct AnimStatsChangeData
 {
@@ -573,6 +574,7 @@ static void StatsChangeAnimation_Step3(u8 taskId)
             DestroySprite(&gSprites[gTasks[taskId].data[3]]);
         if (gTasks[taskId].data[6] == 1)
             ++gSprites[gTasks[taskId].data[7]].oam.priority;
+        // BattleUI_UpdateStatusIcons(sAnimStatsChangeData->battler1);
         Free(sAnimStatsChangeData);
         sAnimStatsChangeData = NULL;
         DestroyAnimVisualTask(taskId);

@@ -36,6 +36,7 @@
 #include "constants/abilities.h"
 #include "constants/pokemon.h"
 #include "constants/maps.h"
+#include "battle_ui.h" // stat changes
 
 extern const u8 *const gBattleScriptsForMoveEffects[];
 
@@ -3894,7 +3895,9 @@ static void Cmd_playanimation(void)
 
     gActiveBattler = GetBattlerForBattleScript(gBattlescriptCurrInstr[1]);
     argumentPtr = T2_READ_PTR(gBattlescriptCurrInstr + 3);
-
+    
+    if (gBattlescriptCurrInstr[2] == B_ANIM_STATS_CHANGE)
+        BattleUI_UpdateStatusIcons(gActiveBattler);
     if (gBattlescriptCurrInstr[2] == B_ANIM_STATS_CHANGE
      || gBattlescriptCurrInstr[2] == B_ANIM_SNATCH_MOVE
      || gBattlescriptCurrInstr[2] == B_ANIM_SUBSTITUTE_FADE
@@ -6834,6 +6837,7 @@ static u8 ChangeStatBuffs(s8 statValue, u8 statId, u8 flags, const u8 *BS_ptr)
     if (gBattleCommunication[MULTISTRING_CHOOSER] == B_MSG_STAT_WONT_INCREASE && !(flags & STAT_CHANGE_ALLOW_PTR))
         return STAT_CHANGE_DIDNT_WORK;
 
+    // BattleUI_UpdateStatusIcons(gActiveBattler);
     return STAT_CHANGE_WORKED;
 }
 
