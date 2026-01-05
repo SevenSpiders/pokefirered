@@ -3147,11 +3147,11 @@ static void HandleTurnActionSelectionState(void)
                     {
                         BtlController_EmitChooseAction(0, gChosenActionByBattler[0], gBattleBufferB[0][1] | (gBattleBufferB[0][2] << 8));
                         MarkBattlerForControllerExec(gActiveBattler);
-                        gBattleCommunication[gActiveBattler]++;
+                        gBattleCommunication[gActiveBattler] = STATE_WAIT_ACTION_CHOSEN;
                     }
                 }
             }
-            break;
+            break; //STATE_BEFORE_ACTION_CHOSEN
         case STATE_WAIT_ACTION_CHOSEN: // Try to perform an action.
             if (!(gBattleControllerExecFlags & ((gBitTable[gActiveBattler]) | (0xF0000000) | (gBitTable[gActiveBattler] << 4) | (gBitTable[gActiveBattler] << 8) | (gBitTable[gActiveBattler] << 0xC))))
             {
@@ -3269,10 +3269,10 @@ static void HandleTurnActionSelectionState(void)
                 }
                 else
                 {
-                    gBattleCommunication[gActiveBattler]++;
+                    gBattleCommunication[gActiveBattler] = STATE_WAIT_ACTION_CASE_CHOSEN;
                 }
             }
-            break;
+            break; // STATE_WAIT_ACTION_CHOSEN
         case STATE_WAIT_ACTION_CASE_CHOSEN:
             if (!(gBattleControllerExecFlags & ((gBitTable[gActiveBattler]) | (0xF0000000) | (gBitTable[gActiveBattler] << 4) | (gBitTable[gActiveBattler] << 8) | (gBitTable[gActiveBattler] << 0xC))))
             {
@@ -3302,7 +3302,7 @@ static void HandleTurnActionSelectionState(void)
                             *(gBattleStruct->chosenMovePositions + gActiveBattler) = gBattleBufferB[gActiveBattler][2];
                             gChosenMoveByBattler[gActiveBattler] = gBattleMons[gActiveBattler].moves[*(gBattleStruct->chosenMovePositions + gActiveBattler)];
                             *(gBattleStruct->moveTarget + gActiveBattler) = gBattleBufferB[gActiveBattler][3];
-                            gBattleCommunication[gActiveBattler]++;
+                            gBattleCommunication[gActiveBattler] = STATE_WAIT_ACTION_CONFIRMED_STANDBY;
                         }
                         break;
                     }
@@ -3315,7 +3315,7 @@ static void HandleTurnActionSelectionState(void)
                     else
                     {
                         gLastUsedItem = (gBattleBufferB[gActiveBattler][1] | (gBattleBufferB[gActiveBattler][2] << 8));
-                        gBattleCommunication[gActiveBattler]++;
+                        gBattleCommunication[gActiveBattler] = STATE_WAIT_ACTION_CONFIRMED_STANDBY;
                     }
                     break;
                 case B_ACTION_SWITCH:
@@ -3335,29 +3335,29 @@ static void HandleTurnActionSelectionState(void)
                             *((gActiveBattler ^ BIT_FLANK) * 3 + (u8 *)(gBattleStruct->battlerPartyOrders) + 0) |= (gBattleBufferB[gActiveBattler][2] & 0xF0) >> 4;
                             *((gActiveBattler ^ BIT_FLANK) * 3 + (u8 *)(gBattleStruct->battlerPartyOrders) + 2) = gBattleBufferB[gActiveBattler][3];
                         }
-                        gBattleCommunication[gActiveBattler]++;
+                        gBattleCommunication[gActiveBattler] = STATE_WAIT_ACTION_CONFIRMED_STANDBY;
                     }
                     break;
                 case B_ACTION_RUN:
                     gHitMarker |= HITMARKER_RUN;
-                    gBattleCommunication[gActiveBattler]++;
+                    gBattleCommunication[gActiveBattler] = STATE_WAIT_ACTION_CONFIRMED_STANDBY;
                     break;
                 case B_ACTION_SAFARI_WATCH_CAREFULLY:
-                    gBattleCommunication[gActiveBattler]++;
+                    gBattleCommunication[gActiveBattler] = STATE_WAIT_ACTION_CONFIRMED_STANDBY;
                     break;
                 case B_ACTION_SAFARI_BALL:
-                    gBattleCommunication[gActiveBattler]++;
+                    gBattleCommunication[gActiveBattler] = STATE_WAIT_ACTION_CONFIRMED_STANDBY;
                     break;
                 case B_ACTION_SAFARI_BAIT:
                 case B_ACTION_SAFARI_GO_NEAR:
-                    gBattleCommunication[gActiveBattler]++;
+                    gBattleCommunication[gActiveBattler] = STATE_WAIT_ACTION_CONFIRMED_STANDBY;
                     break;
                 case B_ACTION_SAFARI_RUN:
                     gHitMarker |= HITMARKER_RUN;
-                    gBattleCommunication[gActiveBattler]++;
+                    gBattleCommunication[gActiveBattler] = STATE_WAIT_ACTION_CONFIRMED_STANDBY;
                     break;
                 case B_ACTION_OLDMAN_THROW:
-                    gBattleCommunication[gActiveBattler]++;
+                    gBattleCommunication[gActiveBattler] = STATE_WAIT_ACTION_CONFIRMED_STANDBY;
                     break;
                 }
             }
@@ -3372,7 +3372,7 @@ static void HandleTurnActionSelectionState(void)
                 else
                     BtlController_EmitLinkStandbyMsg(BUFFER_A, LINK_STANDBY_STOP_BOUNCE_ONLY);
                 MarkBattlerForControllerExec(gActiveBattler);
-                gBattleCommunication[gActiveBattler]++;
+                gBattleCommunication[gActiveBattler] = STATE_WAIT_ACTION_CONFIRMED;
             }
             break;
         case STATE_WAIT_ACTION_CONFIRMED:
