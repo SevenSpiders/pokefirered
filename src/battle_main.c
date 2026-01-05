@@ -3192,7 +3192,7 @@ static void HandleTurnActionSelectionState(void)
                         BtlController_EmitChooseMove(0, (gBattleTypeFlags & BATTLE_TYPE_DOUBLE) != 0, FALSE, &moveInfo);
                         MarkBattlerForControllerExec(gActiveBattler);
                     }
-                    break;
+                    break; // B_ACTION_USE_MOVE
                 case B_ACTION_USE_ITEM:
                     if (gBattleTypeFlags & (BATTLE_TYPE_LINK | BATTLE_TYPE_BATTLE_TOWER | BATTLE_TYPE_EREADER_TRAINER))
                     {
@@ -3207,7 +3207,7 @@ static void HandleTurnActionSelectionState(void)
                         BtlController_EmitChooseItem(0, gBattleStruct->battlerPartyOrders[gActiveBattler]);
                         MarkBattlerForControllerExec(gActiveBattler);
                     }
-                    break;
+                    break; // B_ACTION_USE_ITEM
                 case B_ACTION_SWITCH:
                     *(gBattleStruct->battlerPartyIndexes + gActiveBattler) = gBattlerPartyIndexes[gActiveBattler];
                     if (!BattleMon_CanEscape(gActiveBattler))
@@ -3233,7 +3233,7 @@ static void HandleTurnActionSelectionState(void)
                             BtlController_EmitChoosePokemon(BUFFER_A, PARTY_ACTION_CHOOSE_MON, 6, ABILITY_NONE, gBattleStruct->battlerPartyOrders[gActiveBattler]);
                     }
                     MarkBattlerForControllerExec(gActiveBattler);
-                    break;
+                    break; // B_ACTION_SWITCH
                 case B_ACTION_SAFARI_BALL:
                     if (IsPlayerPartyAndPokemonStorageFull())
                     {
@@ -3243,13 +3243,13 @@ static void HandleTurnActionSelectionState(void)
                         *(gBattleStruct->stateIdAfterSelScript + gActiveBattler) = STATE_BEFORE_ACTION_CHOSEN;
                         return;
                     }
-                    break;
+                    break; // B_ACTION_SAFARI_BALL
                 case B_ACTION_CANCEL_PARTNER:
                     gBattleCommunication[gActiveBattler] = STATE_WAIT_SET_BEFORE_ACTION;
                     gBattleCommunication[GetBattlerAtPosition(BATTLE_PARTNER(GetBattlerPosition(gActiveBattler)))] = STATE_BEFORE_ACTION_CHOSEN;
                     BtlController_EmitEndBounceEffect(0);
                     MarkBattlerForControllerExec(gActiveBattler);
-                    return;
+                    return; // B_ACTION_CANCEL_PARTNER
                 }
                 if (gBattleTypeFlags & BATTLE_TYPE_TRAINER
                  && !(gBattleTypeFlags & BATTLE_TYPE_LINK)

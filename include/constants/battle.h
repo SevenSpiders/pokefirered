@@ -357,6 +357,9 @@
 #define B_WIN_STATUS1            25
 #define B_WIN_STATUS2            26
 
+#define B_WIN_STATUS_W           13 //in tiles
+#define B_WIN_STATUS_H           1  //in tiles
+
 // Palettes
 #define B_PLTT_UI               0
 #define B_PLTT_FRAME            1

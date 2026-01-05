@@ -26,6 +26,7 @@ struct IconData
 static const u16 sBattleIcons_Pal[] = INCBIN_U16("graphics/battle_interface/status_icons.gbapal");
 static const u8 sBattleIcons_Gfx[] = INCBIN_U8("graphics/battle_interface/status_icons.4bpp");
 static IconTray sIconTrays[2]; // 0: player, 1: enemy
+static bool8 sLoaded;
 
 #define ICON_NONE { 0, 0, 0 }
 #define ICON_TYPE(tile) { 32, 12, tile }
@@ -214,17 +215,28 @@ static void CopyIconsToVRAM(u8 windowId)
 	CopyWindowToVram(windowId, COPYWIN_FULL);
 }
 
+static void LoadStatusWindow(u32 i)
+{
+    sIconTrays[i].windowId = B_WIN_STATUS1+i;
+    sIconTrays[i].tilemapTop = GetWindowAttribute(B_WIN_STATUS1+i, WINDOW_TILEMAP_TOP);
+    FillWindowPixelRect(B_WIN_STATUS1+i, 0, 0, 0, B_WIN_STATUS_W*8, B_WIN_STATUS_H*8);
+    CopyIconsToVRAM(B_WIN_STATUS1+i);
+}
+
 void BattleUI_LoadGfx()
 {
-    sIconTrays[0].windowId = B_WIN_STATUS1;
-    sIconTrays[0].tilemapTop = 13;
-
-    sIconTrays[1].windowId = B_WIN_STATUS2;
-    sIconTrays[1].tilemapTop = 5;
+    LoadStatusWindow(0);
+    LoadStatusWindow(1);
 
     LoadPalette(gMenuInfoElements2_Pal, BG_PLTT_ID(B_PLTT_TYPE), PLTT_SIZE_4BPP);
     LoadPalette(sBattleIcons_Pal, BG_PLTT_ID(B_PLTT_ICONS), PLTT_SIZE_4BPP);
     FillWindowPixelRect(B_WIN_MOVE_TYPE, 15, 0, 0, 64, 16);
+    sLoaded = TRUE;
+}
+
+void BattleUI_Unload()
+{
+    sLoaded = FALSE;
 }
 
 void BattleUI_DisplayMoveInfo()
@@ -253,6 +265,7 @@ void BattleUI_UpdateStatusIcons(u8 battlerId)
     u32 windowId = sIconTrays[battlerId].windowId;
 
     DebugPrintf("update status");
+    if (!sLoaded) return;
 
     ClearTray(battlerId);
 
@@ -284,6 +297,8 @@ void BattleUI_UpdateBG0Offset(u16 x, u16 y)
 
 void BattleUI_ShowStatusIcons(u8 battlerId, bool8 shouldShow)
 {
+    if (sIconTrays[battlerId].isVisible == shouldShow) return;
+    DebugPrintf("Show status? battler %d: %d", battlerId, shouldShow);
     sIconTrays[battlerId].isVisible = shouldShow;
     BattleUI_UpdateStatusIcons(battlerId);
 }
