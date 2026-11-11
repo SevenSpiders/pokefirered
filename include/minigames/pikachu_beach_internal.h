@@ -24,6 +24,7 @@
 #define SURF_SPEED_CAP_HI       2
 #define SURF_CRASH_TIME         0x60
 #define SURF_LAND_Y_LIMIT       0x90
+#define SURF_COLUMN_XOFFSET     DISPLAY_WIDTH
 
 #define WIN_SURF_HUD            0
 #define WIN_SURF_RESULTS        1
@@ -196,7 +197,6 @@ void SurfMinigame_ReadBGMapBuffer(void);
 void SurfMinigame_SetPikachuHeight(void);
 
 void SurfMinigame_ApplyScroll(void);
-void SurfMinigame_UpdateScanline(void);
 void SurfMinigame_DrawHud(void);
 void SurfMinigame_DrawResultsBox(void);
 void SurfMinigame_PrintResultsLine(u8 line, const u8 *label, u16 value, bool32 pts);

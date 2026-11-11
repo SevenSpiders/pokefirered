@@ -283,7 +283,7 @@ void SurfMinigame_InitOcean(void)
     game->waveFunctionNumber = 0;
     game->distance[0] = 0;
     game->waveType = 0;
-    game->xOffset = 0xA0;
+    game->xOffset = SURF_COLUMN_XOFFSET;
 
     for (i = 0; i < SURF_WAVE_COLS; i += 2)
         WriteWaveColumns(i, SURF_WATERLINE_DEFAULT, SURF_WATERLINE_DEFAULT, sWaveData[0]);
@@ -333,9 +333,9 @@ void SurfMinigame_ScrollAndGenerateBG(u16 add)
 {
     struct SurfGame *game = GetSurfGame();
 
-    game->xOffset = (add == SURF_SCROLL_GOAL) ? 0xA0 : game->xOffset;
+    game->xOffset = (add == SURF_SCROLL_GOAL) ? SURF_COLUMN_XOFFSET : game->xOffset;
     if (game->xOffset == 0)
-        game->xOffset = 0xA0;
+        game->xOffset = SURF_COLUMN_XOFFSET;
     game->scx += add;
     SurfMinigame_GenerateBGMap();
 }

@@ -88,7 +88,7 @@ static void RoutinePlay(struct SurfGame *game)
     game->waveType = Random();
     SurfMinigame_SetPikachuHeight();
     SurfMinigame_ReadBGMapBuffer();
-    game->xOffset = 0xA0;
+    game->xOffset = SURF_COLUMN_XOFFSET;
     SurfMinigame_ScrollAndGenerateBG(SURF_SCROLL_PLAY);
     SurfMinigame_UpdateDistance();
     if (game->timer > 0)
@@ -102,7 +102,7 @@ static void RoutineGoalInit(struct SurfGame *game)
         game->waveType = 0;
         SurfMinigame_SetPikachuHeight();
         SurfMinigame_ReadBGMapBuffer();
-        game->xOffset = 0xA0;
+        game->xOffset = SURF_COLUMN_XOFFSET;
         SurfMinigame_ScrollAndGenerateBG(SURF_SCROLL_GOAL);
         return;
     }
@@ -244,7 +244,7 @@ static void RoutineGameOver(struct SurfGame *game)
 {
     SurfMinigame_SetPikachuHeight();
     SurfMinigame_ReadBGMapBuffer();
-    game->xOffset = 0xA0;
+    game->xOffset = SURF_COLUMN_XOFFSET;
     SurfMinigame_ScrollAndGenerateBG(SURF_SCROLL_PLAY);
     if (game->gameOverDelay != 0)
     {

@@ -37,7 +37,6 @@ void MainTask_SurfMinigameLoop(u8 taskId)
     SurfMinigame_MoveClouds();
     SurfMinigame_UpdatePikachuSprites();
     SurfMinigame_ApplyScroll();
-    SurfMinigame_UpdateScanline();
 
     if (game->routineNumber == SURF_ROUTINE_PLAY)
         SurfMinigame_DrawHud();

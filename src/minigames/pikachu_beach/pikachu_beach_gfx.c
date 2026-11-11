@@ -11,7 +11,24 @@
 
 static EWRAM_DATA struct SurfMinigameGfxManager *sSurfMinigameGfxManager = NULL;
 
-static const u16 sBg_Pal[] = INCBIN_U16("graphics/pikachu_beach/surfing_pikachu_ui.gbapal");
+static const u16 sOceanPal[] = {
+    RGB(31, 31, 31),
+    RGB(8, 20, 31),
+    RGB(12, 24, 31),
+    RGB(20, 28, 31),
+    RGB(31, 31, 31),
+    RGB(8, 20, 31),
+    RGB(12, 24, 31),
+    RGB(20, 28, 31),
+    RGB(31, 31, 31),
+    RGB(8, 20, 31),
+    RGB(12, 24, 31),
+    RGB(20, 28, 31),
+    RGB(31, 31, 31),
+    RGB(8, 20, 31),
+    RGB(12, 24, 31),
+    RGB(20, 28, 31),
+};
 static const u32 sBg_Tiles[] = INCBIN_U32("graphics/pikachu_beach/surfing_pikachu_ui.4bpp.lz");
 static const u16 sPikachuSurf_Pal[] = INCBIN_U16("graphics/pikachu_beach/spritesheet_pikachu_surf.gbapal");
 static const u32 sPikachuSurfTiles[] = INCBIN_U32("graphics/pikachu_beach/spritesheet_pikachu_surf.4bpp.lz");
@@ -89,13 +106,6 @@ static const struct WindowTemplate sWindowTemplates[] = {
     DUMMY_WIN_TEMPLATE
 };
 
-static const s8 sLySine[32] = {
-     0,  0,  0,  1,  1,  1,  1,  2,
-     2,  2,  1,  1,  1,  1,  0,  0,
-     0,  0,  0, -1, -1, -1, -1, -2,
-    -2, -2, -1, -1, -1, -1,  0,  0
-};
-
 static const u8 sTextColors[] = {1, 2, 3};
 static const u8 sText_Hp[] = _("HP ");
 static const u8 sText_Rad[] = _("  RAD ");
@@ -134,9 +144,7 @@ static const struct SpriteTemplate sSpriteTemplate_Progress = {
 
 static void VBlankCB_SurfMinigame(void);
 static bool32 LoadSpriteGraphicsAndAllocateManager(void);
-static void InitScanlineWater(void);
 static void SetupSkyBg(void);
-static void SpriteCB_Splash(struct Sprite *sprite);
 
 bool8 SurfTask_InitGraphics(u8 *state, SurfMinigameSetupTaskData *ptr)
 {
@@ -169,7 +177,7 @@ bool8 SurfTask_InitGraphics(u8 *state, SurfMinigameSetupTaskData *ptr)
         SetBgTilemapBuffer(2, ptr->bg2TilemapBuffer);
         SetBgTilemapBuffer(3, ptr->bg3TilemapBuffer);
 
-        LoadPalette(sBg_Pal, BG_PLTT_ID(0), PLTT_SIZE_4BPP);
+        LoadPalette(sOceanPal, BG_PLTT_ID(0), PLTT_SIZE_4BPP);
         Menu_LoadStdPalAt(BG_PLTT_ID(15));
         DecompressAndCopyTileDataToVram(SURF_BG_OCEAN, sBg_Tiles, 0, 0, 0);
 
@@ -192,6 +200,7 @@ bool8 SurfTask_InitGraphics(u8 *state, SurfMinigameSetupTaskData *ptr)
             if (spriteId != MAX_SPRITES)
             {
                 sSurfMinigameGfxManager->pikachuPaddleSprite = &gSprites[spriteId];
+                gSprites[spriteId].hFlip = TRUE;
                 game->paddleSpriteId = spriteId;
             }
 
@@ -200,6 +209,7 @@ bool8 SurfTask_InitGraphics(u8 *state, SurfMinigameSetupTaskData *ptr)
             {
                 sSurfMinigameGfxManager->pikachuSurfSprite = &gSprites[spriteId];
                 gSprites[spriteId].invisible = TRUE;
+                gSprites[spriteId].hFlip = TRUE;
                 game->surfSpriteId = spriteId;
             }
 
@@ -207,12 +217,12 @@ bool8 SurfTask_InitGraphics(u8 *state, SurfMinigameSetupTaskData *ptr)
             if (spriteId != MAX_SPRITES)
             {
                 sSurfMinigameGfxManager->progressSprite = &gSprites[spriteId];
+                gSprites[spriteId].invisible = TRUE;
                 game->progressSpriteId = spriteId;
             }
 
             }
 
-            InitScanlineWater();
             SetVBlankCallback(VBlankCB_SurfMinigame);
             ShowBg(SURF_BG_HUD);
             HideBg(1);
@@ -253,11 +263,7 @@ bool8 SurfTask_FadeOutExit(u8 *state, SurfMinigameSetupTaskData *ptr)
 
 static void SetupSkyBg(void)
 {
-    s32 x;
-
     FillBgTilemapBufferRect_Palette0(SURF_BG_SKY, 0, 0, 0, 32, 32);
-    for (x = 0; x < 32; x += 5)
-        FillBgTilemapBufferRect_Palette0(SURF_BG_SKY, 0x01, x, 1, 2, 1);
     CopyBgTilemapBufferToVram(SURF_BG_SKY);
 }
 
@@ -279,48 +285,12 @@ static void VBlankCB_SurfMinigame(void)
     LoadOam();
     ProcessSpriteCopyRequests();
     TransferPlttBuffer();
-    ScanlineEffect_InitHBlankDmaTransfer();
-}
-
-static void InitScanlineWater(void)
-{
-    struct ScanlineEffectParams params;
-    s32 i;
-
-    CpuFastFill(0, gScanlineEffectRegBuffers, sizeof(gScanlineEffectRegBuffers));
-    for (i = 0; i < DISPLAY_HEIGHT; i++)
-        gScanlineEffectRegBuffers[0][i] = gScanlineEffectRegBuffers[1][i] = 0;
-
-    params.dmaDest = &REG_BG2HOFS;
-    params.dmaControl = SCANLINE_EFFECT_DMACNT_16BIT;
-    params.initState = 1;
-    params.unused9 = 0;
-    ScanlineEffect_SetParams(params);
 }
 
 void SurfMinigame_ApplyScroll(void)
 {
     struct SurfGame *game = GetSurfGame();
     ChangeBgX(SURF_BG_OCEAN, game->scx, BG_COORD_SET);
-}
-
-void SurfMinigame_UpdateScanline(void)
-{
-    struct SurfGame *game = GetSurfGame();
-    u16 *buffer = gScanlineEffectRegBuffers[gScanlineEffect.srcBuffer];
-    u8 scxPixel = game->scx >> 8;
-    u8 waterLine = game->waveY + SURF_Y_OFFSET;
-    s32 i;
-    static u8 phase;
-
-    phase++;
-    if (waterLine >= DISPLAY_HEIGHT)
-        waterLine = DISPLAY_HEIGHT - 1;
-
-    for (i = 0; i < waterLine; i++)
-        buffer[i] = scxPixel;
-    for (; i < DISPLAY_HEIGHT; i++)
-        buffer[i] = scxPixel + sLySine[(i + phase) & 31];
 }
 
 void SurfMinigame_DrawHud(void)
@@ -404,6 +374,7 @@ void SurfMinigame_UpdatePikachuSprites(void)
     {
         paddle->x = SURF_PIKA_X;
         paddle->y = y;
+        paddle->hFlip = TRUE;
         paddle->invisible = airborne;
         if (!airborne)
         {
@@ -420,6 +391,7 @@ void SurfMinigame_UpdatePikachuSprites(void)
     {
         surf->x = SURF_PIKA_X;
         surf->y = y;
+        surf->hFlip = TRUE;
         surf->invisible = !airborne;
         if (airborne)
         {
@@ -430,7 +402,6 @@ void SurfMinigame_UpdatePikachuSprites(void)
             else
                 anim = SURF_ANIM_SURF_AIR;
             StartSpriteAnimIfDifferent(surf, anim);
-            surf->hFlip = (game->frameset >= 8);
         }
     }
 }
@@ -448,23 +419,6 @@ void SurfMinigame_MoveClouds(void)
 
 void SurfMinigame_SpawnSplash(void)
 {
-    struct SurfGame *game = GetSurfGame();
-    s32 spriteId;
-    s16 y;
-
-    game->splashTimer++;
-    if ((game->splashTimer & 3) != 0)
-        return;
-    if (sSurfMinigameGfxManager == NULL || sSurfMinigameGfxManager->pikachuSurfSprite == NULL)
-        return;
-
-    y = game->pikaY + SURF_Y_OFFSET;
-    spriteId = CreateSprite(sSurfMinigameGfxManager->pikachuSurfSprite->template, SURF_PIKA_X, y + 8, 2);
-    if (spriteId == MAX_SPRITES)
-        return;
-    StartSpriteAnim(&gSprites[spriteId], SURF_ANIM_SURF_CRASH);
-    gSprites[spriteId].callback = SpriteCB_Splash;
-    gSprites[spriteId].oam.priority = 2;
 }
 
 void SurfMinigame_UpdateProgressMarker(s32 dx)
@@ -475,13 +429,6 @@ void SurfMinigame_UpdateProgressMarker(s32 dx)
         return;
     sprite = sSurfMinigameGfxManager->progressSprite;
     sprite->x += dx;
-}
-
-static void SpriteCB_Splash(struct Sprite *sprite)
-{
-    sprite->data[0]++;
-    if (sprite->data[0] > 12)
-        DestroySprite(sprite);
 }
 
 void DestroyGfxManager(void)
