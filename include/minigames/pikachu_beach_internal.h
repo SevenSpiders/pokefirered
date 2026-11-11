@@ -8,6 +8,22 @@
 #define SURF_BG_OCEAN           2
 #define SURF_BG_SKY             3
 #define SURF_BG_HUD             0
+#define SURF_BG_METER           1
+
+#define SURF_TILE_BLANK         0x00
+#define SURF_TILE_TRANSPARENT   0x41
+#define SURF_TILE_ISLAND        0x15
+#define SURF_TILE_WAVE_L        0x17
+#define SURF_TILE_WAVE_M        0x18
+#define SURF_TILE_WAVE_R        0x19
+#define SURF_TILE_HP_H          0x1B
+#define SURF_TILE_HP_P          0x1C
+
+#define SURF_NUM_CLOUDS         9
+#define SURF_NUM_DIGITS         4
+#define SURF_HUD_Y              152
+#define SURF_PROGRESS_X         80
+#define SURF_DIGIT_X            180
 
 #define SURF_WAVE_COLS          32
 #define SURF_WAVE_ROWS          20
@@ -70,6 +86,16 @@ enum {
 enum {
     PALTAG_PIKACHU_PADDLE = 0,
     PALTAG_PIKACHU_SURF = 1,
+    PALTAG_SURF_HUD = 2,
+};
+
+enum {
+    SURF_ANIM_CLOUD_0 = 0,
+    SURF_ANIM_CLOUD_1,
+    SURF_ANIM_CLOUD_2,
+    SURF_ANIM_CLOUD_3,
+    SURF_ANIM_PIKA_ICON,
+    SURF_ANIM_DIGIT_0,
 };
 
 enum {
@@ -162,6 +188,8 @@ struct SurfMinigameGfxManager
     struct Sprite *pikachuPaddleSprite;
     struct Sprite *pikachuSurfSprite;
     struct Sprite *progressSprite;
+    struct Sprite *cloudSprites[SURF_NUM_CLOUDS];
+    struct Sprite *digitSprites[SURF_NUM_DIGITS];
 };
 
 extern EWRAM_DATA struct SurfMinigameState *sSurfMinigameState;

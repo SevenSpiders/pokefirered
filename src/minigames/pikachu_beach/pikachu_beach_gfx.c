@@ -34,15 +34,38 @@ static const u16 sPikachuSurf_Pal[] = INCBIN_U16("graphics/pikachu_beach/sprites
 static const u32 sPikachuSurfTiles[] = INCBIN_U32("graphics/pikachu_beach/spritesheet_pikachu_surf.4bpp.lz");
 static const u16 sPikachuPaddle_Pal[] = INCBIN_U16("graphics/pikachu_beach/spritesheet_pikachu_paddle.gbapal");
 static const u32 sPikachuPaddleTiles[] = INCBIN_U32("graphics/pikachu_beach/spritesheet_pikachu_paddle.4bpp.lz");
+static const u16 sHudSprite_Pal[] = INCBIN_U16("graphics/pikachu_beach/spritesheet_hud.gbapal");
+static const u32 sHudSpriteTiles[] = INCBIN_U32("graphics/pikachu_beach/spritesheet_hud.4bpp.lz");
+
+static const u16 sHudBgPal[] = {
+    RGB(0, 0, 0),
+    RGB(0, 0, 0),
+    RGB(10, 10, 10),
+    RGB(21, 21, 21),
+    RGB(31, 31, 31),
+    RGB(31, 31, 31),
+    RGB(31, 31, 31),
+    RGB(31, 31, 31),
+    RGB(31, 31, 31),
+    RGB(31, 31, 31),
+    RGB(31, 31, 31),
+    RGB(31, 31, 31),
+    RGB(31, 31, 31),
+    RGB(31, 31, 31),
+    RGB(31, 31, 31),
+    RGB(31, 31, 31),
+};
 
 static const struct CompressedSpriteSheet sSpriteSheets[] = {
     {.data = sPikachuPaddleTiles, .size = 512 * 4, .tag = GFXTAG_PIKACHU_PADDLE},
     {.data = sPikachuSurfTiles, .size = 512 * 18, .tag = GFXTAG_PIKACHU_SURF},
+    {.data = sHudSpriteTiles, .size = 32 * 24, .tag = GFXTAG_SURF_HUD},
 };
 
 static const struct SpritePalette sSpritePalettes[] = {
     {.data = sPikachuPaddle_Pal, .tag = PALTAG_PIKACHU_PADDLE},
     {.data = sPikachuSurf_Pal, .tag = PALTAG_PIKACHU_SURF},
+    {.data = sHudSprite_Pal, .tag = PALTAG_SURF_HUD},
 };
 
 static const struct BgTemplate sBgTemplates[] = {
@@ -57,7 +80,7 @@ static const struct BgTemplate sBgTemplates[] = {
     },
     {
         .bg = 1,
-        .charBaseIndex = 0,
+        .charBaseIndex = 2,
         .mapBaseIndex = 29,
         .screenSize = 0,
         .paletteMode = 0,
@@ -107,13 +130,22 @@ static const struct WindowTemplate sWindowTemplates[] = {
 };
 
 static const u8 sTextColors[] = {1, 2, 3};
-static const u8 sText_Hp[] = _("HP ");
-static const u8 sText_Rad[] = _("  RAD ");
 static const u8 sText_Spacer[] = _("  ");
 static const u8 sText_Pts[] = _(" PTS");
 static const u8 sText_HiScore[] = _("HI-SCORE!!");
 
-static const struct OamData sOam_Progress = {
+static const u8 sCloudStartX[SURF_NUM_CLOUDS] = {
+    32, 40, 48, 56, 64, 128, 136, 144, 152
+};
+static const u8 sCloudStartY[SURF_NUM_CLOUDS] = {
+    16, 16, 16, 16, 16, 32, 32, 32, 32
+};
+static const u8 sCloudAnim[SURF_NUM_CLOUDS] = {
+    SURF_ANIM_CLOUD_0, SURF_ANIM_CLOUD_1, SURF_ANIM_CLOUD_1, SURF_ANIM_CLOUD_2, SURF_ANIM_CLOUD_3,
+    SURF_ANIM_CLOUD_0, SURF_ANIM_CLOUD_1, SURF_ANIM_CLOUD_2, SURF_ANIM_CLOUD_3
+};
+
+static const struct OamData sOam_Hud = {
     .y = 0,
     .affineMode = ST_OAM_AFFINE_OFF,
     .objMode = ST_OAM_OBJ_NORMAL,
@@ -123,20 +155,45 @@ static const struct OamData sOam_Progress = {
     .priority = 0,
 };
 
-static const union AnimCmd sAnim_Progress[] = {
-    ANIMCMD_FRAME(0, 0xFF),
-    ANIMCMD_END
+static const union AnimCmd sAnim_Cloud0[] = { ANIMCMD_FRAME(0, 0xFF), ANIMCMD_END };
+static const union AnimCmd sAnim_Cloud1[] = { ANIMCMD_FRAME(1, 0xFF), ANIMCMD_END };
+static const union AnimCmd sAnim_Cloud2[] = { ANIMCMD_FRAME(2, 0xFF), ANIMCMD_END };
+static const union AnimCmd sAnim_Cloud3[] = { ANIMCMD_FRAME(3, 0xFF), ANIMCMD_END };
+static const union AnimCmd sAnim_PikaIcon[] = { ANIMCMD_FRAME(4, 0xFF), ANIMCMD_END };
+static const union AnimCmd sAnim_Digit0[] = { ANIMCMD_FRAME(8, 0xFF), ANIMCMD_END };
+static const union AnimCmd sAnim_Digit1[] = { ANIMCMD_FRAME(9, 0xFF), ANIMCMD_END };
+static const union AnimCmd sAnim_Digit2[] = { ANIMCMD_FRAME(10, 0xFF), ANIMCMD_END };
+static const union AnimCmd sAnim_Digit3[] = { ANIMCMD_FRAME(11, 0xFF), ANIMCMD_END };
+static const union AnimCmd sAnim_Digit4[] = { ANIMCMD_FRAME(12, 0xFF), ANIMCMD_END };
+static const union AnimCmd sAnim_Digit5[] = { ANIMCMD_FRAME(13, 0xFF), ANIMCMD_END };
+static const union AnimCmd sAnim_Digit6[] = { ANIMCMD_FRAME(14, 0xFF), ANIMCMD_END };
+static const union AnimCmd sAnim_Digit7[] = { ANIMCMD_FRAME(15, 0xFF), ANIMCMD_END };
+static const union AnimCmd sAnim_Digit8[] = { ANIMCMD_FRAME(16, 0xFF), ANIMCMD_END };
+static const union AnimCmd sAnim_Digit9[] = { ANIMCMD_FRAME(17, 0xFF), ANIMCMD_END };
+
+static const union AnimCmd *const sAnimTable_Hud[] = {
+    sAnim_Cloud0,
+    sAnim_Cloud1,
+    sAnim_Cloud2,
+    sAnim_Cloud3,
+    sAnim_PikaIcon,
+    sAnim_Digit0,
+    sAnim_Digit1,
+    sAnim_Digit2,
+    sAnim_Digit3,
+    sAnim_Digit4,
+    sAnim_Digit5,
+    sAnim_Digit6,
+    sAnim_Digit7,
+    sAnim_Digit8,
+    sAnim_Digit9,
 };
 
-static const union AnimCmd *const sAnimTable_Progress[] = {
-    sAnim_Progress
-};
-
-static const struct SpriteTemplate sSpriteTemplate_Progress = {
-    .tileTag = GFXTAG_PIKACHU_SURF,
-    .paletteTag = PALTAG_PIKACHU_SURF,
-    .oam = &sOam_Progress,
-    .anims = sAnimTable_Progress,
+static const struct SpriteTemplate sSpriteTemplate_Hud = {
+    .tileTag = GFXTAG_SURF_HUD,
+    .paletteTag = PALTAG_SURF_HUD,
+    .oam = &sOam_Hud,
+    .anims = sAnimTable_Hud,
     .images = NULL,
     .affineAnims = gDummySpriteAffineAnimTable,
     .callback = SpriteCallbackDummy
@@ -145,6 +202,8 @@ static const struct SpriteTemplate sSpriteTemplate_Progress = {
 static void VBlankCB_SurfMinigame(void);
 static bool32 LoadSpriteGraphicsAndAllocateManager(void);
 static void SetupSkyBg(void);
+static void SetupHudBg(void);
+static void CreateHudSprites(struct SurfGame *game);
 
 bool8 SurfTask_InitGraphics(u8 *state, SurfMinigameSetupTaskData *ptr)
 {
@@ -168,6 +227,8 @@ bool8 SurfTask_InitGraphics(u8 *state, SurfMinigameSetupTaskData *ptr)
         SetGpuReg(REG_OFFSET_DISPCNT, 0);
         ResetBgPositions();
         ResetBgsAndClearDma3BusyFlags(FALSE);
+        ClearScheduledBgCopiesToVram();
+        FreeAllWindowBuffers();
         InitBgsFromTemplates(0, sBgTemplates, ARRAY_COUNT(sBgTemplates));
         InitWindows(sWindowTemplates);
         DeactivateAllTextPrinters();
@@ -178,20 +239,24 @@ bool8 SurfTask_InitGraphics(u8 *state, SurfMinigameSetupTaskData *ptr)
         SetBgTilemapBuffer(3, ptr->bg3TilemapBuffer);
 
         LoadPalette(sOceanPal, BG_PLTT_ID(0), PLTT_SIZE_4BPP);
+        LoadPalette(sHudBgPal, BG_PLTT_ID(1), PLTT_SIZE_4BPP);
         Menu_LoadStdPalAt(BG_PLTT_ID(15));
         DecompressAndCopyTileDataToVram(SURF_BG_OCEAN, sBg_Tiles, 0, 0, 0);
 
         FillBgTilemapBufferRect_Palette0(SURF_BG_HUD, 0, 0, 0, 32, 32);
-        FillBgTilemapBufferRect_Palette0(1, 0, 0, 0, 32, 32);
         SetupSkyBg();
         (*state)++;
         break;
     case 2:
         if (!FreeTempTileDataBuffersIfPossible())
         {
+            CpuFill16(0, (void *)((u8 *)BG_CHAR_ADDR(2) + SURF_TILE_TRANSPARENT * TILE_SIZE_4BPP), TILE_SIZE_4BPP);
+            SetupHudBg();
             SurfMinigame_InitOcean();
+            CopyBgTilemapBufferToVram(SURF_BG_HUD);
             CopyBgTilemapBufferToVram(SURF_BG_OCEAN);
             CopyBgTilemapBufferToVram(SURF_BG_SKY);
+            CopyBgTilemapBufferToVram(SURF_BG_METER);
             SetGpuRegBits(REG_OFFSET_DISPCNT, DISPCNT_MODE_0 | DISPCNT_OBJ_1D_MAP | DISPCNT_OBJ_ON);
             if (LoadSpriteGraphicsAndAllocateManager())
             {
@@ -209,23 +274,16 @@ bool8 SurfTask_InitGraphics(u8 *state, SurfMinigameSetupTaskData *ptr)
             {
                 sSurfMinigameGfxManager->pikachuSurfSprite = &gSprites[spriteId];
                 gSprites[spriteId].invisible = TRUE;
-                gSprites[spriteId].hFlip = TRUE;
+                gSprites[spriteId].hFlip = FALSE;
                 game->surfSpriteId = spriteId;
             }
 
-            spriteId = CreateSprite(&sSpriteTemplate_Progress, 220, 12, 0);
-            if (spriteId != MAX_SPRITES)
-            {
-                sSurfMinigameGfxManager->progressSprite = &gSprites[spriteId];
-                gSprites[spriteId].invisible = TRUE;
-                game->progressSpriteId = spriteId;
-            }
-
+            CreateHudSprites(game);
             }
 
             SetVBlankCallback(VBlankCB_SurfMinigame);
             ShowBg(SURF_BG_HUD);
-            HideBg(1);
+            ShowBg(SURF_BG_METER);
             ShowBg(SURF_BG_OCEAN);
             ShowBg(SURF_BG_SKY);
             BlendPalettes(PALETTES_ALL, 16, RGB_WHITE);
@@ -263,8 +321,59 @@ bool8 SurfTask_FadeOutExit(u8 *state, SurfMinigameSetupTaskData *ptr)
 
 static void SetupSkyBg(void)
 {
-    FillBgTilemapBufferRect_Palette0(SURF_BG_SKY, 0, 0, 0, 32, 32);
+    FillBgTilemapBufferRect_Palette0(SURF_BG_SKY, SURF_TILE_BLANK, 0, 0, 32, 32);
     CopyBgTilemapBufferToVram(SURF_BG_SKY);
+}
+
+static void SetupHudBg(void)
+{
+    s32 i;
+
+    FillBgTilemapBufferRect(SURF_BG_METER, SURF_TILE_TRANSPARENT, 0, 0, 32, 32, 1);
+    FillBgTilemapBufferRect(SURF_BG_METER, SURF_TILE_BLANK, 0, 18, 32, 2, 1);
+    FillBgTilemapBufferRect(SURF_BG_METER, SURF_TILE_ISLAND, 1, 18, 1, 1, 1);
+    FillBgTilemapBufferRect(SURF_BG_METER, SURF_TILE_WAVE_L, 1, 19, 1, 1, 1);
+    FillBgTilemapBufferRect(SURF_BG_METER, SURF_TILE_WAVE_M, 2, 19, 1, 1, 1);
+    for (i = 3; i < 10; i++)
+        FillBgTilemapBufferRect(SURF_BG_METER, SURF_TILE_WAVE_R, i, 19, 1, 1, 1);
+    FillBgTilemapBufferRect(SURF_BG_METER, SURF_TILE_HP_H, 20, 19, 1, 1, 1);
+    FillBgTilemapBufferRect(SURF_BG_METER, SURF_TILE_HP_P, 21, 19, 1, 1, 1);
+    CopyBgTilemapBufferToVram(SURF_BG_METER);
+}
+
+static void CreateHudSprites(struct SurfGame *game)
+{
+    s32 i;
+    s32 spriteId;
+
+    for (i = 0; i < SURF_NUM_CLOUDS; i++)
+    {
+        spriteId = CreateSprite(&sSpriteTemplate_Hud, sCloudStartX[i], sCloudStartY[i], 20);
+        if (spriteId != MAX_SPRITES)
+        {
+            sSurfMinigameGfxManager->cloudSprites[i] = &gSprites[spriteId];
+            StartSpriteAnim(&gSprites[spriteId], sCloudAnim[i]);
+            gSprites[spriteId].oam.priority = 1;
+        }
+    }
+
+    spriteId = CreateSprite(&sSpriteTemplate_Hud, SURF_PROGRESS_X, SURF_HUD_Y, 0);
+    if (spriteId != MAX_SPRITES)
+    {
+        sSurfMinigameGfxManager->progressSprite = &gSprites[spriteId];
+        StartSpriteAnim(&gSprites[spriteId], SURF_ANIM_PIKA_ICON);
+        game->progressSpriteId = spriteId;
+    }
+
+    for (i = 0; i < SURF_NUM_DIGITS; i++)
+    {
+        spriteId = CreateSprite(&sSpriteTemplate_Hud, SURF_DIGIT_X + i * 8, SURF_HUD_Y, 0);
+        if (spriteId != MAX_SPRITES)
+        {
+            sSurfMinigameGfxManager->digitSprites[i] = &gSprites[spriteId];
+            StartSpriteAnim(&gSprites[spriteId], SURF_ANIM_DIGIT_0);
+        }
+    }
 }
 
 static bool32 LoadSpriteGraphicsAndAllocateManager(void)
@@ -296,27 +405,42 @@ void SurfMinigame_ApplyScroll(void)
 void SurfMinigame_DrawHud(void)
 {
     struct SurfGame *game = GetSurfGame();
-    u8 *s;
+    u16 n = game->timer;
+    s32 i;
+    u8 digit;
 
-    FillWindowPixelBuffer(WIN_SURF_HUD, PIXEL_FILL(1));
-    s = gStringVar1;
-    s = StringCopy(s, sText_Hp);
-    s = ConvertIntToDecimalStringN(s, game->timer, STR_CONV_MODE_LEADING_ZEROS, 4);
-    s = StringAppend(s, sText_Rad);
-    ConvertIntToDecimalStringN(s, game->radnessScore, STR_CONV_MODE_LEADING_ZEROS, 4);
-    AddTextPrinterParameterized3(WIN_SURF_HUD, FONT_SMALL, 4, 1, sTextColors, TEXT_SKIP_DRAW, gStringVar1);
-    PutWindowTilemap(WIN_SURF_HUD);
-    CopyWindowToVram(WIN_SURF_HUD, COPYWIN_FULL);
+    if (sSurfMinigameGfxManager == NULL)
+        return;
+
+    for (i = SURF_NUM_DIGITS - 1; i >= 0; i--)
+    {
+        digit = n % 10;
+        n /= 10;
+        if (sSurfMinigameGfxManager->digitSprites[i] != NULL)
+            StartSpriteAnimIfDifferent(sSurfMinigameGfxManager->digitSprites[i], SURF_ANIM_DIGIT_0 + digit);
+    }
 }
 
 void SurfMinigame_HideGameplayHud(void)
 {
     struct SurfGame *game = GetSurfGame();
+    s32 i;
 
-    FillWindowPixelBuffer(WIN_SURF_HUD, PIXEL_FILL(1));
-    CopyWindowToVram(WIN_SURF_HUD, COPYWIN_GFX);
+    HideBg(SURF_BG_METER);
     if (game->progressSpriteId != SPRITE_NONE)
         gSprites[game->progressSpriteId].invisible = TRUE;
+    if (sSurfMinigameGfxManager == NULL)
+        return;
+    for (i = 0; i < SURF_NUM_DIGITS; i++)
+    {
+        if (sSurfMinigameGfxManager->digitSprites[i] != NULL)
+            sSurfMinigameGfxManager->digitSprites[i]->invisible = TRUE;
+    }
+    for (i = 0; i < SURF_NUM_CLOUDS; i++)
+    {
+        if (sSurfMinigameGfxManager->cloudSprites[i] != NULL)
+            sSurfMinigameGfxManager->cloudSprites[i]->invisible = TRUE;
+    }
 }
 
 void SurfMinigame_DrawResultsBox(void)
@@ -391,7 +515,7 @@ void SurfMinigame_UpdatePikachuSprites(void)
     {
         surf->x = SURF_PIKA_X;
         surf->y = y;
-        surf->hFlip = TRUE;
+        surf->hFlip = FALSE;
         surf->invisible = !airborne;
         if (airborne)
         {
@@ -411,10 +535,18 @@ void SurfMinigame_MoveClouds(void)
     struct SurfGame *game = GetSurfGame();
     u16 sum = (u8)game->cloudAccum + game->speed;
     u8 pixels = sum >> 8;
+    s32 i;
+    struct Sprite *sprite;
 
     game->cloudAccum = sum & 0xFF;
-    if (pixels != 0)
-        ChangeBgX(SURF_BG_SKY, pixels << 8, BG_COORD_ADD);
+    if (pixels == 0 || sSurfMinigameGfxManager == NULL)
+        return;
+    for (i = 0; i < SURF_NUM_CLOUDS; i++)
+    {
+        sprite = sSurfMinigameGfxManager->cloudSprites[i];
+        if (sprite != NULL)
+            sprite->x = (u8)(sprite->x + pixels);
+    }
 }
 
 void SurfMinigame_SpawnSplash(void)
@@ -433,6 +565,8 @@ void SurfMinigame_UpdateProgressMarker(s32 dx)
 
 void DestroyGfxManager(void)
 {
+    s32 i;
+
     if (sSurfMinigameGfxManager != NULL)
     {
         if (sSurfMinigameGfxManager->pikachuPaddleSprite != NULL)
@@ -441,13 +575,25 @@ void DestroyGfxManager(void)
             DestroySprite(sSurfMinigameGfxManager->pikachuSurfSprite);
         if (sSurfMinigameGfxManager->progressSprite != NULL)
             DestroySprite(sSurfMinigameGfxManager->progressSprite);
+        for (i = 0; i < SURF_NUM_CLOUDS; i++)
+        {
+            if (sSurfMinigameGfxManager->cloudSprites[i] != NULL)
+                DestroySprite(sSurfMinigameGfxManager->cloudSprites[i]);
+        }
+        for (i = 0; i < SURF_NUM_DIGITS; i++)
+        {
+            if (sSurfMinigameGfxManager->digitSprites[i] != NULL)
+                DestroySprite(sSurfMinigameGfxManager->digitSprites[i]);
+        }
         Free(sSurfMinigameGfxManager);
         sSurfMinigameGfxManager = NULL;
     }
     FreeSpriteTilesByTag(GFXTAG_PIKACHU_PADDLE);
     FreeSpriteTilesByTag(GFXTAG_PIKACHU_SURF);
+    FreeSpriteTilesByTag(GFXTAG_SURF_HUD);
     FreeSpritePaletteByTag(PALTAG_PIKACHU_PADDLE);
     FreeSpritePaletteByTag(PALTAG_PIKACHU_SURF);
+    FreeSpritePaletteByTag(PALTAG_SURF_HUD);
     ResetSpriteData();
     FreeAllSpritePalettes();
 }
