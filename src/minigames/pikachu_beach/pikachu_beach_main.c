@@ -15,7 +15,7 @@ static void DestroyMinigame(void);
 static void CB2_InitMinigame(void);
 static void CB2_RunMinigame(void);
 
-void PlaySurfMinigame(MainCallback savedCallback)
+static void PlaySurfMinigameInternal(MainCallback savedCallback, bool8 fromMenu)
 {
     ResetTasks();
     sSurfMinigameState = AllocZeroed(sizeof(*sSurfMinigameState));
@@ -26,8 +26,19 @@ void PlaySurfMinigame(MainCallback savedCallback)
     }
 
     sSurfMinigameState->savedCallback = savedCallback;
+    sSurfMinigameState->fromMenu = fromMenu;
     InitSurfMinigameState(sSurfMinigameState);
     SetMainCallback2(CB2_InitMinigame);
+}
+
+void PlaySurfMinigame(MainCallback savedCallback)
+{
+    PlaySurfMinigameInternal(savedCallback, FALSE);
+}
+
+void PlaySurfMinigameFromMenu(MainCallback savedCallback)
+{
+    PlaySurfMinigameInternal(savedCallback, TRUE);
 }
 
 static void InitSurfMinigameState(struct SurfMinigameState *state)

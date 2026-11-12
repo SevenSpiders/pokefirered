@@ -32,11 +32,20 @@ static const union AnimCmd sAnim_SurfCrash[] = {
     ANIMCMD_END
 };
 
+// Yellow Frameset_LargeSplash, with the large frame held through most of a crash.
+static const union AnimCmd sAnim_BigSplash[] = {
+    ANIMCMD_FRAME(0x130, 2),
+    ANIMCMD_FRAME(0x140, 48),
+    ANIMCMD_FRAME(0x150, 8),
+    ANIMCMD_END
+};
+
 static const union AnimCmd *const sAnimTable_Surf[] = {
     sAnim_SurfRide,
     sAnim_SurfAir,
     sAnim_SurfFlip,
     sAnim_SurfCrash,
+    sAnim_BigSplash,
 };
 
 static const struct OamData sOamData_Surf = {
@@ -69,5 +78,13 @@ s32 CreateSprite_Pikachu_Surf(s16 x, s16 y)
 {
     s32 spriteId = CreateSprite(&sSpriteTemplate_Pikachu_Surfing, x, y, 1);
     StartSpriteAnim(&gSprites[spriteId], SURF_ANIM_SURF_RIDE);
+    return spriteId;
+}
+
+s32 CreateSprite_SurfSplash(s16 x, s16 y)
+{
+    s32 spriteId = CreateSprite(&sSpriteTemplate_Pikachu_Surfing, x, y, 2);
+    StartSpriteAnim(&gSprites[spriteId], SURF_ANIM_BIG_SPLASH);
+    gSprites[spriteId].invisible = TRUE;
     return spriteId;
 }

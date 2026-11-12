@@ -21,6 +21,7 @@ const u8 gExpandedPlaceholder_Green[] = _("GREEN");
 const u8 gText_EggNickname[] = _("EGG");
 const u8 gText_MenuPokemon[] = _("POKéMON");
 const u8 gText_NewGame[] = _("NEW GAME");
+const u8 gText_Surfing[] = _("SURFING");
 const u8 gText_Continue[] = _("CONTINUE");
 const u8 gTextJP_Options[] = _("せっていを かえる");
 const u8 gUnusedText_MysteryGift[] = _("MYSTERY GIFT");

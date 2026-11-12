@@ -202,21 +202,13 @@ static void WriteWaveColumns(u8 destCol, u8 heightB, u8 heightC, const u8 *waveD
     col0 = destCol & 31;
     col1 = (destCol + 1) & 31;
 
-    for (row = 0; row < 2; row++)
-    {
-        map[row * 32 + col0] = 0;
-        map[row * 32 + col1] = 0;
-        game->gbTiles[col0][row] = 0;
-        game->gbTiles[col1][row] = 0;
-    }
-
     for (i = 0; i < 8; i++)
     {
         id = waveData[i];
         if (id >= ARRAY_COUNT(sWaveTileLookup))
             id = 0;
         meta = sWaveTileLookup[id];
-        row = 2 + i * 2;
+        row = i * 2;
 
         map[row * 32 + col0] = meta[0];
         map[row * 32 + col1] = meta[1];
@@ -229,7 +221,7 @@ static void WriteWaveColumns(u8 destCol, u8 heightB, u8 heightC, const u8 *waveD
         game->gbTiles[col1][row + 1] = meta[3];
     }
 
-    for (row = 18; row < SURF_WAVE_ROWS; row++)
+    for (row = 16; row < 18; row++)
     {
         map[row * 32 + col0] = 0x0B;
         map[row * 32 + col1] = 0x0B;
@@ -344,12 +336,13 @@ void SurfMinigame_ReadBGMapBuffer(void)
 {
     struct SurfGame *game = GetSurfGame();
     u8 scxPixel = game->scx >> 8;
+    // Yellow samples hSCX + 9*8. Use GBA Pikachu X so the column under the sprite is read.
     u8 col = (scxPixel + SURF_PIKA_X) >> 3;
-    u8 row = (game->waveY + SURF_Y_OFFSET) >> 3;
+    u8 row = game->waveY >> 3;
 
     col &= 31;
-    if (row >= SURF_WAVE_ROWS)
-        row = SURF_WAVE_ROWS - 1;
+    if (row >= 18)
+        row = 17;
     game->bgTileUnderBoard = game->gbTiles[col][row];
 }
 
@@ -360,11 +353,12 @@ void SurfMinigame_SetPikachuHeight(void)
     u8 idx = (scxPixel & 8) ? 14 : 13;
     u8 height = game->waveHeight[idx];
     u8 tile = game->bgTileUnderBoard;
+    u8 sub = scxPixel & 7;
 
     if (tile == 0x06 || tile == 0x14)
-        game->waveY = height - (scxPixel & 7);
+        game->waveY = height - sub;
     else if (tile == 0x07)
-        game->waveY = height + (scxPixel & 7);
+        game->waveY = height + sub;
     else
         game->waveY = height;
 }

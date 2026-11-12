@@ -21,13 +21,19 @@
 
 #define SURF_NUM_CLOUDS         9
 #define SURF_NUM_DIGITS         4
-#define SURF_HUD_Y              152
-#define SURF_PROGRESS_X         80
-#define SURF_DIGIT_X            180
+#define SURF_NUM_SPRAY          8
+#define SURF_HUD_Y              153
+#define SURF_PROGRESS_X         72
+#define SURF_PROGRESS_Y         155
+#define SURF_DIGIT_X            168
+#define SURF_HUD_ISLAND_X       1
+#define SURF_HUD_WAVE_X         1
+#define SURF_HUD_HP_X           18
 
 #define SURF_WAVE_COLS          32
 #define SURF_WAVE_ROWS          20
-#define SURF_Y_OFFSET           16
+// Yellow object Y includes OAM_Y_OFS (16). GBA sprite coords are screen-space.
+#define SURF_Y_OFFSET           (-16)
 #define SURF_PIKA_X             108
 #define SURF_PIKA_X_GB          0x48
 #define SURF_WATERLINE_DEFAULT  0x74
@@ -96,14 +102,19 @@ enum {
     SURF_ANIM_CLOUD_3,
     SURF_ANIM_PIKA_ICON,
     SURF_ANIM_DIGIT_0,
+    SURF_ANIM_SPRAY_0 = 15,
+    SURF_ANIM_SPRAY_1,
+    SURF_ANIM_SPRAY_2,
 };
 
 enum {
-    SURF_ANIM_PADDLE_LOOP = 0,
-    SURF_ANIM_PADDLE_0,
-    SURF_ANIM_PADDLE_1,
-    SURF_ANIM_PADDLE_2,
-    SURF_ANIM_PADDLE_3,
+    SURF_ANIM_PADDLE_ANGLE_1 = 0,
+    SURF_ANIM_PADDLE_ANGLE_2,
+    SURF_ANIM_PADDLE_ANGLE_3,
+    SURF_ANIM_PADDLE_ANGLE_4,
+    SURF_ANIM_PADDLE_ANGLE_5,
+    SURF_ANIM_PADDLE_ANGLE_6,
+    SURF_ANIM_PADDLE_ANGLE_7,
 };
 
 enum {
@@ -111,6 +122,7 @@ enum {
     SURF_ANIM_SURF_AIR,
     SURF_ANIM_SURF_FLIP,
     SURF_ANIM_SURF_CRASH,
+    SURF_ANIM_BIG_SPLASH,
 };
 
 struct SurfMinigameSetupTaskDataSub
@@ -180,6 +192,7 @@ typedef struct SurfMinigameState
 {
     MainCallback savedCallback;
     u8 taskId;
+    bool8 fromMenu;
     struct SurfGame game;
 } SurfMinigameState;
 
@@ -190,6 +203,8 @@ struct SurfMinigameGfxManager
     struct Sprite *progressSprite;
     struct Sprite *cloudSprites[SURF_NUM_CLOUDS];
     struct Sprite *digitSprites[SURF_NUM_DIGITS];
+    struct Sprite *spraySprites[SURF_NUM_SPRAY];
+    struct Sprite *splashSprite;
 };
 
 extern EWRAM_DATA struct SurfMinigameState *sSurfMinigameState;
@@ -247,5 +262,6 @@ void SurfMinigame_PlayHighScoreFanfare(void);
 
 s32 CreateSprite_Pikachu_Paddle(s16 x, s16 y);
 s32 CreateSprite_Pikachu_Surf(s16 x, s16 y);
+s32 CreateSprite_SurfSplash(s16 x, s16 y);
 
 #endif // GUARD_PIKACHU_BEACH_INTERNAL_H

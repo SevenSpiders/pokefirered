@@ -63,7 +63,7 @@ static void RoutineSpawn(struct SurfGame *game)
 {
     game->pikaAction = SURF_ACTION_ON_WAVE;
     game->pikaY = game->waveY;
-    game->frameset = 0x11;
+    game->frameset = 4;
     SurfMinigame_PlayBgm();
     game->routineNumber = SURF_ROUTINE_PLAY;
 }

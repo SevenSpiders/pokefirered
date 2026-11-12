@@ -3,6 +3,7 @@
 
 #include "global.h"
 
-void  PlaySurfMinigame(MainCallback savedCallback);
+void PlaySurfMinigame(MainCallback savedCallback);
+void PlaySurfMinigameFromMenu(MainCallback savedCallback);
 
 #endif

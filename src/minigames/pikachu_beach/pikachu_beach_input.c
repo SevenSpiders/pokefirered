@@ -6,6 +6,12 @@ void SurfMinigame_HandleInput(void)
 {
     struct SurfGame *game = GetSurfGame();
 
+    if (sSurfMinigameState->fromMenu && JOY_NEW(SELECT_BUTTON))
+    {
+        SetMainTask(MainTask_ConfirmExitGame);
+        return;
+    }
+
     if (JOY_NEW(START_BUTTON))
     {
         SetMainTask(MainTask_ConfirmExitGame);
