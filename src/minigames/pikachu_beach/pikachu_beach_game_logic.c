@@ -546,6 +546,7 @@ static void AddRadnessFromStunt(struct SurfGame *game)
     }
 
     game->radnessScore = AddScores(game->radnessScore, add);
+    SurfMinigame_SpawnScorePopup(add);
 }
 
 static bool32 UpdatePikachuHeight(struct SurfGame *game)

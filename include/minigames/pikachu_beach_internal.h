@@ -87,6 +87,7 @@ enum {
     GFXTAG_PIKACHU_PADDLE = 0,
     GFXTAG_PIKACHU_SURF = 1,
     GFXTAG_SURF_HUD = 2,
+    GFXTAG_SURF_SCORE = 3,
 };
 
 enum {
@@ -123,6 +124,14 @@ enum {
     SURF_ANIM_SURF_FLIP,
     SURF_ANIM_SURF_CRASH,
     SURF_ANIM_BIG_SPLASH,
+};
+
+enum {
+    SURF_ANIM_PLUS_50 = 0,
+    SURF_ANIM_PLUS_150,
+    SURF_ANIM_PLUS_350,
+    SURF_ANIM_PLUS_180,
+    SURF_ANIM_PLUS_500,
 };
 
 struct SurfMinigameSetupTaskDataSub
@@ -205,6 +214,7 @@ struct SurfMinigameGfxManager
     struct Sprite *digitSprites[SURF_NUM_DIGITS];
     struct Sprite *spraySprites[SURF_NUM_SPRAY];
     struct Sprite *splashSprite;
+    struct Sprite *scoreSprite;
 };
 
 extern EWRAM_DATA struct SurfMinigameState *sSurfMinigameState;
@@ -247,6 +257,7 @@ void SurfMinigame_PrintHiScore(void);
 void SurfMinigame_UpdatePikachuSprites(void);
 void SurfMinigame_MoveClouds(void);
 void SurfMinigame_SpawnSplash(void);
+void SurfMinigame_SpawnScorePopup(u16 points);
 void SurfMinigame_UpdateProgressMarker(s32 dx);
 void SurfMinigame_HideGameplayHud(void);
 void DestroyGfxManager(void);
@@ -263,5 +274,7 @@ void SurfMinigame_PlayHighScoreFanfare(void);
 s32 CreateSprite_Pikachu_Paddle(s16 x, s16 y);
 s32 CreateSprite_Pikachu_Surf(s16 x, s16 y);
 s32 CreateSprite_SurfSplash(s16 x, s16 y);
+s32 CreateSprite_SurfScore(s16 x, s16 y);
+void SurfMinigame_StartScorePopupAnim(struct Sprite *sprite, u8 anim);
 
 #endif // GUARD_PIKACHU_BEACH_INTERNAL_H

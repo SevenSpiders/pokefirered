@@ -32,6 +32,7 @@ static const u16 sOceanPal[] = {
 static const u32 sBg_Tiles[] = INCBIN_U32("graphics/pikachu_beach/surfing_pikachu_ui.4bpp.lz");
 static const u16 sPikachuSurf_Pal[] = INCBIN_U16("graphics/pikachu_beach/spritesheet_pikachu_surf.gbapal");
 static const u32 sPikachuSurfTiles[] = INCBIN_U32("graphics/pikachu_beach/spritesheet_pikachu_surf.4bpp.lz");
+static const u32 sSurfScoreTiles[] = INCBIN_U32("graphics/pikachu_beach/spritesheet_surf_score.4bpp.lz");
 static const u16 sPikachuPaddle_Pal[] = INCBIN_U16("graphics/pikachu_beach/spritesheet_pikachu_paddle.gbapal");
 static const u32 sPikachuPaddleTiles[] = INCBIN_U32("graphics/pikachu_beach/spritesheet_pikachu_paddle.4bpp.lz");
 static const u16 sHudSprite_Pal[] = INCBIN_U16("graphics/pikachu_beach/spritesheet_hud.gbapal");
@@ -60,14 +61,16 @@ static const u16 sHudBgPal[] = {
 
 static const struct CompressedSpriteSheet sSpriteSheets[] = {
     {.data = sPikachuPaddleTiles, .size = 512 * 14, .tag = GFXTAG_PIKACHU_PADDLE},
-    {.data = sPikachuSurfTiles, .size = 512 * 22, .tag = GFXTAG_PIKACHU_SURF},
+    {.data = sPikachuSurfTiles, .size = 512 * 21, .tag = GFXTAG_PIKACHU_SURF},
     {.data = sHudSpriteTiles, .size = 32 * 24, .tag = GFXTAG_SURF_HUD},
+    {.data = sSurfScoreTiles, .size = 32 * 20, .tag = GFXTAG_SURF_SCORE},
 };
 
 static const struct SpritePalette sSpritePalettes[] = {
     {.data = sPikachuPaddle_Pal, .tag = PALTAG_PIKACHU_PADDLE},
     {.data = sPikachuSurf_Pal, .tag = PALTAG_PIKACHU_SURF},
     {.data = sHudSprite_Pal, .tag = PALTAG_SURF_HUD},
+    {}
 };
 
 static const struct BgTemplate sBgTemplates[] = {
@@ -307,6 +310,10 @@ bool8 SurfTask_InitGraphics(u8 *state, SurfMinigameSetupTaskData *ptr)
             if (spriteId != MAX_SPRITES)
                 sSurfMinigameGfxManager->splashSprite = &gSprites[spriteId];
 
+            spriteId = CreateSprite_SurfScore(SURF_PIKA_X, SURF_WATERLINE_DEFAULT + SURF_Y_OFFSET);
+            if (spriteId != MAX_SPRITES)
+                sSurfMinigameGfxManager->scoreSprite = &gSprites[spriteId];
+
             CreateHudSprites(game);
             }
 
@@ -424,12 +431,12 @@ static void CreateSpraySprites(void)
 
     for (i = 0; i < SURF_NUM_SPRAY; i++)
     {
-        spriteId = CreateSprite(&sSpriteTemplate_Hud, 0, 0, 0);
+        spriteId = CreateSprite(&sSpriteTemplate_Hud, 0, 0, 3);
         if (spriteId != MAX_SPRITES)
         {
             sSurfMinigameGfxManager->spraySprites[i] = &gSprites[spriteId];
             gSprites[spriteId].invisible = TRUE;
-            gSprites[spriteId].oam.priority = 1;
+            gSprites[spriteId].oam.priority = 2;
             gSprites[spriteId].callback = SpriteCB_SurfSpray;
             StartSpriteAnim(&gSprites[spriteId], SURF_ANIM_SPRAY_0 + (i % 3));
         }
@@ -688,6 +695,30 @@ void SurfMinigame_MoveClouds(void)
     }
 }
 
+void SurfMinigame_SpawnScorePopup(u16 points)
+{
+    struct Sprite *sprite;
+    u8 anim;
+
+    if (sSurfMinigameGfxManager == NULL || sSurfMinigameGfxManager->scoreSprite == NULL)
+        return;
+    sprite = sSurfMinigameGfxManager->scoreSprite;
+    if (points >= 500)
+        anim = SURF_ANIM_PLUS_500;
+    else if (points >= 350)
+        anim = SURF_ANIM_PLUS_350;
+    else if (points >= 180)
+        anim = SURF_ANIM_PLUS_180;
+    else if (points >= 150)
+        anim = SURF_ANIM_PLUS_150;
+    else
+        anim = SURF_ANIM_PLUS_50;
+
+    sprite->x = SURF_PIKA_X;
+    sprite->y = GetSurfGame()->pikaY + SURF_Y_OFFSET - 16;
+    SurfMinigame_StartScorePopupAnim(sprite, anim);
+}
+
 void SurfMinigame_SpawnSplash(void)
 {
     struct SurfGame *game = GetSurfGame();
@@ -755,6 +786,8 @@ void DestroyGfxManager(void)
             DestroySprite(sSurfMinigameGfxManager->pikachuSurfSprite);
         if (sSurfMinigameGfxManager->splashSprite != NULL)
             DestroySprite(sSurfMinigameGfxManager->splashSprite);
+        if (sSurfMinigameGfxManager->scoreSprite != NULL)
+            DestroySprite(sSurfMinigameGfxManager->scoreSprite);
         if (sSurfMinigameGfxManager->progressSprite != NULL)
             DestroySprite(sSurfMinigameGfxManager->progressSprite);
         for (i = 0; i < SURF_NUM_CLOUDS; i++)
@@ -778,6 +811,7 @@ void DestroyGfxManager(void)
     FreeSpriteTilesByTag(GFXTAG_PIKACHU_PADDLE);
     FreeSpriteTilesByTag(GFXTAG_PIKACHU_SURF);
     FreeSpriteTilesByTag(GFXTAG_SURF_HUD);
+    FreeSpriteTilesByTag(GFXTAG_SURF_SCORE);
     FreeSpritePaletteByTag(PALTAG_PIKACHU_PADDLE);
     FreeSpritePaletteByTag(PALTAG_PIKACHU_SURF);
     FreeSpritePaletteByTag(PALTAG_SURF_HUD);

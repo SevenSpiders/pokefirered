@@ -32,11 +32,11 @@ static const union AnimCmd sAnim_SurfCrash[] = {
     ANIMCMD_END
 };
 
-// Yellow Frameset_LargeSplash, with the large frame held through most of a crash.
+// Yellow Frameset_LargeSplash: small 2, large 2, dorepeat 8 (hold large), empty board.
 static const union AnimCmd sAnim_BigSplash[] = {
     ANIMCMD_FRAME(0x130, 2),
-    ANIMCMD_FRAME(0x140, 48),
-    ANIMCMD_FRAME(0x150, 8),
+    ANIMCMD_FRAME(0x140, 11),
+    ANIMCMD_FRAME(0x120, 2),
     ANIMCMD_END
 };
 
@@ -46,6 +46,39 @@ static const union AnimCmd *const sAnimTable_Surf[] = {
     sAnim_SurfFlip,
     sAnim_SurfCrash,
     sAnim_BigSplash,
+};
+
+static const union AnimCmd sAnim_Plus50[] = {
+    ANIMCMD_FRAME(0, 4),
+    ANIMCMD_END
+};
+
+static const union AnimCmd sAnim_Plus150[] = {
+    ANIMCMD_FRAME(4, 4),
+    ANIMCMD_END
+};
+
+static const union AnimCmd sAnim_Plus350[] = {
+    ANIMCMD_FRAME(8, 4),
+    ANIMCMD_END
+};
+
+static const union AnimCmd sAnim_Plus180[] = {
+    ANIMCMD_FRAME(12, 4),
+    ANIMCMD_END
+};
+
+static const union AnimCmd sAnim_Plus500[] = {
+    ANIMCMD_FRAME(16, 4),
+    ANIMCMD_END
+};
+
+static const union AnimCmd *const sAnimTable_Score[] = {
+    sAnim_Plus50,
+    sAnim_Plus150,
+    sAnim_Plus350,
+    sAnim_Plus180,
+    sAnim_Plus500,
 };
 
 static const struct OamData sOamData_Surf = {
@@ -74,6 +107,32 @@ static const struct SpriteTemplate sSpriteTemplate_Pikachu_Surfing = {
     .callback = SpriteCallbackDummy
 };
 
+static const struct OamData sOamData_Score = {
+    .y = 0,
+    .affineMode = ST_OAM_AFFINE_OFF,
+    .objMode = ST_OAM_OBJ_NORMAL,
+    .mosaic = FALSE,
+    .bpp = ST_OAM_4BPP,
+    .shape = ST_OAM_H_RECTANGLE,
+    .x = 0,
+    .matrixNum = 0,
+    .size = ST_OAM_SIZE_1,
+    .tileNum = 0,
+    .priority = 0,
+    .paletteNum = 0,
+    .affineParam = 0
+};
+
+static const struct SpriteTemplate sSpriteTemplate_SurfScore = {
+    .tileTag = GFXTAG_SURF_SCORE,
+    .paletteTag = PALTAG_PIKACHU_SURF,
+    .oam = &sOamData_Score,
+    .anims = sAnimTable_Score,
+    .images = NULL,
+    .affineAnims = gDummySpriteAffineAnimTable,
+    .callback = SpriteCallbackDummy
+};
+
 s32 CreateSprite_Pikachu_Surf(s16 x, s16 y)
 {
     s32 spriteId = CreateSprite(&sSpriteTemplate_Pikachu_Surfing, x, y, 1);
@@ -83,8 +142,47 @@ s32 CreateSprite_Pikachu_Surf(s16 x, s16 y)
 
 s32 CreateSprite_SurfSplash(s16 x, s16 y)
 {
-    s32 spriteId = CreateSprite(&sSpriteTemplate_Pikachu_Surfing, x, y, 2);
+    s32 spriteId = CreateSprite(&sSpriteTemplate_Pikachu_Surfing, x, y, 3);
     StartSpriteAnim(&gSprites[spriteId], SURF_ANIM_BIG_SPLASH);
     gSprites[spriteId].invisible = TRUE;
+    gSprites[spriteId].oam.priority = 2;
     return spriteId;
+}
+
+static void SpriteCB_ScorePopup(struct Sprite *sprite)
+{
+    static const u8 sFlash[] = { 5, 2, 4, 2, 3, 2, 2 };
+    u8 phase = sprite->data[1];
+
+    if (sprite->data[0] != 0)
+    {
+        sprite->data[0]--;
+        return;
+    }
+    phase++;
+    if (phase >= sizeof(sFlash))
+    {
+        sprite->invisible = TRUE;
+        sprite->callback = SpriteCallbackDummy;
+        return;
+    }
+    sprite->data[1] = phase;
+    sprite->data[0] = sFlash[phase] - 1;
+    sprite->invisible = (phase & 1) != 0;
+}
+
+s32 CreateSprite_SurfScore(s16 x, s16 y)
+{
+    s32 spriteId = CreateSprite(&sSpriteTemplate_SurfScore, x, y, 0);
+    gSprites[spriteId].invisible = TRUE;
+    return spriteId;
+}
+
+void SurfMinigame_StartScorePopupAnim(struct Sprite *sprite, u8 anim)
+{
+    StartSpriteAnim(sprite, anim);
+    sprite->invisible = FALSE;
+    sprite->data[0] = 4;
+    sprite->data[1] = 0;
+    sprite->callback = SpriteCB_ScorePopup;
 }

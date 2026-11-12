@@ -336,7 +336,7 @@ void SurfMinigame_ReadBGMapBuffer(void)
 {
     struct SurfGame *game = GetSurfGame();
     u8 scxPixel = game->scx >> 8;
-    // Yellow samples hSCX + 9*8. Use GBA Pikachu X so the column under the sprite is read.
+    // Sample the column and object-Y row under GBA Pikachu so slope tiles drive height.
     u8 col = (scxPixel + SURF_PIKA_X) >> 3;
     u8 row = game->waveY >> 3;
 
